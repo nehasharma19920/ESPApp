@@ -38,7 +38,7 @@ import com.tns.espapp.fragment.FeedBackFragment;
 import com.tns.espapp.fragment.FeedbackFragmentHistory;
 import com.tns.espapp.fragment.HomeFragment;
 import com.tns.espapp.fragment.LocationHistoryFragment;
-import com.tns.espapp.fragment.PernsonalInfoFragment;
+import com.tns.espapp.fragment.PersonalInfoFragment;
 import com.tns.espapp.fragment.ReadNotificationFragment;
 import com.tns.espapp.fragment.RouteMapFragment;
 import com.tns.espapp.fragment.SettingFragment;
@@ -265,7 +265,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         else
             if (v == tvpersomalinfo) {
                 tv_toolbar.setText("Personal Info");
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new PernsonalInfoFragment()).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new PersonalInfoFragment()).addToBackStack(null).commit();
                 mDrawerLayout.closeDrawer(mDrawerPane);
 
                // startActivity(new Intent(getApplicationContext(), RouteMapsActivity.class));
