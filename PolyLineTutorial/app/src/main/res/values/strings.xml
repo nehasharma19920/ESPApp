@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PolyLineTutorial</string>
+    <string name="str_btn_draw">Draw Route</string>
+</resources>
