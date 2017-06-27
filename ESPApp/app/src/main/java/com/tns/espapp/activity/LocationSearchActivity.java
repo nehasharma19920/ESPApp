@@ -229,7 +229,7 @@ public class LocationSearchActivity extends AppCompatActivity {
             // Creating a SimpleAdapter for the AutoCompleteTextView
             SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), result, android.R.layout.simple_list_item_1, from, to);
 
-            // Setting the adapter
+            // Setting the ListBaseAdapter
             atvPlaces.setAdapter(adapter);
         }
     }

@@ -91,14 +91,14 @@ public class TaxiFormRecordFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-               // TaxiFormData taxiFormData = (TaxiFormData)adapter.getItem(position);
+               // TaxiFormData taxiFormData = (TaxiFormData)ListBaseAdapter.getItem(position);
              /* //  TaxiFormData s = (TaxiFormData) parent.getItemAtPosition(position);
               // String ss=  s.getFormno();
                TaxiFormData taxiFormDatas =  taxiFormDataArrayList.get(position-1);
                String ss22=  taxiFormDatas.getFormno();
                // db.deleteSingleRowTaxiformData(ss22);
                 taxiFormDataArrayList.remove(position-1);
-                adapter.notifyDataSetChanged();*/
+                ListBaseAdapter.notifyDataSetChanged();*/
 
 
             }

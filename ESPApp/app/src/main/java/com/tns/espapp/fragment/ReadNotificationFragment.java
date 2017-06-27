@@ -52,7 +52,7 @@ public class ReadNotificationFragment extends Fragment {
 
 
         adapter = new MyCustomAdapter(getActivity(), R.layout.notificationmessageui,getdata);
-     /*   adapter.sort(new Comparator<NotificationData>() {
+     /*   ListBaseAdapter.sort(new Comparator<NotificationData>() {
             public int compare(NotificationData object1, NotificationData object2) {
                 return object1.getNoti_tittle().compareToIgnoreCase(object2.getNoti_tittle());
             }

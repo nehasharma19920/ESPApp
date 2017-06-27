@@ -43,4 +43,35 @@
     <string name="tns_mpin">Tns MPIN</string>
     <string name="register">Register</string>
 
+
+    <!--HomeActivity Strings-->
+    <string name="personal">Personal</string>
+    <string name="personal_docs">Personal Docs</string>
+    <string name="personal_info">Personal Info</string>
+    <string name="welcome_new_joinee">Welcome New Joinee</string>
+    <string name="leave_apply">Leave Apply</string>
+    <string name="leave_transaction">Leave Transaction</string>
+    <string name="leave_summary">Leave Summary</string>
+    <string name="leave_ledger">Leave Ledger</string>
+    <string name="leave">Leave</string>
+    <string name="leave_approval">Leave Approval</string>
+    <string name="op_approval">OP Approval</string>
+    <string name="approval">Approval</string>
+    <string name="store_Info">Store Info</string>
+    <string name="account_statements">Account Statements</string>
+    <string name="bills_Info">Bills Info</string>
+    <string name="entitlement_Info">Entitlement Info</string>
+    <string name="store_account">Store And Accounts</string>
+    <string name="attendance">Attendance</string>
+    <string name="op">OP</string>
+    <string name="opEntry">OP Entry</string>
+    <string name="opHistory">OP History</string>
+    <string name="salary_info">Salary Info</string>
+    <string name="taxi_info">taxi</string>
+    <string name="salary">Salary</string>
+    <string name="feedback">FeedBack</string>
+    <string name="location">Location</string>
+    <string name="tds_deduction">TDS Deduction</string>
+
+
 </resources>

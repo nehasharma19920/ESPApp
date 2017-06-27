@@ -3,7 +3,6 @@ package com.tns.espapp.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,10 @@ import com.tns.espapp.R;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
 
 /**
- * Created by GARIMA on 6/21/2017.
+ * Created by GARIMA on 6/23/2017.
  */
 
-public class WelcomeNewJoineeFragment extends Fragment {
+public class BillInfoFragment extends android.support.v4.app.Fragment {
     private View view;
     private WebView webView;
     private ProgressDialog pd;
@@ -29,7 +28,7 @@ public class WelcomeNewJoineeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.leave_ledger_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_pernsonal_info, container, false);
         getLayoutsId();
 
         return view;
@@ -40,7 +39,7 @@ public class WelcomeNewJoineeFragment extends Fragment {
         pd = new ProgressDialog(getContext());
         pd.setMessage("Please wait Loading...");
         pd.show();
-        webView.setWebViewClient(new WelcomeNewJoineeFragment.MyBrowser());
+        webView.setWebViewClient(new BillInfoFragment.MyBrowser());
 
 
         webView.getSettings().setLoadsImagesAutomatically(true);
@@ -49,7 +48,7 @@ public class WelcomeNewJoineeFragment extends Fragment {
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/NewJoinee/WelcomeWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/info/BillInfoWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {
