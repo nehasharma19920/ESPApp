@@ -48,7 +48,7 @@ public class AttendanceFragment extends Fragment{
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/info/BillInfoWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/info/AttendanceWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

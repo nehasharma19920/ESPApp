@@ -49,7 +49,7 @@ public class LeaveTransactionFragment extends Fragment {
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/esp/info/LeaveSummaryWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/esp/info/LeaveTransactionWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

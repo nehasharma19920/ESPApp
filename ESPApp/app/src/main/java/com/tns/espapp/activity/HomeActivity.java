@@ -60,6 +60,7 @@ import com.tns.espapp.fragment.StoreInfoFragment;
 import com.tns.espapp.fragment.TDSDeductionFragment;
 import com.tns.espapp.fragment.TaxiFormFragment;
 import com.tns.espapp.fragment.TaxiFormRecordFragment;
+import com.tns.espapp.fragment.TicketFragment;
 import com.tns.espapp.fragment.WelcomeNewJoineeFragment;
 import com.tns.espapp.service.SendLatiLongiServerIntentService;
 
@@ -542,7 +543,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         {
             tv_toolbar.setText("Ticket/Grievance");
             personalLinearLayout.setVisibility(View.GONE);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new InfoBullteinFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new TicketFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == leaveApplyTV)

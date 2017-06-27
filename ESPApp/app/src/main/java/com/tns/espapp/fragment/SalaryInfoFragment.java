@@ -48,7 +48,7 @@ public class SalaryInfoFragment  extends Fragment{
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/LeaveForm/LeaveAplyWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/LeaveForm/SalaryWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

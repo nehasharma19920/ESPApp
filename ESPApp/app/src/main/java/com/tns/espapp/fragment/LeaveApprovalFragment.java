@@ -49,7 +49,7 @@ public class LeaveApprovalFragment extends Fragment {
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/LeaveForm/LeaveAplyWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/LeaveForm/LeaveApprovalWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

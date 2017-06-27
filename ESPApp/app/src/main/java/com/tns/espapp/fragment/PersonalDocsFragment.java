@@ -48,7 +48,7 @@ public class PersonalDocsFragment extends Fragment {
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/esp/info/PersonalInfoWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/esp/info/PersonalDocsWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

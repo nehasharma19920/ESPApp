@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.tns.espapp.AppConstraint;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.SharedPreferenceUtils;
 
 /**
  * Created by GARIMA on 6/23/2017.
@@ -18,6 +20,7 @@ import com.tns.espapp.R;
 public class TicketFragment extends Fragment {
     private View view;
     private WebView webView;
+    private SharedPreferenceUtils sharedPreferences;
 
 
     @Override
@@ -36,7 +39,10 @@ public class TicketFragment extends Fragment {
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.loadUrl("http://tnssofts.com/ESP/Info/PersonalInfoWebView");
+        sharedPreferences = SharedPreferenceUtils.getInstance();
+        sharedPreferences.setContext(getContext());
+        String empId = sharedPreferences.getString(AppConstraint.EMPID);
+        webView.loadUrl("http://tnssofts.com/ESP/Info/TicketWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {
