@@ -58,6 +58,7 @@ public class WelcomeNewJoineeFragment extends Fragment {
             view.loadUrl(url);
             if (!pd.isShowing()) {
                 pd.show();
+
             }
 
             return true;

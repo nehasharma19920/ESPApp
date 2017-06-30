@@ -48,7 +48,7 @@ public class OPEntryFragment extends Fragment {
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/LeaveForm/OPEntryWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/OPREG/OPWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

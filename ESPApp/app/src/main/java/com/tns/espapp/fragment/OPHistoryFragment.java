@@ -27,7 +27,6 @@ public class OPHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_pernsonal_info, container, false);
         getLayoutsId();
 
@@ -48,7 +47,7 @@ public class OPHistoryFragment extends Fragment {
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/LeaveForm/OPHistoryWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/OPREG/OPHistoryWebView/"+empId);
     }
 
     private class MyBrowser extends WebViewClient {

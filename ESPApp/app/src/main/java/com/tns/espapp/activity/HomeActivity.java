@@ -630,7 +630,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new StoreInfoFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
-        if(v == storeAccountTv)
+        if(v == accountStatementsTv)
         {
             tv_toolbar.setText("Account Statement");
             storeAndAccountLinearLayout.setVisibility(View.GONE);

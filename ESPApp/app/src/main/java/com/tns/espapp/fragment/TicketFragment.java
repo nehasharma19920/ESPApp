@@ -1,6 +1,7 @@
 package com.tns.espapp.fragment;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.tns.espapp.Utility.SharedPreferenceUtils;
 public class TicketFragment extends Fragment {
     private View view;
     private WebView webView;
+    private ProgressDialog pd;
     private SharedPreferenceUtils sharedPreferences;
 
 
@@ -27,7 +29,7 @@ public class TicketFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.ticket_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_pernsonal_info, container, false);
         getLayoutsId();
 
         return view;
@@ -35,21 +37,39 @@ public class TicketFragment extends Fragment {
 
     private void getLayoutsId() {
         webView = (WebView) view.findViewById(R.id.webview);
+        pd = new ProgressDialog(getContext());
+        pd.setMessage("Please wait Loading...");
+        pd.show();
         webView.setWebViewClient(new TicketFragment.MyBrowser());
+
+
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         sharedPreferences = SharedPreferenceUtils.getInstance();
         sharedPreferences.setContext(getContext());
         String empId = sharedPreferences.getString(AppConstraint.EMPID);
-        webView.loadUrl("http://tnssofts.com/ESP/Info/TicketWebView/"+empId);
+        webView.loadUrl("http://tnssofts.com/ESP/Ticket/TicketWebView/17268"+empId);
     }
 
     private class MyBrowser extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
+            if (!pd.isShowing()) {
+                pd.show();
+            }
+
             return true;
+
+        }
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            System.out.println("on finish");
+            if (pd.isShowing()) {
+                pd.dismiss();
+            }
+
         }
     }
 }
