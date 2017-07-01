@@ -71,7 +71,6 @@
     <string name="salary">Salary</string>
     <string name="feedback">FeedBack</string>
     <string name="location">Location</string>
-    <string name="tds_deduction">TDS Deduction</string>
-
+    <string name="tds_declaration">TDS Declaration Form</string>
 
 </resources>

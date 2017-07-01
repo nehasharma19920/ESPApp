@@ -222,10 +222,10 @@
                         android:layout_gravity="center"
                         android:background="@drawable/clickpress"
                         android:clickable="true"
-                        android:visibility="gone"
                         android:padding="10dp"
                         android:text="@string/personal_docs"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/personalInfoTV"
@@ -380,9 +380,9 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/clickpress"
                         android:padding="10dp"
-                        android:visibility="gone"
                         android:text="@string/op_approval"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
@@ -517,11 +517,9 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:visibility="gone"
                         android:text="@string/opHistory"
-                        android:textStyle="normal" />
-
-
+                        android:textStyle="normal"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -573,7 +571,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:text="@string/tds_deduction"
+                        android:text="@string/tds_declaration"
                         android:textStyle="normal" />
 
 
@@ -825,6 +823,5 @@
 
     </LinearLayout>
 
-   
 
 </android.support.v4.widget.DrawerLayout>

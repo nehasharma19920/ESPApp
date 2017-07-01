@@ -705,7 +705,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v==TDSDeductionTv)
         {
-            tv_toolbar.setText("TDS Deduction");
+            tv_toolbar.setText("TDS Declaration form");
             OPLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new TDSDeductionFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
