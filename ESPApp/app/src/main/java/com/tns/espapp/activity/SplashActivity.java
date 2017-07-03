@@ -163,7 +163,8 @@ public class SplashActivity extends AppCompatActivity {
             else
             {
                 sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG,false);
-                Utility.displayMessage(this,"You are Registered Successfully Please Wait for Approval");
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

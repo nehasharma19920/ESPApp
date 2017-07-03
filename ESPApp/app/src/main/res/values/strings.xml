@@ -72,5 +72,6 @@
     <string name="feedback">FeedBack</string>
     <string name="location">Location</string>
     <string name="tds_declaration">TDS Declaration Form</string>
+    <string name="wait_for_approval">You are Registered Successfully Please Wait for Approval</string>
 
 </resources>
