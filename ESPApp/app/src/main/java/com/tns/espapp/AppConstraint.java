@@ -6,22 +6,21 @@ package com.tns.espapp;
 
 public interface AppConstraint {
 
-   //  static final String APP_SERVER_URL = "http://192.168.2.4:9000/gcm/gcm.php?shareRegId=true";
-   static final String APPNAME = "ESP";
+    //  static final String APP_SERVER_URL = "http://192.168.2.4:9000/gcm/gcm.php?shareRegId=true";
+    static final String APPNAME = "ESP";
 
-     static final String ESP_LOGIN ="http://tnssofts.com/apiesp/api/Taxi/Login";
-   // static final String ESP_LOGIN ="http://bkp-server";
+    static final String ESP_LOGIN = "http://tnssofts.com/apiesp/api/Taxi/Login";
+    // static final String ESP_LOGIN ="http://bkp-server";
 
 
     static final String FTP_HOST = "119.82.74.82";
     static final String FTP_USER = "tnssoft";
     static final String FTP_PASS = "@soft4321";
 
- String REGISTERFLAG = "REGISTERED";
- String APPROVEDFLAG = "APPROVEDFLAG";
- String EMPID = "EMPID";
- String PASSWORD = "PASSWORD";
-
+    String REGISTERFLAG = "REGISTERED";
+    String APPROVEDFLAG = "APPROVEDFLAG";
+    String EMPID = "EMPID";
+    String PASSWORD = "PASSWORD";
 
 
     int REGISTERED = 1;
@@ -29,23 +28,16 @@ public interface AppConstraint {
     int APPROVED = 1;
     int NOTAPPROVED = 0;
 
-
-
-    static final String TAXIFORMURL ="http://tnssofts.com/apiesp/api/Taxi/Taxi";
-    static final String TAXITRACKROOT  ="http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
-    static final String FEEDBACK_UNIT  ="http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
-    static final String COMMONURL  ="http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
-    String VERIFYLOGINURL =  "http://www.tnssofts.com/apiesp/api/Taxi/LoginVarify";;
-
-
-
-    // Google Project Number
+    String TAXIFORMURL = "http://tnssofts.com/apiesp/api/Taxi/Taxi";
+    String TAXITRACKROOT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
+    String FEEDBACK_UNIT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
+    String COMMONURL = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
+    String VERIFYLOGINURL = "http://www.tnssofts.com/apiesp/api/Taxi/LoginVarify";
+   // Google Project Number
     static final String GOOGLE_PROJ_ID = "837715578074";
     // Message Key
     static final String MSG_KEY = "m";
-
-    void hello();
-
+      void hello();
 
 
 }

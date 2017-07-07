@@ -256,6 +256,7 @@
                     android:layout_gravity="center"
                     android:clickable="true"
                     android:padding="10dp"
+                    android:visibility="gone"
                     android:text="Ticket/Grievance"
                     android:textStyle="bold" />
 
@@ -332,6 +333,7 @@
                 <LinearLayout
                     android:id="@+id/approvalInfoLinearLayout"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
