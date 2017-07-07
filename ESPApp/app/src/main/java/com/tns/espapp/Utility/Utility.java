@@ -2,13 +2,18 @@ package com.tns.espapp.Utility;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -67,7 +72,7 @@ public class Utility {
     }
     public static void displayMessage(Context context,String message) {
 
-        Toast.makeText(context,message,Toast.LENGTH_LONG).show();
+        Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
     }
 
     public static boolean isNetworkAvailable(Context context) {

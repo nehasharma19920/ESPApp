@@ -1,10 +1,16 @@
 package com.tns.espapp;
 
+import com.tns.espapp.service.SendLatiLongiServerIntentService;
+
+import java.util.HashMap;
+
 /**
  * Created by TNS on 12/21/2016.
  */
 
 public interface AppConstraint {
+
+    public static String form[] ={"Form1","Form2","Form3","Form4","Form5"};
 
     //  static final String APP_SERVER_URL = "http://192.168.2.4:9000/gcm/gcm.php?shareRegId=true";
     static final String APPNAME = "ESP";
@@ -28,17 +34,22 @@ public interface AppConstraint {
     int APPROVED = 1;
     int NOTAPPROVED = 0;
 
-    String TAXIFORMURL = "http://tnssofts.com/apiesp/api/Taxi/Taxi";
-    String TAXITRACKROOT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
-    String FEEDBACK_UNIT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
-    String COMMONURL = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
+
+    static final String TAXIFORMURL = "http://tnssofts.com/apiesp/api/Taxi/Taxi";
+    static final String TAXITRACKROOT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
+    static final String FEEDBACK_UNIT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
+    static final String COMMONURL = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
     String VERIFYLOGINURL = "http://www.tnssofts.com/apiesp/api/Taxi/LoginVarify";
-   // Google Project Number
+    ;
+
+
+    // Google Project Number
     static final String GOOGLE_PROJ_ID = "837715578074";
     // Message Key
     static final String MSG_KEY = "m";
-      void hello();
 
+
+    public static String FCM_PUSH_URL ="https://fcm.googleapis.com/fcm/send";
 
 }
 

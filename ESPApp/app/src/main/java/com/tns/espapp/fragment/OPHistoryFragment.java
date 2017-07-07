@@ -44,7 +44,7 @@ public class OPHistoryFragment extends Fragment {
         pd = new ProgressDialog(getContext());
         pd.setMessage("Please wait Loading...");
         pd.show();
-        webView.setWebViewClient(new OPHistoryFragment.MyBrowser());
+        webView.setWebViewClient(new MyBrowser());
 
 
         webView.getSettings().setLoadsImagesAutomatically(true);

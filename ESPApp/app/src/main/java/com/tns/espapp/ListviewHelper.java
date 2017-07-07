@@ -24,11 +24,11 @@ public class ListviewHelper {
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }
-        //setting listview item in ListBaseAdapter
+        //setting listview item in adapter
         ViewGroup.LayoutParams params = myListView.getLayoutParams();
         params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
         myListView.setLayoutParams(params);
-        // print height of ListBaseAdapter on log
+        // print height of adapter on log
         Log.i("height of listItem:", String.valueOf(totalHeight));
     }
 }

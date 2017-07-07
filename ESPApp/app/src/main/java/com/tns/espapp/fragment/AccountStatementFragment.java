@@ -40,7 +40,7 @@ public class AccountStatementFragment extends Fragment {
         pd.setMessage("Please wait Loading...");
         pd.show();
         pd.setCancelable(false);
-        webView.setWebViewClient(new AccountStatementFragment.MyBrowser());
+        webView.setWebViewClient(new MyBrowser());
 
 
         webView.getSettings().setLoadsImagesAutomatically(true);

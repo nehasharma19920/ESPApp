@@ -26,10 +26,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tns.espapp.ListBaseAdapter;
+
 import com.tns.espapp.ListviewHelper;
 import com.tns.espapp.R;
 import com.tns.espapp.fragment.AccountStatementFragment;
@@ -185,6 +186,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean feedBackFlag = true;
     private Boolean taxiFlag = true;
     private Boolean locationFlag = true;
+    private ScrollView scrollView;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -198,6 +200,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        scrollView = (ScrollView)findViewById(R.id.home_scroll);
+
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         tv_toolbar = (TextView) toolbar.findViewById(R.id.tv_toolbar);
 
@@ -467,12 +471,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         if (v == tv_checklist) {
+            tv_toolbar.setText("CheckList");
 
             if (checklist_flag) {
+
+
+
+                scrollView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                }, 200);
 
                 linear_checklist.setVisibility(View.VISIBLE);
                 checklist_flag = false;
             } else {
+                scrollView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    }
+                }, 200);
+
                 linear_checklist.setVisibility(View.GONE);
                 checklist_flag = true;
             }
@@ -920,20 +941,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
             toast.show();
         }
-    }
-    private void showPersonalMenuList()
-    {
-        ListBaseAdapter listBaseAdapter = new ListBaseAdapter(this,getPersonalMenuArrayList());
-        personalListView.setAdapter(listBaseAdapter);
-        ListviewHelper.getListViewSize(personalListView);
-
-    }
-    private ArrayList<String> getPersonalMenuArrayList()
-    {
-        ArrayList<String> personalMenuItemList = new ArrayList<>();
-        personalMenuItemList.add("Personal Docs");
-        personalMenuItemList.add("Personal Info");
-        return  personalMenuItemList;
     }
 
 

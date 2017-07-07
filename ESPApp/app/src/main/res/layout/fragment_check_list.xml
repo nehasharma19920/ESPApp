@@ -1,50 +1,60 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/last"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tns.espapp.fragment.CheckListFragment">
-
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true" >
-
-
+        android:layout_alignParentLeft="true">
 
 
         <RelativeLayout
-                android:id="@+id/RelativeLayout1"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical" >
+            android:id="@+id/RelativeLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
-            <TextView
+            <!--  <TextView
+
                 android:id="@+id/frg_from"
                 android:textSize="24dp"
                 android:text=""
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" />-->
 
             <LinearLayout
-                android:layout_below="@+id/frg_from"
                 android:id="@+id/li_1"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
 
                 <TextView
-
-                    android:textSize="24dp"
-                    android:text="CheckList Form"
+                    android:id="@+id/frg_from"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/btn"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="CheckList Form"
+                    android:textSize="20dp" />
 
                 <Spinner
-                    android:padding="5dp"
                     android:id="@+id/spinner1"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg"
+                    android:padding="5dp" />
             </LinearLayout>
 
 
@@ -57,17 +67,42 @@
                     android:layout_centerHorizontal="true" >
                 </TableLayout>-->
 
-                <LinearLayout
-                    android:layout_below="@+id/li_1"
-                    android:id="@+id/table_main"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/table_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/li_1"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                </LinearLayout>
+            </LinearLayout>
 
 
-            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/li_1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:scrollbars="vertical"
+                android:visibility="visible" />
+
+
+
+
+        </RelativeLayout>
+
 
     </ScrollView>
+
+    <ListView
+
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:visibility="gone" />
+</LinearLayout>
 </FrameLayout>

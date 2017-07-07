@@ -1,11 +1,11 @@
 package com.tns.espapp.activity;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +20,12 @@ import com.tns.espapp.R;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.NotificationData;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class ReadNotificationActivity extends AppCompatActivity {
 
-    DatabaseHandler db;
+    DatabaseHandler  db;
     MyCustomAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,8 @@ public class ReadNotificationActivity extends AppCompatActivity {
         List<NotificationData> getdata = db.getAllNotification();
 
 
-        adapter = new MyCustomAdapter(getApplicationContext(), R.layout.notificationmessageui,getdata);
-     /*   ListBaseAdapter.sort(new Comparator<NotificationData>() {
+        adapter = new MyCustomAdapter(getApplicationContext(),R.layout.notificationmessageui,getdata);
+     /*   adapter.sort(new Comparator<NotificationData>() {
             public int compare(NotificationData object1, NotificationData object2) {
                 return object1.getNoti_tittle().compareToIgnoreCase(object2.getNoti_tittle());
             }

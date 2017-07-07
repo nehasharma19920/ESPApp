@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
 
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-
 
         <include
             android:id="@+id/toolbar"
@@ -22,30 +21,20 @@
             android:layout_height="fill_parent"
             android:layout_above="@+id/bottomBarLinear"
             android:layout_below="@+id/toolbar"
-            android:background="#fff">
-
-        </FrameLayout>
-
+            android:background="#fff" />
 
         <LinearLayout
             android:id="@+id/bottomBarLinear"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical">
-
-
-        </LinearLayout>
-
-
+            android:orientation="vertical" />
     </RelativeLayout>
 
-
-    <!--   <>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Navigation View SAtart>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+    <!--    <>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Navigation View SAtart>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  -->
 
 
     <LinearLayout
-
         android:id="@+id/drawerPane"
         android:layout_width="220dp"
         android:layout_height="match_parent"
@@ -53,11 +42,12 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <LinearLayout
 
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -71,9 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
 
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-
+                    <ImageView
                         android:id="@+id/profile_image"
                         android:layout_width="96dp"
                         android:layout_height="96dp"
@@ -82,25 +70,19 @@
                         android:layout_alignParentTop="true"
                         android:layout_gravity="center"
                         android:padding="2dp"
-                        android:src="@mipmap/profile_icon"
-                        app:civ_border_color="#FFF"
-                        app:civ_border_width="1dp" />
+                        android:src="@drawable/tns_icon" />
 
                     <ImageView
-
                         android:id="@+id/img_edt"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="bottom|right"
                         android:src="@drawable/edit_user"
                         android:tint="@color/white" />
-
-
                 </FrameLayout>
 
 
                 <LinearLayout
-
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -108,9 +90,10 @@
                     android:padding="10dp">
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="User "
+                        android:text="User"
                         android:textColor="#fff"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -124,24 +107,22 @@
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
-
-
         </LinearLayout>
 
 
         <ScrollView
+            android:id="@+id/home_scroll"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
                 <View
-
                     android:layout_width="fill_parent"
                     android:layout_height=".1dp"
                     android:background="#CD7F32" />
@@ -155,6 +136,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/tv_taxiform_home_fragment"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -166,6 +148,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/welcomeJoineeTV"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -175,9 +158,8 @@
                         android:padding="10dp"
                         android:text="@string/welcome_new_joinee"
                         android:textStyle="bold" />
-
-
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/personalTextViewLinearLayout"
@@ -188,6 +170,8 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:background="@drawable/clickpress"
+                        android:textColor="@color/black"
                         android:id="@+id/personalTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -198,14 +182,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/arrowImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/personalLinearLayout"
@@ -216,6 +200,7 @@
                     android:visibility="gone">
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/personalDocsTV"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -224,8 +209,7 @@
                         android:clickable="true"
                         android:padding="10dp"
                         android:text="@string/personal_docs"
-                        android:textStyle="normal"
-                        android:visibility="gone" />
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/personalInfoTV"
@@ -235,11 +219,10 @@
                         android:padding="10dp"
                         android:text="@string/personal_info"
                         android:textStyle="normal" />
-
-
                 </LinearLayout>
 
                 <TextView
+                    android:textColor="@color/black"
                     android:id="@+id/infoBullteinTV"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -250,6 +233,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:textColor="@color/black"
                     android:id="@+id/ticketTv"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -260,6 +244,7 @@
                     android:text="Ticket/Grievance"
                     android:textStyle="bold" />
 
+
                 <LinearLayout
                     android:id="@+id/leaveInfoLinearLayout"
                     android:layout_width="match_parent"
@@ -269,6 +254,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/leaveTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -283,9 +269,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/leaveLinearLayout"
@@ -330,6 +317,7 @@
                         android:textStyle="normal" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:id="@+id/approvalInfoLinearLayout"
                     android:layout_width="match_parent"
@@ -338,6 +326,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/approvalTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -348,14 +337,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/approveImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/approvalLinearlayout"
@@ -389,6 +378,7 @@
 
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:id="@+id/storeInfoLinearLayout"
                     android:layout_width="match_parent"
@@ -396,6 +386,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/storeAccountTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -406,14 +397,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/storeImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/storeAndAccountLinearlayout"
@@ -456,11 +447,10 @@
                         android:padding="10dp"
                         android:text="@string/entitlement_Info"
                         android:textStyle="normal" />
-
-
                 </LinearLayout>
 
                 <TextView
+                    android:textColor="@color/black"
                     android:id="@+id/attendanceTv"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -470,6 +460,7 @@
                     android:text="@string/attendance"
                     android:textStyle="bold" />
 
+
                 <LinearLayout
                     android:id="@+id/OPInfoLinearLayout"
                     android:layout_width="match_parent"
@@ -477,6 +468,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/OPTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -487,14 +479,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/OPImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/OPLinearlayout"
@@ -524,6 +516,7 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:id="@+id/salaryInfoLinearLayout"
                     android:layout_width="match_parent"
@@ -531,6 +524,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/salaryInfoTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -541,14 +535,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/salaryImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/salaryLinearLayout"
@@ -575,9 +569,8 @@
                         android:padding="10dp"
                         android:text="@string/tds_declaration"
                         android:textStyle="normal" />
-
-
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/taxiInfoLinearLayout"
@@ -586,6 +579,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/taxiInfoTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -596,14 +590,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/taxiImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/taxiLinearLayout"
@@ -630,7 +624,6 @@
                         android:background="@drawable/clickpress"
                         android:padding="10dp"
                         android:text="TaxiForm History" />
-
                 </LinearLayout>
 
 
@@ -641,6 +634,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/feedBackInfoTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -651,14 +645,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/feedBackImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/feedBackLinearLayout"
@@ -668,9 +662,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-
                     <TextView
-
                         android:id="@+id/tv_feedback"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -679,7 +671,6 @@
                         android:text="Feed Back Form" />
 
                     <TextView
-
                         android:id="@+id/tv_feedback_history"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -688,6 +679,7 @@
                         android:text="FeedBack History" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:id="@+id/locationInfoLinearLayout"
                     android:layout_width="match_parent"
@@ -695,6 +687,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:id="@+id/locationInfoTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -705,14 +698,14 @@
                         android:visibility="visible" />
 
                     <ImageView
-
                         android:id="@+id/locationImageView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
+                        android:layout_weight=".5"
                         android:src="@drawable/down2" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/locationLinearLayout"
@@ -723,6 +716,7 @@
                     android:visibility="gone">
 
                     <TextView
+
                         android:id="@+id/location_history"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -731,6 +725,7 @@
                         android:text="Location History" />
 
                     <TextView
+
                         android:id="@+id/tv_currentlocation"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -740,8 +735,8 @@
                         android:visibility="visible" />
                 </LinearLayout>
 
-
                 <TextView
+                    android:textColor="@color/black"
                     android:id="@+id/tv_personal_info"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -751,8 +746,8 @@
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-
                 <TextView
+                    android:textColor="@color/black"
                     android:id="@+id/tv_notification"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -762,8 +757,8 @@
                     android:textStyle="bold"
                     android:visibility="visible" />
 
-
                 <TextView
+                    android:textColor="@color/black"
                     android:id="@+id/tv_setting"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -773,8 +768,9 @@
                     android:textStyle="bold"
                     android:visibility="visible" />
 
-
                 <TextView
+
+                    android:textColor="@color/black"
                     android:id="@+id/tv_checklist"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -782,7 +778,8 @@
                     android:padding="10dp"
                     android:text="CheckList"
                     android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
+
 
                 <LinearLayout
                     android:id="@+id/linear_checklist"
@@ -793,22 +790,13 @@
                     android:visibility="visible">
 
                     <ListView
-
                         android:id="@+id/listviewreports"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:layout_marginLeft="10dp">
-
-                    </ListView>
-
+                        android:layout_marginLeft="10dp" />
                 </LinearLayout>
-
-
             </LinearLayout>
-
-
         </ScrollView>
-
 
         <TextView
             android:id="@+id/tv_appvesion"
@@ -818,12 +806,8 @@
             android:autoLink="web"
             android:gravity="right"
             android:paddingRight="10dp"
-            android:text=" @version: 1.0 "
+            android:text=" @version: 1.0"
             android:textColor="@android:color/holo_purple"
             android:textStyle="italic" />
-
-
     </LinearLayout>
-
-
 </android.support.v4.widget.DrawerLayout>

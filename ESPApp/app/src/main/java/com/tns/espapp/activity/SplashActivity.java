@@ -2,10 +2,12 @@ package com.tns.espapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,6 +20,7 @@ import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.Utility.Utility;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.NotificationData;
+import com.tns.espapp.database.SettingData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,20 +37,22 @@ public class SplashActivity extends AppCompatActivity {
     private SharedPreferenceUtils sharedPreferences;
     private boolean isRegistered;
     private boolean isApproved;
+    private LinearLayout waitForApprovalLayout_splash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = new DatabaseHandler(this);
         setContentView(R.layout.activity_splash);
+        waitForApprovalLayout_splash = (LinearLayout)findViewById(R.id.waitForApprovalLayout_splash);
 
         if (getIntent().getExtras() != null) {
 
+      /*
 
             Bundle bundle = getIntent().getExtras();
 
             if (bundle != null) {
-
                 String tittle = bundle.get("tittle") + "";
                 String messages = bundle.get("message") + "";
                 String image = bundle.get("image") + "";
@@ -59,9 +64,9 @@ public class SplashActivity extends AppCompatActivity {
                     Log.e("for Bundle", "[" + a + "=" + bundle.get(a) + "]");
 
                 }
-
             }
 
+         */
 
         }
 
@@ -157,14 +162,14 @@ public class SplashActivity extends AppCompatActivity {
             if(status==1)
             {
                 sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG,true);
+                waitForApprovalLayout_splash.setVisibility(View.GONE);
                 startActivity(new Intent(getApplicationContext(), LockScreenActivity.class));
                 finish();
             }
             else
             {
                 sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG,false);
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-
+               waitForApprovalLayout_splash.setVisibility(View.VISIBLE);
             }
         } catch (JSONException e) {
             e.printStackTrace();

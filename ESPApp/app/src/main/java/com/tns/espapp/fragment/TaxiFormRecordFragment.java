@@ -4,6 +4,7 @@ package com.tns.espapp.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.tns.espapp.AppConstraint;
 import com.tns.espapp.HTTPPostRequestMethod;
 import com.tns.espapp.R;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
+import com.tns.espapp.activity.MapWebViewActivity;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.TaxiFormData;
 import com.tns.espapp.service.SendLatiLongiServerIntentService;
@@ -82,7 +84,7 @@ public class TaxiFormRecordFragment extends Fragment {
         }
 
 
-        adapter = new TaxiFormRecordHistoryAdapter(getActivity(), R.layout.taxiform_record_history_adapter,taxiFormDataArrayList);
+        adapter = new TaxiFormRecordHistoryAdapter(getActivity(),R.layout.taxiform_record_history_adapter,taxiFormDataArrayList);
         listview_taxirecord_history.setAdapter(adapter);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.header_listview_taxiform_record,null);
         listview_taxirecord_history.addHeaderView(view);
@@ -91,14 +93,14 @@ public class TaxiFormRecordFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-               // TaxiFormData taxiFormData = (TaxiFormData)ListBaseAdapter.getItem(position);
+               // TaxiFormData taxiFormData = (TaxiFormData)adapter.getItem(position);
              /* //  TaxiFormData s = (TaxiFormData) parent.getItemAtPosition(position);
               // String ss=  s.getFormno();
                TaxiFormData taxiFormDatas =  taxiFormDataArrayList.get(position-1);
                String ss22=  taxiFormDatas.getFormno();
                // db.deleteSingleRowTaxiformData(ss22);
                 taxiFormDataArrayList.remove(position-1);
-                ListBaseAdapter.notifyDataSetChanged();*/
+                adapter.notifyDataSetChanged();*/
 
 
             }
@@ -136,7 +138,7 @@ public class TaxiFormRecordFragment extends Fragment {
     }
 
     private   class  TaxiFormRecordHistoryAdapter extends ArrayAdapter {
-        TaxiFormData taxiFormData;
+        TaxiFormData  taxiFormData;
         int deepColor = Color.parseColor("#FFFFFF");
         int deepColor2 = Color.parseColor("#DCDCDC");
       //  int deepColor3 = Color.parseColor("#B58EBF");
@@ -251,7 +253,7 @@ public class TaxiFormRecordFragment extends Fragment {
                    // intent.putExtra("formno",taxiFormData.getFormno());
                    // startActivity(intent);
 
-                    MapWebViewFragment ldf = new MapWebViewFragment();
+                    MapWebViewFragment ldf = new MapWebViewFragment ();
                     Bundle args = new Bundle();
                     args.putString("formno",taxiFormData.getFormno());
                     ldf.setArguments(args);

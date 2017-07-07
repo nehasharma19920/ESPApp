@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tns.espapp.R;
+import com.tns.espapp.activity.ReadNotificationActivity;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.NotificationData;
 
@@ -51,8 +52,8 @@ public class ReadNotificationFragment extends Fragment {
         List<NotificationData> getdata = db.getAllNotification();
 
 
-        adapter = new MyCustomAdapter(getActivity(), R.layout.notificationmessageui,getdata);
-     /*   ListBaseAdapter.sort(new Comparator<NotificationData>() {
+        adapter = new MyCustomAdapter(getActivity(),R.layout.notificationmessageui,getdata);
+     /*   adapter.sort(new Comparator<NotificationData>() {
             public int compare(NotificationData object1, NotificationData object2) {
                 return object1.getNoti_tittle().compareToIgnoreCase(object2.getNoti_tittle());
             }

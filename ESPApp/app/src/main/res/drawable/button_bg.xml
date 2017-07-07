@@ -3,7 +3,7 @@
     <item android:state_pressed="true" >
         <shape>
             <solid
-                android:color="@color/orange" />
+                android:color="@color/symptom_color_selected" />
             <stroke
                 android:width="0dp"
                 android:color="#222222" />
@@ -12,12 +12,13 @@
 
         </shape>
     </item>
+
     <item>
         <shape>
             <gradient
-                android:startColor="#d67601"
+                android:startColor="@color/colorPrimaryDark"
 
-                android:endColor="#d67601"
+                android:endColor="@color/lite_dark_blue"
                 android:angle="270" />
             <stroke
                 android:width="0dp"
@@ -26,4 +27,4 @@
                 android:radius="1dp" />
         </shape>
     </item>
-</selector>
+    </selector>

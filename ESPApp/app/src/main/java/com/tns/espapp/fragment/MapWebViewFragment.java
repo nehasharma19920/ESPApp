@@ -13,9 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tns.espapp.R;
+import com.tns.espapp.activity.MapWebViewActivity;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -45,7 +45,7 @@ public class LeaveSummaryFragment  extends Fragment {
         pd = new ProgressDialog(getContext());
         pd.setMessage("Please wait Loading...");
         pd.show();
-        webView.setWebViewClient(new LeaveSummaryFragment.MyBrowser());
+        webView.setWebViewClient(new MyBrowser());
 
 
         webView.getSettings().setLoadsImagesAutomatically(true);

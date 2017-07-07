@@ -46,7 +46,7 @@ public class LeaveTransactionFragment extends Fragment {
         pd = new ProgressDialog(getContext());
         pd.setMessage("Please wait Loading...");
         pd.show();
-        webView.setWebViewClient(new LeaveTransactionFragment.MyBrowser());
+        webView.setWebViewClient(new MyBrowser());
 
 
         webView.getSettings().setLoadsImagesAutomatically(true);

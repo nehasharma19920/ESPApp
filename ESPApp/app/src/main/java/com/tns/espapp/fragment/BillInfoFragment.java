@@ -46,7 +46,7 @@ public class BillInfoFragment extends android.support.v4.app.Fragment {
         pd = new ProgressDialog(getContext());
         pd.setMessage("Please wait Loading...");
         pd.show();
-        webView.setWebViewClient(new BillInfoFragment.MyBrowser());
+        webView.setWebViewClient(new MyBrowser());
 
 
         webView.getSettings().setLoadsImagesAutomatically(true);

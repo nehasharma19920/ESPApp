@@ -13,9 +13,6 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-
-
-
 <ScrollView
     android:layout_width="fill_parent"
     android:layout_height="0px"
@@ -232,7 +229,7 @@
             <TextView
                 android:textColor="@color/black"
                 android:padding="5dp"
-                android:text="Site No."
+                android:text="No of Sites"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
 
@@ -283,6 +280,7 @@
     </android.support.v7.widget.CardView>
 
 </ScrollView>
+
 
 
 <!--

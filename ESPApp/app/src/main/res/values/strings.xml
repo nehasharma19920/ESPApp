@@ -43,8 +43,8 @@
     <string name="tns_mpin">Tns MPIN</string>
     <string name="register">Register</string>
 
-
-    <!--HomeActivity Strings-->
+    <!-- HomeActivity Strings
+ -->
     <string name="personal">Personal</string>
     <string name="personal_docs">Personal Docs</string>
     <string name="personal_info">Personal Info</string>
@@ -61,17 +61,18 @@
     <string name="account_statements">Account Statements</string>
     <string name="bills_Info">Bills Info</string>
     <string name="entitlement_Info">Entitlement Info</string>
-    <string name="store_account">Store And Accounts</string>
+    <string name="store_account">Store &amp; Accounts</string>
     <string name="attendance">Attendance</string>
     <string name="op">OP</string>
     <string name="opEntry">OP Entry</string>
     <string name="opHistory">OP History</string>
     <string name="salary_info">Salary Info</string>
-    <string name="taxi_info">taxi</string>
+    <string name="taxi_info">Taxi</string>
     <string name="salary">Salary</string>
     <string name="feedback">FeedBack</string>
     <string name="location">Location</string>
-    <string name="tds_declaration">TDS Declaration Form</string>
+    <string name="tds_declaration">TDS Declaration</string>
     <string name="wait_for_approval">You are Registered Successfully Please Wait for Approval</string>
+
 
 </resources>

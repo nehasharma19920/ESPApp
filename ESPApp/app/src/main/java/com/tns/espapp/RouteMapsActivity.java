@@ -66,140 +66,142 @@ import java.util.Locale;
 import static android.R.id.list;
 
 public class RouteMapsActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
-{
-    TextView tv_first;
-    private GoogleMap mMap;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
+    {
+        TextView tv_first;
+        private GoogleMap mMap;
+        GoogleApiClient mGoogleApiClient;
+        Location mLastLocation;
+        Marker mCurrLocationMarker;
+        LocationRequest mLocationRequest;
 
-    double latitude = 0;
-    double longitude = 0;
-    private int PROXIMITY_RADIUS = 5000;
+        double latitude = 0;
+        double longitude = 0;
+        private int PROXIMITY_RADIUS = 5000;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_route_maps);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_route_maps);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
-        //  Add..............
-     /*   ImageView iv_back =(ImageView)findViewById(R.id.iv_backss);
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });*/
-        final EditText editText =(EditText)findViewById(R.id.edt_search_loc);
-        Button btn_find =(Button)findViewById(R.id.btn_find);
-        btn_find.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String type = editText.getText().toString().toLowerCase();
-                StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-                googlePlacesUrl.append("location=" + latitude + "," + longitude);
-                googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-                googlePlacesUrl.append("&types=" + type);
-                googlePlacesUrl.append("&sensor=true");
-                googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
-
-                GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
-                Object[] toPass = new Object[2];
-                toPass[0] = mMap;
-                toPass[1] = googlePlacesUrl.toString();
-                googlePlacesReadTask.execute(toPass);
-            }
-        });
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
 
 
-    }
+            //  Add..............
+         /*   ImageView iv_back =(ImageView)findViewById(R.id.iv_backss);
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });*/
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+            final EditText editText =(EditText)findViewById(R.id.edt_search_loc);
+            Button btn_find =(Button)findViewById(R.id.btn_find);
+            btn_find.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String line = editText.getText().toString().toLowerCase();
+                    String type = line.replaceAll("\\s+","");
+                    StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                    googlePlacesUrl.append("location=" + latitude + "," + longitude);
+                    googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+                    googlePlacesUrl.append("&types=" + type);
+                    googlePlacesUrl.append("&sensor=true");
+                    googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
+
+                    GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+                    Object[] toPass = new Object[2];
+                    toPass[0] = mMap;
+                    toPass[1] = googlePlacesUrl.toString();
+                    googlePlacesReadTask.execute(toPass);
+                }
+            });
+
+
+        }
+
+        @Override
+        protected void onStart() {
+            super.onStart();
 
 
         getLocation();
 
 
-    }
+        }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopLocationUpdates();
-        mGoogleApiClient.disconnect();
-    }
+        @Override
+        protected void onStop() {
+            super.onStop();
+            stopLocationUpdates();
+            mGoogleApiClient.disconnect();
+        }
 
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        protected void createLocationRequest() {
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(1000);
+            mLocationRequest.setFastestInterval(1000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-    }
+        }
 
-    private void getLocation() {
-        createLocationRequest();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-
-        mGoogleApiClient.connect();
-        Log.d("RoutemapActivity", "Location update resumed .....................");
-
-        //  return loc;
-    }
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-        Log.d("RouteMapActivity", "Location update stopped .......................");
-
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setMyLocationEnabled(true);
+        private void getLocation() {
+            createLocationRequest();
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
 
 
+            mGoogleApiClient.connect();
+            Log.d("RoutemapActivity", "Location update resumed .....................");
 
-    }
+            //  return loc;
+        }
+        protected void stopLocationUpdates() {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+            Log.d("RouteMapActivity", "Location update stopped .......................");
+
+        }
+
+        /**
+         * Manipulates the map once available.
+         * This callback is triggered when the map is ready to be used.
+         * This is where we can add markers or lines, add listeners or move the camera. In this case,
+         * we just add a marker near Sydney, Australia.
+         * If Google Play services is not installed on the device, the user will be prompted to install
+         * it inside the SupportMapFragment. This method will only be triggered once the user has
+         * installed Google Play services and returned to the app.
+         */
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            mMap = googleMap;
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mMap.setMyLocationEnabled(true);
+
+
+
+        }
 
 
     @Override
     public void onConnected(Bundle bundle) {
 
-        startLocationUpdates();
+       startLocationUpdates();
 
 
     }
 
-    protected void startLocationUpdates() {
-        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
-        Log.d("Routemapactivity", "Location update started ..............: ");
-    }
+        protected void startLocationUpdates() {
+            PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+            Log.d("Routemapactivity", "Location update started ..............: ");
+        }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -224,7 +226,7 @@ public class RouteMapsActivity extends FragmentActivity implements LocationListe
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+       mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -266,163 +268,163 @@ public class RouteMapsActivity extends FragmentActivity implements LocationListe
     }
 
 
-    class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
-        String googlePlacesData = null;
-        GoogleMap googleMap;
+        class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
+            String googlePlacesData = null;
+            GoogleMap googleMap;
 
-        @Override
-        protected String doInBackground(Object... inputObj) {
-            try {
-                googleMap = (GoogleMap) inputObj[0];
-                String googlePlacesUrl = (String) inputObj[1];
-                Http http = new Http();
-                googlePlacesData = http.read(googlePlacesUrl);
-            } catch (Exception e) {
-                Log.d("Google Place Read Task", e.toString());
-            }
-            return googlePlacesData;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            PlacesDisplayTask placesDisplayTask = new PlacesDisplayTask();
-            Object[] toPass = new Object[2];
-            toPass[0] = googleMap;
-            toPass[1] = result;
-            placesDisplayTask.execute(toPass);
-        }
-    }
-
-    class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<String, String>>> {
-
-        JSONObject googlePlacesJson;
-        GoogleMap googleMap;
-
-        @Override
-        protected List<HashMap<String, String>> doInBackground(Object... inputObj) {
-
-            List<HashMap<String, String>> googlePlacesList = null;
-            Places placeJsonParser = new Places();
-
-            try {
-                googleMap = (GoogleMap) inputObj[0];
-                googlePlacesJson = new JSONObject((String) inputObj[1]);
-                googlePlacesList = placeJsonParser.parse(googlePlacesJson);
-            } catch (Exception e) {
-                Log.d("Exception", e.toString());
-            }
-            return googlePlacesList;
-        }
-
-        @Override
-        protected void onPostExecute(List<HashMap<String, String>> list) {
-            googleMap.clear();
-            if(list != null) {
-                for (int i = 0; i < list.size(); i++) {
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    HashMap<String, String> googlePlace = list.get(i);
-                    double lat = Double.parseDouble(googlePlace.get("lat"));
-                    double lng = Double.parseDouble(googlePlace.get("lng"));
-                    String placeName = googlePlace.get("place_name");
-                    String vicinity = googlePlace.get("vicinity");
-                    LatLng latLng = new LatLng(lat, lng);
-                    markerOptions.position(latLng);
-                    markerOptions.title(placeName + " : " + vicinity);
-                    googleMap.addMarker(markerOptions);
-                }
-            }
-        }
-
-        public class Places {
-
-            public List<HashMap<String, String>> parse(JSONObject jsonObject) {
-                JSONArray jsonArray = null;
+            @Override
+            protected String doInBackground(Object... inputObj) {
                 try {
-                    jsonArray = jsonObject.getJSONArray("results");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    googleMap = (GoogleMap) inputObj[0];
+                    String googlePlacesUrl = (String) inputObj[1];
+                    Http http = new Http();
+                    googlePlacesData = http.read(googlePlacesUrl);
+                } catch (Exception e) {
+                    Log.d("Google Place Read Task", e.toString());
                 }
-                return getPlaces(jsonArray);
+                return googlePlacesData;
             }
 
-            private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
-                int placesCount = jsonArray.length();
-                List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
-                HashMap<String, String> placeMap = null;
+            @Override
+            protected void onPostExecute(String result) {
+                PlacesDisplayTask placesDisplayTask = new PlacesDisplayTask();
+                Object[] toPass = new Object[2];
+                toPass[0] = googleMap;
+                toPass[1] = result;
+                placesDisplayTask.execute(toPass);
+            }
+        }
 
-                for (int i = 0; i < placesCount; i++) {
+        class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<String, String>>> {
+
+            JSONObject googlePlacesJson;
+            GoogleMap googleMap;
+
+            @Override
+            protected List<HashMap<String, String>> doInBackground(Object... inputObj) {
+
+                List<HashMap<String, String>> googlePlacesList = null;
+                Places placeJsonParser = new Places();
+
+                try {
+                    googleMap = (GoogleMap) inputObj[0];
+                    googlePlacesJson = new JSONObject((String) inputObj[1]);
+                    googlePlacesList = placeJsonParser.parse(googlePlacesJson);
+                } catch (Exception e) {
+                    Log.d("Exception", e.toString());
+                }
+                return googlePlacesList;
+            }
+
+            @Override
+            protected void onPostExecute(List<HashMap<String, String>> list) {
+                googleMap.clear();
+                if(list != null) {
+                    for (int i = 0; i < list.size(); i++) {
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        HashMap<String, String> googlePlace = list.get(i);
+                        double lat = Double.parseDouble(googlePlace.get("lat"));
+                        double lng = Double.parseDouble(googlePlace.get("lng"));
+                        String placeName = googlePlace.get("place_name");
+                        String vicinity = googlePlace.get("vicinity");
+                        LatLng latLng = new LatLng(lat, lng);
+                        markerOptions.position(latLng);
+                        markerOptions.title(placeName + " : " + vicinity);
+                        googleMap.addMarker(markerOptions);
+                    }
+                }
+            }
+
+            public class Places {
+
+                public List<HashMap<String, String>> parse(JSONObject jsonObject) {
+                    JSONArray jsonArray = null;
                     try {
-                        placeMap = getPlace((JSONObject) jsonArray.get(i));
-                        placesList.add(placeMap);
-
+                        jsonArray = jsonObject.getJSONArray("results");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    return getPlaces(jsonArray);
                 }
-                return placesList;
+
+                private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
+                    int placesCount = jsonArray.length();
+                    List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
+                    HashMap<String, String> placeMap = null;
+
+                    for (int i = 0; i < placesCount; i++) {
+                        try {
+                            placeMap = getPlace((JSONObject) jsonArray.get(i));
+                            placesList.add(placeMap);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return placesList;
+                }
+
+                private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
+                    HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
+                    String placeName = "-NA-";
+                    String vicinity = "-NA-";
+                    String latitude = "";
+                    String longitude = "";
+                    String reference = "";
+
+                    try {
+                        if (!googlePlaceJson.isNull("name")) {
+                            placeName = googlePlaceJson.getString("name");
+                        }
+                        if (!googlePlaceJson.isNull("vicinity")) {
+                            vicinity = googlePlaceJson.getString("vicinity");
+                        }
+                        latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
+                        longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
+                        reference = googlePlaceJson.getString("reference");
+                        googlePlaceMap.put("place_name", placeName);
+                        googlePlaceMap.put("vicinity", vicinity);
+                        googlePlaceMap.put("lat", latitude);
+                        googlePlaceMap.put("lng", longitude);
+                        googlePlaceMap.put("reference", reference);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return googlePlaceMap;
+                }
             }
 
-            private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
-                HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
-                String placeName = "-NA-";
-                String vicinity = "-NA-";
-                String latitude = "";
-                String longitude = "";
-                String reference = "";
 
+        }
+
+        class Http {
+
+            public String read(String httpUrl) throws IOException {
+                String httpData = "";
+                InputStream inputStream = null;
+                HttpURLConnection httpURLConnection = null;
                 try {
-                    if (!googlePlaceJson.isNull("name")) {
-                        placeName = googlePlaceJson.getString("name");
+                    URL url = new URL(httpUrl);
+                    httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.connect();
+                    inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuffer stringBuffer = new StringBuffer();
+                    String line = "";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuffer.append(line);
                     }
-                    if (!googlePlaceJson.isNull("vicinity")) {
-                        vicinity = googlePlaceJson.getString("vicinity");
-                    }
-                    latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
-                    longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-                    reference = googlePlaceJson.getString("reference");
-                    googlePlaceMap.put("place_name", placeName);
-                    googlePlaceMap.put("vicinity", vicinity);
-                    googlePlaceMap.put("lat", latitude);
-                    googlePlaceMap.put("lng", longitude);
-                    googlePlaceMap.put("reference", reference);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    httpData = stringBuffer.toString();
+                    bufferedReader.close();
+                } catch (Exception e) {
+                    Log.d("Exception - reading Http url", e.toString());
+                } finally {
+                    inputStream.close();
+                    httpURLConnection.disconnect();
                 }
-                return googlePlaceMap;
+                return httpData;
             }
         }
-
-
-    }
-
-    class Http {
-
-        public String read(String httpUrl) throws IOException {
-            String httpData = "";
-            InputStream inputStream = null;
-            HttpURLConnection httpURLConnection = null;
-            try {
-                URL url = new URL(httpUrl);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.connect();
-                inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuffer stringBuffer = new StringBuffer();
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuffer.append(line);
-                }
-                httpData = stringBuffer.toString();
-                bufferedReader.close();
-            } catch (Exception e) {
-                Log.d("Exception - reading Http url", e.toString());
-            } finally {
-                inputStream.close();
-                httpURLConnection.disconnect();
-            }
-            return httpData;
-        }
-    }
 
 }
 

@@ -4,11 +4,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -63,6 +65,8 @@ DatabaseHandler db;
         if (remoteMessage.getNotification() != null) {
             handleDataNotification(remoteMessage.getNotification().getBody());
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+
+
         }
 
         //The message which i send will have keys named [message, image, AnotherActivity] and corresponding values.
@@ -115,15 +119,14 @@ DatabaseHandler db;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.taxi_icon2);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),R.mipmap.taxi_icon2);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(icon)
                 .setSmallIcon(R.mipmap.taxi_icon2)
                 .setContentTitle(messageBody).setContentText(TrueOrFalse)
-                .setStyle(new NotificationCompat.BigPictureStyle()
-                        .bigPicture(image))
+                //.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(image))
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

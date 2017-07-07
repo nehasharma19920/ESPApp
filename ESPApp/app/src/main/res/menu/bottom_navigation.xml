@@ -4,23 +4,22 @@
         android:checkableBehavior="single">
 
     <item
-        android:id="@+id/action_home"
-        android:icon="@drawable/ic_plusone_medium_off_client"
-        android:title="home"/>
+        android:id="@+id/action_taxi"
+        android:icon="@drawable/ic_local_taxi_black_48dp"
+        android:title="Taxi"/>
     </group>
 
     <group android:id="@+id/group3"
         android:checkableBehavior="single">
 
-
     <item
-        android:id="@+id/action_bag"
-        android:icon="@drawable/right_arrow"
-        android:title="bag"/>
+        android:id="@+id/action_currentlocation"
+        android:icon="@drawable/ic_location_on_black_48dp"
+        android:title="Location"/>
     </group>
     <item
-        android:id="@+id/action_account"
-        android:icon="@drawable/left_arrow"
-        android:title="account"/>
+        android:id="@+id/action_servey"
+        android:icon="@drawable/ic_insert_photo_black_48dp"
+        android:title="Feedback"/>
 
 </menu>

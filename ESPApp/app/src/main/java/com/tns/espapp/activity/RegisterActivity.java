@@ -1,15 +1,24 @@
 package com.tns.espapp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,6 +38,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 public class RegisterActivity extends AppCompatActivity {
     private EditText employeeIdEditText;
     private EditText employeePasswordEditText;
@@ -36,8 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String fireBaseToken;
     private String empId;
     private String empPassword;
-    private LinearLayout registrationLL;
-    private LinearLayout waitForApprovalLayout;
     private ProgressDialog pDialog;
     private SharedPreferenceUtils sharedPreferences;
 
@@ -48,8 +59,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         getLayoutsId();
         getFireBaseToken();
-        getSharedPreference();
-        checkApproval();
         registerOnClickListener();
 
 
@@ -59,36 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
         employeeIdEditText = (EditText) findViewById(R.id.employeeIdEditText);
         employeePasswordEditText = (EditText) findViewById(R.id.employeePasswordEditText);
         verifyBtn = (Button) findViewById(R.id.verifyBtn);
-        registrationLL = (LinearLayout) findViewById(R.id.registrationLL);
-        waitForApprovalLayout = (LinearLayout) findViewById(R.id.waitForApprovalLayout);
     }
 
-    private void checkApproval() {
-        boolean registrationStatus = sharedPreferences.getBoolean(AppConstraint.REGISTERFLAG);
-        if (registrationStatus) {
-            boolean approvedStatus = sharedPreferences.getBoolean(AppConstraint.APPROVEDFLAG);
-            if (approvedStatus) {
-                sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG, true);
-                startActivity(new Intent(getApplicationContext(), LockScreenActivity.class));
-                finish();
-            } else {
-                registrationLL.setVisibility(View.GONE);
-                waitForApprovalLayout.setVisibility(View.VISIBLE);
-                createApprovalJsonObjectRequest();
-            }
-
-        } else {
-
-            registrationLL.setVisibility(View.VISIBLE);
-            waitForApprovalLayout.setVisibility(View.GONE);
-        }
-    }
-
-    private void getSharedPreference() {
-        sharedPreferences = SharedPreferenceUtils.getInstance();
-        sharedPreferences.setContext(getApplicationContext());
-        pDialog = new ProgressDialog(this);
-    }
 
     private String getFireBaseToken() {
         fireBaseToken = MyFirebaseInstanceIDService.SharedSave.getInstance(getApplicationContext()).getDeviceToken();
@@ -152,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void createVerifyJsonObject() {
         JSONObject parameters = new JSONObject(getVerifyParams());
-
+        pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -257,13 +238,14 @@ public class RegisterActivity extends AppCompatActivity {
         Log.d("RegistrationResponse", response.toString());
         try {
             int status = response.getInt("status");
-
+            sharedPreferences = SharedPreferenceUtils.getInstance();
+            sharedPreferences.setContext(getApplicationContext());
             if (status == 1) {
 
                 sharedPreferences.putBoolean(AppConstraint.REGISTERFLAG, true);
                 sharedPreferences.putString(AppConstraint.EMPID, empId);
                 sharedPreferences.putString(AppConstraint.PASSWORD, empPassword);
-                checkApproval();
+                createApprovalJsonObjectRequest();
             } else {
                 sharedPreferences.putBoolean(AppConstraint.REGISTERFLAG, false);
                 Utility.displayMessage(this, "Your Registration was not Successful");
@@ -328,7 +310,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
     private void parseApprovedResponse(JSONObject response) {
         Log.d("ApprovedResponse", response.toString());
         try {
@@ -337,11 +318,13 @@ public class RegisterActivity extends AppCompatActivity {
                 sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG, true);
                 startActivity(new Intent(getApplicationContext(), LockScreenActivity.class));
                 finish();
-              //  return;
+                //return;
             } else {
                 sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG, false);
-               // Utility.displayMessage(this, "You are Registered Successfully Please Wait for Approval");
-                //return;
+                startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+                finish();
+              //  Utility.displayMessage(this, "You are Registered Successfully Please Wait for Approval");
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

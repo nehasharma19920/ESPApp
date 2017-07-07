@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <color name="colorPrimary">#FE5A00</color>
-    <color name="colorPrimaryDark">#EB5B1F</color>
-    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorPrimary">#0089CC</color>
+    <color name="colorPrimaryDark">#0089CC</color>
+    <color name="colorAccent">#0099CC</color>
 
     <color name="transparentBlack">#64000000</color>
     <color name="navigationBarColor">#000000</color>
@@ -45,5 +47,5 @@
     <color name="black_overlay">#66000000</color>
 
     <color name="textInputBackground">#ffffff</color>
-    <color name="btnBackground">#b45705</color>
+    <color name="btnBackground">#0089CC</color>
 </resources>

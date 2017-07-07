@@ -2,7 +2,6 @@ package com.tns.espapp.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.tns.espapp.AppConstraint;
 
 /**
