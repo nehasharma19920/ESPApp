@@ -3,6 +3,7 @@ package com.tns.espapp.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,6 +52,9 @@ public class RegisterActivity extends AppCompatActivity {
     private String empPassword;
     private ProgressDialog pDialog;
     private SharedPreferenceUtils sharedPreferences;
+    private TextView registerYourDeviceTextView;
+    private TextView waitForApprovalTextView;
+
 
 
     @Override
@@ -68,6 +72,9 @@ public class RegisterActivity extends AppCompatActivity {
         employeeIdEditText = (EditText) findViewById(R.id.employeeIdEditText);
         employeePasswordEditText = (EditText) findViewById(R.id.employeePasswordEditText);
         verifyBtn = (Button) findViewById(R.id.verifyBtn);
+        registerYourDeviceTextView = (TextView)findViewById(R.id.registerYourDeviceTextView);
+        waitForApprovalTextView = (TextView)findViewById(R.id.waitForApprovalTextView);
+        setFontFamily();
     }
 
 
@@ -307,6 +314,18 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return jsonObject;
+
+    }
+    private void setFontFamily()
+    {
+        Typeface face = Typeface.createFromAsset(getAssets(),
+                "arial.ttf");
+
+        registerYourDeviceTextView.setTypeface(face);
+        waitForApprovalTextView.setTypeface(face);
+        employeeIdEditText.setTypeface(face);
+        employeePasswordEditText.setTypeface(face);
+        verifyBtn.setTypeface(face);
 
     }
 

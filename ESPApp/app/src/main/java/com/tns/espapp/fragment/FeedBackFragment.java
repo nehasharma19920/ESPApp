@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -163,8 +164,17 @@ public class FeedBackFragment extends Fragment {
     private static int attachmentData1_ID = 0;
     private static int capture1_ID = 0;
     List<FeedbackRecordData> getfeedbackRecord;
+    private TextView unitTextView;
+    private TextView referernceNumberTextView;
+    private TextView dateTextView;
+    private TextView addBriefTextView;
+    private TextView attachmentTextView;
+    private TextView captureImageTextView;
+    private Typeface face;
+
 
     public FeedBackFragment() {
+
         // Required empty public constructor
     }
 
@@ -174,6 +184,8 @@ public class FeedBackFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feed_back, container, false);
+        face  = Typeface.createFromAsset(getActivity().getAssets(),
+                "arial.ttf");
         setViewByIDS(view);
         getLocation();
         getUnitSpinnerData();
@@ -257,6 +269,23 @@ public class FeedBackFragment extends Fragment {
 
         iv_addAttachment = (ImageView) view.findViewById(R.id.iv_add_attachment);
         iv_capture_Image = (ImageView) view.findViewById(R.id.iv_capture_image);
+        unitTextView = (TextView)view.findViewById(R.id.unitTextView);
+        referernceNumberTextView = (TextView)view.findViewById(R.id.referernceNumberTextView);
+        dateTextView = (TextView)view.findViewById(R.id.dateTextView);
+        addBriefTextView = (TextView)view.findViewById(R.id.addBriefTextView);
+        attachmentTextView = (TextView)view.findViewById(R.id.attachmentTextView);
+        captureImageTextView = (TextView)view.findViewById(R.id.captureImageTextView);
+        unitTextView.setTypeface(face);
+        referernceNumberTextView.setTypeface(face);
+        dateTextView.setTypeface(face);
+        addBriefTextView.setTypeface(face);
+        attachmentTextView.setTypeface(face);
+        captureImageTextView.setTypeface(face);
+        edt_getdate.setTypeface(face);
+        edt_getreferenceNo.setTypeface(face);
+        edtbrief.setTypeface(face);
+        btn_submit.setTypeface(face);
+
 
         // linearLayout_add_attachment = (LinearLayout) view.findViewById(R.id.linear_add_attachment) ;
 
@@ -682,6 +711,7 @@ public class FeedBackFragment extends Fragment {
                 viewHolder.textView = (TextView) convertView.findViewById(R.id.tv_name_add_attachment_adapter);
                 viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_delete_add_attachment_adapter);
                 convertView.setTag(viewHolder);
+                viewHolder.textView.setTypeface(face);
 
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();

@@ -16,6 +16,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -130,11 +131,23 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     private  SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
+    private TextView fullScreenContentTextView;
+
     private static final long INTERVAL = 1000 * 5 * 1; //1 minute
     private static final long FASTEST_INTERVAL = 1000 * 2 * 1; // 1 minute
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-   //ImageView iv_status;
+    private TextView fromNumberTextView;
+    private TextView fromNumberDataTextView;
+    private TextView dateTextView;
+    private TextView projectTypeTextView;
+    private TextView vehicleNumberTextView;
+    private TextView startKmTextView;
+    private TextView endKmTextView;
+    private TextView numberOfSitesTextView;
+    private TextView remarksTextView;
+
+    //ImageView iv_status;
 
     public TaxiFormFragment() {
         // Required empty public constructor
@@ -163,6 +176,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         mLocationRequest.setInterval(INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
     }
 
 
@@ -340,6 +354,19 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         btn_close = (Button) v.findViewById(R.id.btn_close_taxiform);
         edt_siteno  = (EditText) v.findViewById(R.id.edt_siteno);
         edt_remark = (EditText) v.findViewById(R.id.edt_remark);
+        fullScreenContentTextView = (TextView)getActivity().findViewById(R.id.fullscreen_content);
+        fromNumberTextView = (TextView)getActivity().findViewById(R.id.fromNumberTextView);
+        fromNumberDataTextView = (TextView)getActivity().findViewById(R.id.tv_form_no);
+        dateTextView = (TextView)getActivity().findViewById(R.id.dateTextView);
+        projectTypeTextView = (TextView)getActivity().findViewById(R.id.projectTypeTextView);
+        vehicleNumberTextView = (TextView)getActivity().findViewById(R.id.vehicleNumberTextView);
+        startKmTextView = (TextView)getActivity().findViewById(R.id.startKmTextView);
+        endKmTextView = (TextView)getActivity().findViewById(R.id.endKmTextView);
+        numberOfSitesTextView = (TextView)getActivity().findViewById(R.id.numberOfSitesTextView);
+        remarksTextView = (TextView)getActivity().findViewById(R.id.remarksTextView);
+        setFontFamily();
+
+
 
 
         edt_startkmImage.setOnClickListener(this);
@@ -351,6 +378,30 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         btn_close.setOnClickListener(this);
 
 
+    }
+    private void setFontFamily()
+    {
+
+                Typeface face = Typeface.createFromAsset(getActivity().getAssets(),
+                "arial.ttf");
+
+        fullScreenContentTextView.setTypeface(face);
+        fromNumberTextView.setTypeface(face);
+        dateTextView.setTypeface(face);
+        projectTypeTextView.setTypeface(face);
+        vehicleNumberTextView.setTypeface(face);
+        startKmTextView.setTypeface(face);
+        endKmTextView.setTypeface(face);
+        numberOfSitesTextView.setTypeface(face);
+        remarksTextView.setTypeface(face);
+        edt_settaxiform_date.setTypeface(face);
+        edt_startkmImage.setTypeface(face);
+        edt_endkm_Image.setTypeface(face);
+        edtproject_type.setTypeface(face);
+        edt_vehicle_no.setTypeface(face);
+        btn_close.setTypeface(face);
+        edt_siteno.setTypeface(face);
+        edt_remark.setTypeface(face);
     }
 
     private void selectImage(String Value) {

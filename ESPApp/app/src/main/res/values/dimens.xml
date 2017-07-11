@@ -8,4 +8,5 @@
     <dimen name="largeTextSize">20sp</dimen>
     <dimen name="xlargeTextSize">25sp</dimen>
     <dimen name="xXlargeTextSize">30sp</dimen>
+    <dimen name="largeMargin">50dp</dimen>
 </resources>

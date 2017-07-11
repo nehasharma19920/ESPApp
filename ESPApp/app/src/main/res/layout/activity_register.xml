@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/xXlargeTextSize"
             android:gravity="center"
+            android:id="@+id/registerYourDeviceTextView"
             android:text="Register Your Device"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
@@ -135,6 +136,7 @@
         <TextView
             android:layout_width="match_parent"
             android:gravity="center"
+            android:id="@+id/waitForApprovalTextView"
             android:textSize="@dimen/xlargeTextSize"
             android:text="@string/wait_for_approval"
             android:layout_height="wrap_content" />

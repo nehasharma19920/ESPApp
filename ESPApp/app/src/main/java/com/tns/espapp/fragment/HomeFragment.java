@@ -1,6 +1,7 @@
 package com.tns.espapp.fragment;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -21,6 +22,8 @@ import com.tns.espapp.service.GPSTracker;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
+    private TextView welcomeTextView;
+    private View view;
 
 
     public HomeFragment() {
@@ -40,10 +43,11 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        getLayoutsId();
 
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) v.findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) view.findViewById(R.id.bottom_navigation);
         if (bottomNavigationView != null) {
             // Set action to perform when any menu-item is selected.
             bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -65,7 +69,7 @@ public class HomeFragment extends Fragment {
         //  setpos.setText(getvalue+"");
 
 
-        return v;
+        return view;
     }
 
     private void selectFragment(MenuItem item) {
@@ -105,7 +109,21 @@ public class HomeFragment extends Fragment {
         }
 
 
-    }
 
+    }
+    private void getLayoutsId()
+    {
+        welcomeTextView = (TextView)view.findViewById(R.id.txt_example3);
+        setFontFamily();
+    }
+    private void setFontFamily()
+    {
+        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),
+                "arial.ttf");
+
+        welcomeTextView.setTypeface(face);
+
+
+    }
 
 }

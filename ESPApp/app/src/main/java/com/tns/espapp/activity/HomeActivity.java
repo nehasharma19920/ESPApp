@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -56,6 +57,7 @@ import com.tns.espapp.fragment.PersonalInfoFragment;
 import com.tns.espapp.fragment.ReadNotificationFragment;
 import com.tns.espapp.fragment.RouteMapFragment;
 import com.tns.espapp.fragment.SalaryInfoFragment;
+import com.tns.espapp.fragment.ScheduleFragment;
 import com.tns.espapp.fragment.SettingFragment;
 import com.tns.espapp.fragment.StoreInfoFragment;
 import com.tns.espapp.fragment.TDSDeductionFragment;
@@ -140,6 +142,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView feedBackInfoTv;
     private TextView taxiInfoTv;
     private TextView locationInfoTv;
+    private TextView scheduleTv;
 
     private ImageView arrowImageView;
     private ImageView leaveImageView;
@@ -187,6 +190,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean taxiFlag = true;
     private Boolean locationFlag = true;
     private ScrollView scrollView;
+    private Typeface face;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -199,11 +203,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        face  = Typeface.createFromAsset(getAssets(),
+                "arial.ttf");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         scrollView = (ScrollView)findViewById(R.id.home_scroll);
 
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         tv_toolbar = (TextView) toolbar.findViewById(R.id.tv_toolbar);
+        tv_toolbar.setTypeface(face);
 
         navigationdrawer();
         findIDS();
@@ -305,6 +312,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         taxiLinearLayout = (LinearLayout)findViewById(R.id.taxiLinearLayout);
         locationLinearLayout = (LinearLayout)findViewById(R.id.locationLinearLayout);
         locationInfoTv = (TextView)findViewById(R.id.locationInfoTv);
+        scheduleTv = (TextView)findViewById(R.id.tv_schedule);
         locationImageView = (ImageView)findViewById(R.id.locationImageView);
 
 
@@ -370,6 +378,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         salaryLinearLayout.setOnClickListener(this);
         salaryTv.setOnClickListener(this);
         TDSDeductionTv.setOnClickListener(this);
+        scheduleTv.setOnClickListener(this);
+
 
 
 
@@ -764,6 +774,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 locationLinearLayout.setVisibility(View.GONE);
                 locationFlag = true;
             }
+        }
+        if(v==scheduleTv)
+        {
+            tv_toolbar.setText("Scheduler");
+           ;
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new ScheduleFragment()).commit();
+            mDrawerLayout.closeDrawer(mDrawerPane);
         }
     }
 

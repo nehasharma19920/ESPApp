@@ -2,6 +2,7 @@ package com.tns.espapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,7 +35,9 @@ public class LockScreenActivity extends AppCompatActivity {
     private EditText employeePasswordEditText;
     private String empPassword;
     private SharedPreferenceUtils sharedPreferences;
-    private Button verifyBtn;
+    private ImageView verifyBtn;
+    private TextView tnsMpinTextView;
+    private TextView descriptionTextView;
     DatabaseHandler db;
 
     @Override
@@ -53,10 +58,21 @@ public class LockScreenActivity extends AppCompatActivity {
 
     private void getLayoutsId() {
         employeePasswordEditText = (EditText) findViewById(R.id.employeePasswordEditText);
-        verifyBtn = (Button)findViewById(R.id.verifyBtn);
+        tnsMpinTextView = (TextView) findViewById(R.id.tnsMpinTextView);
+        descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
+        verifyBtn = (ImageView) findViewById(R.id.verifyBtn);
+        setFontFamily();
 
     }
+private void setFontFamily()
+{
+    Typeface face = Typeface.createFromAsset(getAssets(),
+            "arial.ttf");
 
+    tnsMpinTextView.setTypeface(face);
+    descriptionTextView.setTypeface(face);
+
+}
 
     private boolean isMandatoryField() {
         employeePasswordEditText.setError(null);

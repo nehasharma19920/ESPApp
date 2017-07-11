@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -53,6 +54,7 @@ public class TaxiFormRecordFragment extends Fragment {
     private String empid,getstatus;
     private EditText editsearch;
     private int getkey_id;
+   private Typeface face;
     public TaxiFormRecordFragment() {
         // Required empty public constructor
     }
@@ -74,6 +76,10 @@ public class TaxiFormRecordFragment extends Fragment {
         listview_taxirecord_history=(ListView)v.findViewById(R.id.listview_taxiform_history);
         List<TaxiFormData> taxiformrecordDataList = db.getAllTaxiformData();
         int size = taxiformrecordDataList.size();
+
+        face  = Typeface.createFromAsset(getActivity().getAssets(),
+                "arial.ttf");
+
 
 
 
@@ -109,6 +115,7 @@ public class TaxiFormRecordFragment extends Fragment {
 
 
         editsearch = (EditText) v.findViewById(R.id.search_taxirecord);
+        editsearch.setTypeface(face);
 
         // Capture Text in EditText
         editsearch.addTextChangedListener(new TextWatcher() {
@@ -188,6 +195,12 @@ public class TaxiFormRecordFragment extends Fragment {
                 viewHolder.  status = (ImageView) convertView.findViewById(R.id.iv_status_taxiadapter);
                 viewHolder.  startkm = (TextView) convertView.findViewById(R.id.tv_startkm_taxiadapter);
                 viewHolder.  endkm = (TextView) convertView.findViewById(R.id.tv_endkm_taxiadapter);
+                viewHolder.formno.setTypeface(face);
+                viewHolder.date.setTypeface(face);
+                viewHolder.id.setTypeface(face);
+                viewHolder.projecttype.setTypeface(face);
+                viewHolder.vihecleno.setTypeface(face);
+                viewHolder.endkm.setTypeface(face);
 
                 convertView.setTag(viewHolder);
 

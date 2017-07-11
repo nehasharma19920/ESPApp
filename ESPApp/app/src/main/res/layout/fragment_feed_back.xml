@@ -33,9 +33,10 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textStyle="bold"
+
                 android:textColor="@color/white"
                 android:text="Unit"
+                android:id="@+id/unitTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -48,9 +49,9 @@
 
             <TextView
                 android:layout_marginTop="10dp"
-                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:text="Reference No"
+                android:id="@+id/referernceNumberTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <EditText
@@ -65,9 +66,10 @@
 
             <TextView
                 android:layout_marginTop="10dp"
-                android:textStyle="bold"
+
                 android:textColor="@color/white"
                 android:text="Date"
+                android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <EditText
@@ -82,23 +84,24 @@
                 android:imeOptions="actionNext"/>
 
 
-
-            <TextView
-                android:layout_marginTop="10dp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text="Add Brief"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
             <EditText
-                android:layout_marginTop="5dp"
-                android:background="@drawable/edt_border"
-                 android:lines="5"
                 android:id="@+id/edt_brief_feed"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/edt_border"
                 android:ems="10"
-                android:imeOptions="actionNext"/>
+                android:imeOptions="actionNext"
+                android:lines="5" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+
+                android:textColor="@color/white"
+                android:text="Add Brief"
+                android:id="@+id/addBriefTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <RelativeLayout
                 android:layout_marginTop="10dp"
@@ -108,9 +111,10 @@
             <TextView
                 android:gravity="center_vertical"
                 android:layout_marginTop="10dp"
-                android:textStyle="bold"
+
                 android:textColor="@color/white"
                 android:text="Attachment"
+                android:id="@+id/attachmentTextView"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent" />
 
@@ -172,7 +176,8 @@
                 <TextView
                     android:gravity="center_vertical"
                     android:layout_marginTop="10dp"
-                    android:textStyle="bold"
+
+                    android:id="@+id/captureImageTextView"
                     android:textColor="@color/white"
                     android:text="Capture Image"
                     android:layout_width="fill_parent"
@@ -209,7 +214,6 @@
             android:id="@+id/tv_setresult"
             android:gravity="center_vertical"
             android:layout_marginTop="10dp"
-            android:textStyle="bold"
             android:textColor="@color/white"
             android:text="set Result"
             android:layout_width="fill_parent"

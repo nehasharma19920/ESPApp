@@ -132,7 +132,7 @@ public class WelcomeNewJoineeFragment extends Fragment {
         getContext().registerReceiver(mDownloadCompleteListener, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         mCancel.setVisibility(View.VISIBLE);
         mOnGoingDownload = mDownloadManger.enqueue(request);
-        Toast.makeText(getContext(), "68|MainActivity::startDownload: Download of " + fileName + " started",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "startDownload: Download of " + fileName + " started",Toast.LENGTH_LONG).show();
     }
 
 }
