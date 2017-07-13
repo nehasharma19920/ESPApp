@@ -5,8 +5,9 @@
     <dimen name="fab_margin">10dp</dimen>
     <dimen name="smallTextSize">12sp</dimen>
     <dimen name="normalTextSize">15sp</dimen>
-    <dimen name="largeTextSize">20sp</dimen>
+    <dimen name="largeTextSize">18sp</dimen>
     <dimen name="xlargeTextSize">25sp</dimen>
     <dimen name="xXlargeTextSize">30sp</dimen>
     <dimen name="largeMargin">50dp</dimen>
+    <dimen name="mediumMargin">20dp</dimen>
 </resources>

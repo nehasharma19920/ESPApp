@@ -354,17 +354,17 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         btn_close = (Button) v.findViewById(R.id.btn_close_taxiform);
         edt_siteno  = (EditText) v.findViewById(R.id.edt_siteno);
         edt_remark = (EditText) v.findViewById(R.id.edt_remark);
-        fullScreenContentTextView = (TextView)getActivity().findViewById(R.id.fullscreen_content);
-        fromNumberTextView = (TextView)getActivity().findViewById(R.id.fromNumberTextView);
-        fromNumberDataTextView = (TextView)getActivity().findViewById(R.id.tv_form_no);
-        dateTextView = (TextView)getActivity().findViewById(R.id.dateTextView);
-        projectTypeTextView = (TextView)getActivity().findViewById(R.id.projectTypeTextView);
-        vehicleNumberTextView = (TextView)getActivity().findViewById(R.id.vehicleNumberTextView);
-        startKmTextView = (TextView)getActivity().findViewById(R.id.startKmTextView);
-        endKmTextView = (TextView)getActivity().findViewById(R.id.endKmTextView);
-        numberOfSitesTextView = (TextView)getActivity().findViewById(R.id.numberOfSitesTextView);
-        remarksTextView = (TextView)getActivity().findViewById(R.id.remarksTextView);
-        setFontFamily();
+        fullScreenContentTextView = (TextView)v.findViewById(R.id.fullscreen_content);
+        fromNumberTextView = (TextView)v.findViewById(R.id.fromNumberTextView);
+        fromNumberDataTextView = (TextView)v.findViewById(R.id.tv_form_no);
+        dateTextView = (TextView)v.findViewById(R.id.dateTextView);
+        projectTypeTextView = (TextView)v.findViewById(R.id.projectTypeTextView);
+        vehicleNumberTextView = (TextView)v.findViewById(R.id.vehicleNumberTextView);
+        startKmTextView = (TextView)v.findViewById(R.id.startKmTextView);
+        endKmTextView = (TextView)v.findViewById(R.id.endKmTextView);
+        numberOfSitesTextView = (TextView)v.findViewById(R.id.numberOfSitesTextView);
+        remarksTextView = (TextView)v.findViewById(R.id.remarksTextView);
+
 
 
 
@@ -1432,6 +1432,13 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
         return jsonObject;
     }*/
+public static TaxiFormFragment newInstance(int index) {
+    TaxiFormFragment f = new TaxiFormFragment();
+    Bundle args = new Bundle();
+    args.putInt("index", index);
+    f.setArguments(args);
+    return f;
+}
 
     @Override
     public void onConnected(Bundle bundle) {

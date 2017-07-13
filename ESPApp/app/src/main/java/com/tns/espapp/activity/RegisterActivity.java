@@ -42,6 +42,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText employeeIdEditText;
@@ -55,7 +56,11 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView registerYourDeviceTextView;
     private TextView waitForApprovalTextView;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
 
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

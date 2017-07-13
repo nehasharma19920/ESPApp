@@ -133,6 +133,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <TextView
@@ -159,7 +160,15 @@
                         android:text="@string/welcome_new_joinee"
                         />
                 </LinearLayout>
-
+                <TextView
+                    android:id="@+id/personalInfoTV"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clickpress"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/personal_info"
+                    />
 
                 <LinearLayout
                     android:id="@+id/personalTextViewLinearLayout"
@@ -167,6 +176,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/clickpress"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -210,14 +220,7 @@
                         android:text="@string/personal_docs"
                   />
 
-                    <TextView
-                        android:id="@+id/personalInfoTV"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/clickpress"
-                        android:padding="10dp"
-                        android:text="@string/personal_info"
-                   />
+
                 </LinearLayout>
 
                 <TextView
@@ -259,6 +262,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="10dp"
+
                         android:text="@string/leave"
                       
                         android:visibility="visible" />
@@ -287,7 +291,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:padding="10dp"
+                        android:padding="10dp"                    android:textColor="@color/black"
+
                         android:text="@string/leave_apply"
                          />
 
@@ -296,6 +301,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_summary"
                          />
 
@@ -304,6 +311,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_transaction"
                          />
 
@@ -312,6 +321,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_ledger"
                        />
                 </LinearLayout>
@@ -331,6 +342,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="10dp"
+
                         android:text="@string/approval"
                         android:visibility="visible" />
 
@@ -360,6 +372,8 @@
                         android:background="@drawable/clickpress"
                         android:clickable="true"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_approval"
                         />
 
@@ -369,6 +383,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/clickpress"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/op_approval"
                         android:visibility="gone" />
 
@@ -389,6 +405,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="10dp"
+
                         android:text="@string/store_account"
                        
                         android:visibility="visible" />
@@ -418,6 +435,8 @@
                         android:layout_gravity="center"
                         android:clickable="true"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/store_Info"
                        />
 
@@ -426,6 +445,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/account_statements"
                         />
 
@@ -434,6 +455,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
                         android:text="@string/bills_Info"
                        />
 
@@ -442,6 +464,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/entitlement_Info"
                        />
                 </LinearLayout>
@@ -456,12 +480,22 @@
                     android:padding="10dp"
                     android:text="@string/attendance"
                     />
-
+                <TextView
+                    android:id="@+id/OPEntryTv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/opEntry"
+                    />
 
                 <LinearLayout
                     android:id="@+id/OPInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -492,15 +526,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/OPEntryTv"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:padding="10dp"
-                        android:text="@string/opEntry"
-                        />
+
 
                     <TextView
                         android:id="@+id/OPHistoryTV"
@@ -553,6 +579,7 @@
                         android:layout_gravity="center"
                         android:clickable="true"
                         android:padding="10dp"
+                        android:textColor="@color/black"
                         android:text="@string/salary"
                         />
 
@@ -561,6 +588,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
                         android:text="@string/tds_declaration"
                         />
                 </LinearLayout>
@@ -570,6 +598,7 @@
                     android:id="@+id/taxiInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -624,6 +653,7 @@
                     android:id="@+id/feedBackInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -676,6 +706,7 @@
                     android:id="@+id/locationInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -745,7 +776,7 @@
                     android:padding="10dp"
                     android:text="Notification"
                     
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:textColor="@color/black"
@@ -755,7 +786,7 @@
                     android:background="@drawable/clickpress"
                     android:padding="10dp"
                     android:text="Setting"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <TextView
 
@@ -777,7 +808,7 @@
                     android:padding="10dp"
                     android:text="Scheduler"
                     
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
 
                 <LinearLayout
@@ -786,7 +817,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    >
 
                     <ListView
                         android:id="@+id/listviewreports"

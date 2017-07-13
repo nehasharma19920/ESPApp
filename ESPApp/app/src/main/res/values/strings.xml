@@ -57,6 +57,7 @@
     <string name="leave_approval">Leave Approval</string>
     <string name="op_approval">OP Approval</string>
     <string name="approval">Approval</string>
+    <string name="navigation">Navigation</string>
     <string name="store_Info">Store Info</string>
     <string name="account_statements">Account Statements</string>
     <string name="bills_Info">Bills Info</string>

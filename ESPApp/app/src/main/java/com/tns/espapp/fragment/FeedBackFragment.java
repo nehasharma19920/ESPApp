@@ -355,6 +355,13 @@ public class FeedBackFragment extends Fragment {
 
 
     }
+    public static FeedBackFragment newInstance(int index) {
+        FeedBackFragment f = new FeedBackFragment();
+        Bundle args = new Bundle();
+        args.putInt("index", index);
+        f.setArguments(args);
+        return f;
+    }
 
 
     View.OnClickListener addCaptureImage = new View.OnClickListener() {
