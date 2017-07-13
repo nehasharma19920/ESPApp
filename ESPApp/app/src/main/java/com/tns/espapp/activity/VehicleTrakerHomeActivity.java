@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tns.espapp.R;
+import com.tns.espapp.fragment.BlankFragment;
 import com.tns.espapp.fragment.HomeFragment;
 import com.tns.espapp.fragment.LocationHistoryFragment;
 import com.tns.espapp.fragment.TaxiFormFragment;
@@ -43,7 +44,7 @@ public class VehicleTrakerHomeActivity extends AppCompatActivity {
         navigationdrawer();
         getLayoutsId();
         setOnClickListener();
-        getSupportFragmentManager().beginTransaction().add(R.id.vechicleTrakerFragment, TaxiFormFragment.newInstance(1)).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.vechicleTrakerFragment, BlankFragment.newInstance(1)).commit();
 
     }
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tns.espapp.R;
+import com.tns.espapp.fragment.BlankFragment;
 import com.tns.espapp.fragment.FeedBackFragment;
 import com.tns.espapp.fragment.FeedbackFragmentHistory;
 import com.tns.espapp.fragment.LocationHistoryFragment;
@@ -42,7 +43,7 @@ public class OPActivity extends AppCompatActivity {
         navigationdrawer();
         getLayoutsId();
         setOnClickListener();
-        getSupportFragmentManager().beginTransaction().add(R.id.OPFragment, FeedBackFragment.newInstance(1)).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.OPFragment, BlankFragment.newInstance(1)).commit();
     }
     private void navigationdrawer() {
         mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);

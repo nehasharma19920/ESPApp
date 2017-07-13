@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tns.espapp.R;
+import com.tns.espapp.fragment.BlankFragment;
 import com.tns.espapp.fragment.LocationHistoryFragment;
 import com.tns.espapp.fragment.RouteMapFragment;
 import com.tns.espapp.fragment.TaxiFormFragment;
@@ -43,7 +44,7 @@ public class LocationActivity extends AppCompatActivity {
         navigationdrawer();
         getLayoutsId();
         setOnClickListener();
-        getSupportFragmentManager().beginTransaction().add(R.id.LocationFragment, RouteMapFragment.newInstance(1)).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.LocationFragment, BlankFragment.newInstance(1)).commit();
     }
     private void navigationdrawer() {
         mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
@@ -59,6 +60,7 @@ public class LocationActivity extends AppCompatActivity {
 
         );
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

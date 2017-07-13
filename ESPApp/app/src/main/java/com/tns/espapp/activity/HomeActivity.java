@@ -38,6 +38,7 @@ import com.tns.espapp.R;
 import com.tns.espapp.fragment.AccountStatementFragment;
 import com.tns.espapp.fragment.AttendanceFragment;
 import com.tns.espapp.fragment.BillInfoFragment;
+import com.tns.espapp.fragment.BlankFragment;
 import com.tns.espapp.fragment.CheckListFragment;
 import com.tns.espapp.fragment.EntitlementFragment;
 import com.tns.espapp.fragment.FeedBackFragment;
@@ -229,7 +230,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (checkPermissions()) {
             }
 
-            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout_home_frag, HomeFragment.newInstance(1)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout_home_frag, BlankFragment.newInstance(1)).commit();
 
         }
         SharedPreferences preferences = getSharedPreferences("ID", Context.MODE_PRIVATE);
