@@ -31,6 +31,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -41,9 +42,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +62,9 @@ import com.tns.espapp.DrawBitmapAll;
 import com.tns.espapp.HTTPPostRequestMethod;
 import com.tns.espapp.R;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
+import com.tns.espapp.activity.LocationHistoryActivity;
+import com.tns.espapp.activity.RouteMapsActivity;
+import com.tns.espapp.activity.TaxiHistoryActivity;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.SettingData;
 import com.tns.espapp.database.TaxiFormData;
@@ -82,10 +89,10 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class TaxiFormFragment extends Fragment implements View.OnClickListener,
-        com.google.android.gms.location.LocationListener,  GoogleApiClient.ConnectionCallbacks,
+        com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private EditText edt_settaxiform_date, edt_startkmImage, edt_endkm_Image, edtstartkmtext, edtendkmtext, edtproject_type, edt_vehicle_no,edt_siteno,edt_remark;
+    private EditText edt_settaxiform_date, edt_startkmImage, edt_endkm_Image, edtstartkmtext, edtendkmtext, edtproject_type, edt_vehicle_no, edt_siteno, edt_remark;
     private int flag = 0;
     private int latlongtableflag;
     private Button btn_close;
@@ -99,7 +106,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
     int keyid = 1;
 
-    int incri_id =0 ;
+    int incri_id = 0;
     DatabaseHandler db;
     List<TaxiFormData> data;
     double latitude;
@@ -128,7 +135,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     boolean statusOfGPS;
 
 
-    private  SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
     private TextView fullScreenContentTextView;
@@ -146,6 +153,12 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     private TextView endKmTextView;
     private TextView numberOfSitesTextView;
     private TextView remarksTextView;
+
+
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab, fab1, fab2, locationFab;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private LinearLayout overlayLL;
 
     //ImageView iv_status;
 
@@ -169,8 +182,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     }
 
 
-
-
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(INTERVAL);
@@ -184,18 +195,32 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_taxi_form, container, false);
+        View v = inflater.inflate(R.layout.taxi_frag, container, false);
 
-        Toolbar toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         // iv_status =(ImageView) toolbar. findViewById(R.id.status_taxiform);
 
-        findIDS(v);
+
      /*   if (shouldAskPermissions()) {
             askPermissions();
         }*/
 
-     // boolean b = GPSTracker.isRunning;
-        sharedPreferences     = getActivity().getSharedPreferences("SERVICE", Context.MODE_PRIVATE);
+        // boolean b = GPSTracker.isRunning;
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        overlayLL = (LinearLayout) v.findViewById(R.id.overlayLL);
+        fab1 = (FloatingActionButton) v.findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) v.findViewById(R.id.fab2);
+        locationFab = (FloatingActionButton) v.findViewById(R.id.locationFab);
+        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+        fab.setOnClickListener(this);
+        fab1.setOnClickListener(this);
+        fab2.setOnClickListener(this);
+        locationFab.setOnClickListener(this);
+        overlayLL.setOnClickListener(this);
+        findIDS(v);
+        sharedPreferences = getActivity().getSharedPreferences("SERVICE", Context.MODE_PRIVATE);
         intent = new Intent(getActivity(), GPSTracker.class);
         /*if(!b){
             getActivity().startService(intent);
@@ -211,7 +236,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 .build();
 
 
-
         db = new DatabaseHandler(getActivity());
 
         SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance();
@@ -219,13 +243,12 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         empid = sharedPreferenceUtils.getString(AppConstraint.EMPID);
 
         List<SettingData> settingDatas = db.getGPS_settingData();
-        if(settingDatas.size() >0){
+        if (settingDatas.size() > 0) {
 
 
-            getGPSAllowed =settingDatas.get(0).getSett_Gpsenabled();
+            getGPSAllowed = settingDatas.get(0).getSett_Gpsenabled();
 
         }
-
 
 
         //SharedPreferences sharedPreferences_setid = getActivity().getSharedPreferences("ID", Context.MODE_PRIVATE);
@@ -252,7 +275,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         int a = data.size();
 
 
-        if(a >200){
+        if (a > 200) {
             db.deleteSomeRow_Taxiform();
         }
 
@@ -270,17 +293,16 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 startkmImageEncodeString = datas.getStartkm_image();
                 String endkm = datas.getEndkm();
                 endkmImageEncodeString = datas.getEndkmimage();
-                String stsiteno =datas.getSiteno();
+                String stsiteno = datas.getSiteno();
                 String stremark = datas.getRemark();
 
 
                 if (flag == 1 || flag == 2) {
 
-                    if(!current_date.equals(getDate2)){
-                     keyid=1;
-                    }
-                    else{
-                         keyid++;
+                    if (!current_date.equals(getDate2)) {
+                        keyid = 1;
+                    } else {
+                        keyid++;
                     }
 
 
@@ -352,21 +374,18 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         edtproject_type = (EditText) v.findViewById(R.id.edt_project_type);
         edt_vehicle_no = (EditText) v.findViewById(R.id.edt_vehicle_no);
         btn_close = (Button) v.findViewById(R.id.btn_close_taxiform);
-        edt_siteno  = (EditText) v.findViewById(R.id.edt_siteno);
+        edt_siteno = (EditText) v.findViewById(R.id.edt_siteno);
         edt_remark = (EditText) v.findViewById(R.id.edt_remark);
-        fullScreenContentTextView = (TextView)v.findViewById(R.id.fullscreen_content);
-        fromNumberTextView = (TextView)v.findViewById(R.id.fromNumberTextView);
-        fromNumberDataTextView = (TextView)v.findViewById(R.id.tv_form_no);
-        dateTextView = (TextView)v.findViewById(R.id.dateTextView);
-        projectTypeTextView = (TextView)v.findViewById(R.id.projectTypeTextView);
-        vehicleNumberTextView = (TextView)v.findViewById(R.id.vehicleNumberTextView);
-        startKmTextView = (TextView)v.findViewById(R.id.startKmTextView);
-        endKmTextView = (TextView)v.findViewById(R.id.endKmTextView);
-        numberOfSitesTextView = (TextView)v.findViewById(R.id.numberOfSitesTextView);
-        remarksTextView = (TextView)v.findViewById(R.id.remarksTextView);
-
-
-
+        fullScreenContentTextView = (TextView) v.findViewById(R.id.fullscreen_content);
+        fromNumberTextView = (TextView) v.findViewById(R.id.fromNumberTextView);
+        fromNumberDataTextView = (TextView) v.findViewById(R.id.tv_form_no);
+        dateTextView = (TextView) v.findViewById(R.id.dateTextView);
+        projectTypeTextView = (TextView) v.findViewById(R.id.projectTypeTextView);
+        vehicleNumberTextView = (TextView) v.findViewById(R.id.vehicleNumberTextView);
+        startKmTextView = (TextView) v.findViewById(R.id.startKmTextView);
+        endKmTextView = (TextView) v.findViewById(R.id.endKmTextView);
+        numberOfSitesTextView = (TextView) v.findViewById(R.id.numberOfSitesTextView);
+        remarksTextView = (TextView) v.findViewById(R.id.remarksTextView);
 
 
         edt_startkmImage.setOnClickListener(this);
@@ -379,10 +398,10 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
 
     }
-    private void setFontFamily()
-    {
 
-                Typeface face = Typeface.createFromAsset(getActivity().getAssets(),
+    private void setFontFamily() {
+
+        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),
                 "arial.ttf");
 
         fullScreenContentTextView.setTypeface(face);
@@ -567,7 +586,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 try {
                     // destination.createNewFile();
 
-                    file = new File(destination, paddedkeyid + "::" + current_date +"_"+ current_time_str + ".jpg");
+                    file = new File(destination, paddedkeyid + "::" + current_date + "_" + current_time_str + ".jpg");
 
                     fo = new FileOutputStream(file);
                     fo.write(bytes.toByteArray());
@@ -588,7 +607,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 startkmImageEncodeString = encodeToBase64(setTextwithImage, Bitmap.CompressFormat.JPEG, 80);
                 edt_startkmImage.setText(startkmImageEncodeString);
 
-                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
 
             }
         }
@@ -638,7 +657,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 try {
                     //  file.createNewFile();
 
-                    File file = new File(destination, paddedkeyid + "::" + current_date +"_"+ current_time_str + ".jpg");
+                    File file = new File(destination, paddedkeyid + "::" + current_date + "_" + current_time_str + ".jpg");
                     fo = new FileOutputStream(file);
                     fo.write(bytes.toByteArray());
                     fo.close();
@@ -664,7 +683,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
                 edt_endkm_Image.setText(endkmImageEncodeString);
 
-                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
 
             }
             // setImg.setImageBitmap(thumbnail);
@@ -687,7 +706,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
 
 
-
         if (v == edt_startkmImage) {
 
             selectImage("start");
@@ -699,18 +717,41 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             selectImage("end");
         }
 
+        int id = v.getId();
+        switch (id) {
+            case R.id.fab:
+
+                animateFAB();
+                break;
+            case R.id.fab1:
+                animateFAB();
+                Intent intent = new Intent(getActivity(), LocationHistoryActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.fab2:
+                animateFAB();
+                Intent intent1 = new Intent(getActivity(), TaxiHistoryActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.locationFab:
+                animateFAB();
+                Intent intent2 = new Intent(getActivity(), RouteMapsActivity.class);
+                startActivity(intent2);
+                break;
+        }
+
         if (v == btn_close) {
             int stkm = 0;
-            int endkm =0;
-            if(!edtstartkmtext.getText().toString().equals("")) {
-                 stkm = Integer.parseInt(edtstartkmtext.getText().toString());
+            int endkm = 0;
+            if (!edtstartkmtext.getText().toString().equals("")) {
+                stkm = Integer.parseInt(edtstartkmtext.getText().toString());
 
             }
-            if(!edtendkmtext.getText().toString().equals("")) {
-                 endkm = Integer.parseInt(edtendkmtext.getText().toString());
+            if (!edtendkmtext.getText().toString().equals("")) {
+                endkm = Integer.parseInt(edtendkmtext.getText().toString());
 
             }
-           // int endkm = Integer.parseInt(edtendkmtext.getText().toString());
+            // int endkm = Integer.parseInt(edtendkmtext.getText().toString());
 
             if (TextUtils.isEmpty(edtproject_type.getText().toString())) {
                 edtproject_type.setError("Please Enter ProjectType");
@@ -729,35 +770,29 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 edtstartkmtext.requestFocus();
                 return;
 
-           } else if (TextUtils.isEmpty(edt_startkmImage.getText())) {
+            } else if (TextUtils.isEmpty(edt_startkmImage.getText())) {
                 // edtstartkmtext.setError("Please upload StartKM Image");
                 //edtstartkmtext.requestFocus();
                 Toast.makeText(getActivity(), "Capture Image for Start KM", Toast.LENGTH_LONG).show();
                 return;
 
-            }  else if (TextUtils.isEmpty(edtendkmtext.getText())) {
+            } else if (TextUtils.isEmpty(edtendkmtext.getText())) {
                 edtendkmtext.setError("Please Enter End KM");
                 edtendkmtext.requestFocus();
                 return;
-            }
-
-                else if (TextUtils.isEmpty(edt_endkm_Image.getText())) {
+            } else if (TextUtils.isEmpty(edt_endkm_Image.getText())) {
                 // edt_endkm_Image.setError("Please upload End KM Image");
                 // edt_endkm_Image.requestFocus();
                 Toast.makeText(getActivity(), "Capture Image for End KM", Toast.LENGTH_LONG).show();
                 return;
 
-            }
-
-            else if ( stkm > endkm) {
-                 edtendkmtext.setError("Endkm not lessthan Startkm");
-                 edtendkmtext.requestFocus();
+            } else if (stkm > endkm) {
+                edtendkmtext.setError("Endkm not lessthan Startkm");
+                edtendkmtext.requestFocus();
                 Toast.makeText(getActivity(), "Endkm not lessthan Startkm", Toast.LENGTH_LONG).show();
                 return;
 
-            }
-
-            else {
+            } else {
                 btn_close.setEnabled(false);
 
 
@@ -787,6 +822,37 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         requestPermissions(permissions, requestCode);
     }
 
+    public void animateFAB() {
+
+        if (isFabOpen) {
+
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            locationFab.startAnimation(fab_close);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            locationFab.setClickable(false);
+            isFabOpen = false;
+            overlayLL.setVisibility(View.GONE);
+
+            Log.d("Raj", "close");
+
+        } else {
+
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            locationFab.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            locationFab.setClickable(true);
+            overlayLL.setVisibility(View.VISIBLE);
+            isFabOpen = true;
+            Log.d("Raj", "open");
+
+        }
+    }
 
     public JSONObject JSonobjParameter() {
         JSONObject jsonObject = new JSONObject();
@@ -848,8 +914,8 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             super.onPostExecute(s);
             pd.dismiss();
             getActivity().stopService(intent);
-          //  iv_status.setVisibility(View.GONE);
-           // GPSTracker.isRunning= false;
+            //  iv_status.setVisibility(View.GONE);
+            // GPSTracker.isRunning= false;
 
 
             String re = s;
@@ -863,7 +929,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 if (status.equals("true")) {
                     flag = 1;
                     // db.updatedetails(keyid, edt_settaxiform_date.getText().toString(), edtproject_type.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag);
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
                     Toast.makeText(getActivity(), "Uploaded Successfully...", Toast.LENGTH_LONG).show();
 
                     if (!b_insert) {
@@ -895,7 +961,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                     Toast.makeText(getActivity(), "Internet is not working", Toast.LENGTH_LONG).show();
                     flag = 2;
                     // db.updatedetails(keyid, edt_settaxiform_date.getText().toString(), edtproject_type.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag);
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
 
 
                     if (!b_insert) {
@@ -928,9 +994,9 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 Toast.makeText(getActivity(), "internet is very slow please try again", Toast.LENGTH_LONG).show();
                 flag = 2;
                 // db.updatedetails(keyid, edt_settaxiform_date.getText().toString(), edtproject_type.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag);
-                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
 
-                  boolean b = b_insert;
+                boolean b = b_insert;
                 if (!b_insert) {
                     b_insert = true;
 
@@ -965,7 +1031,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
     private void allEdittexform() {
 
-       edtproject_type.addTextChangedListener(new TextWatcher() {
+        edtproject_type.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -982,7 +1048,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 if (!b_insert) {
 
-                    if(s.length()== 0){
+                    if (s.length() == 0) {
 
                         db.deleteSingleRowTaxiformData(form_no);
                     }
@@ -992,26 +1058,26 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                         if (flag == 1 || flag == 2) {
                             flag = 0;
                         }
-                         if(!GPSTracker.isRunning){
+                        if (!GPSTracker.isRunning) {
 
                            /*  intent.putExtra("formno",form_no);
                              intent.putExtra("getdate", current_date);
                              intent.putExtra("empid",empid);*/
-                              if(getGPSAllowed  == 1) {
-                                  editor = sharedPreferences.edit();
-                                  editor.putString("formno", form_no);
-                                  editor.putString("getdate", current_date);
-                                  editor.putString("empid", empid);
-                                  editor.commit();
+                            if (getGPSAllowed == 1) {
+                                editor = sharedPreferences.edit();
+                                editor.putString("formno", form_no);
+                                editor.putString("getdate", current_date);
+                                editor.putString("empid", empid);
+                                editor.commit();
 
-                                  getActivity().startService(intent);
+                                getActivity().startService(intent);
 
-                              }
-                         }
+                            }
+                        }
 
 
-                        db.addTaxiformData(new TaxiFormData(keyid,edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag,edt_siteno.getText().toString(),edt_remark.getText().toString()));
-                        incri_id=incri_id+1;
+                        db.addTaxiformData(new TaxiFormData(keyid, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString()));
+                        incri_id = incri_id + 1;
 
            /*  FragmentTransaction ft = getFragmentManager().beginTransaction();
                   ft.detach(TaxiFormFragment.this).attach(TaxiFormFragment.this).commit();*/
@@ -1020,7 +1086,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                     } else {
 
 
-                        db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                        db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
                     }
                 }
 
@@ -1052,7 +1118,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         edt_vehicle_no.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
 
             }
         });
@@ -1075,7 +1141,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 if (!b_insert) {
 
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
 
                 }
 
@@ -1101,7 +1167,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
 
                 if (!b_insert) {
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString.toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString.toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
                 }
             }
 
@@ -1125,7 +1191,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 if (!b_insert) {
 
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
                 }
             }
 
@@ -1134,26 +1200,26 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
         edt_siteno.addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                              @Override
+                                              public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
+                                              }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // TODO Auto-generated method stub
-            }
+                                              @Override
+                                              public void beforeTextChanged(CharSequence s, int start, int count,
+                                                                            int after) {
+                                                  // TODO Auto-generated method stub
+                                              }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!b_insert) {
+                                              @Override
+                                              public void afterTextChanged(Editable s) {
+                                                  if (!b_insert) {
 
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
-                }
-            }
+                                                      db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
+                                                  }
+                                              }
 
-        }
+                                          }
         );
 
         edt_remark.addTextChangedListener(new TextWatcher() {
@@ -1173,7 +1239,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 if (!b_insert) {
 
-                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag,edt_siteno.getText().toString(),edt_remark.getText().toString());
+                    db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag, edt_siteno.getText().toString(), edt_remark.getText().toString());
                 }
             }
 
@@ -1188,10 +1254,10 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-             lats  =  String.valueOf(location.getLatitude());
-             longi =  String.valueOf(location.getLongitude());
+                lats = String.valueOf(location.getLatitude());
+                longi = String.valueOf(location.getLongitude());
 
-             //   Toast.makeText(getActivity(),"GPS Enabled",300).show();
+                //   Toast.makeText(getActivity(),"GPS Enabled",300).show();
                 // tv.append(s);
             }
 
@@ -1224,8 +1290,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
 
 
-
-        }
+    }
 
 
     @Override
@@ -1244,11 +1309,11 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     public void onPause() {
         super.onPause();
 
-            //stopLocationUpdates();
+        //stopLocationUpdates();
 
 
-   //  getActivity().unregisterReceiver(broadcastReceiver);
-      //GPSTracker.BUS.unregister(this);
+        //  getActivity().unregisterReceiver(broadcastReceiver);
+        //GPSTracker.BUS.unregister(this);
     }
 
     protected void stopLocationUpdates() {
@@ -1256,6 +1321,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                 mGoogleApiClient, this);
         Log.d("TaxiFormFragment", "Location update stopped .......................");
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -1265,23 +1331,21 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
             Log.d("TaxiFormFragment", "Location update resumed .....................");
         }
 
-      //  GPSTracker.BUS.register(this);
+        //  GPSTracker.BUS.register(this);
         //getActivity().registerReceiver(broadcastReceiver, new IntentFilter(GPSTracker.BROADCAST_ACTION));
     }
 
 
-
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
 
 
+        try {
 
-       try {
+            // getActivity().unregisterReceiver(broadcastReceiver);
 
-          // getActivity().unregisterReceiver(broadcastReceiver);
-
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
         }
@@ -1290,130 +1354,125 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     }
 
 
-
-
-
-   private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-       @Override
-       public void onReceive(Context context, Intent intent) {
-           // mContact = (Contact)getIntent().getExtras().getSerializable(EXTRA_CONTACT);
-
-           boolean status = intent.getBooleanExtra("EXTRA",false);
-          if(status == true) {
-            //  iv_status.setVisibility(View.VISIBLE);
-             // iv_status.setBackgroundResource(R.drawable.blink_animation);
-              // AnimationDrawable frameAnimation = (AnimationDrawable) iv_status.getBackground();
-
-              // Start the animation (looped playback by default).
-             // frameAnimation.start();
-
-             // Toast.makeText(getActivity(), "running" + "", Toast.LENGTH_LONG).show();
-          }else {
-            //  iv_status.setVisibility(View.GONE);
-              Toast.makeText(getActivity(), "not running" + "", Toast.LENGTH_LONG).show();
-          }
-           // new  getDataTrackTaxiAsnycTask().execute(AppConstraint.TAXITRACKROOT);
-
-
-       }
-
-
-
-   };
-
-
-
-/*
-    private class getDataTrackTaxiAsnycTask extends AsyncTask<String,Void,String>{
-
-        ProgressDialog pd =  new ProgressDialog(getActivity());
-
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-          //  pd.setMessage("Loading");
-            pd.setCancelable(true);
-         //  pd.show();
+        public void onReceive(Context context, Intent intent) {
+            // mContact = (Contact)getIntent().getExtras().getSerializable(EXTRA_CONTACT);
+
+            boolean status = intent.getBooleanExtra("EXTRA", false);
+            if (status == true) {
+                //  iv_status.setVisibility(View.VISIBLE);
+                // iv_status.setBackgroundResource(R.drawable.blink_animation);
+                // AnimationDrawable frameAnimation = (AnimationDrawable) iv_status.getBackground();
+
+                // Start the animation (looped playback by default).
+                // frameAnimation.start();
+
+                // Toast.makeText(getActivity(), "running" + "", Toast.LENGTH_LONG).show();
+            } else {
+                //  iv_status.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "not running" + "", Toast.LENGTH_LONG).show();
+            }
+            // new  getDataTrackTaxiAsnycTask().execute(AppConstraint.TAXITRACKROOT);
+
+
         }
 
-        @Override
-        protected String doInBackground(String... params) {
 
-            String s = HTTPPostRequestMethod.postMethodforESP(params[0],JsonParameterTaxiTrack());
-            return s;
+    };
+
+
+    /*
+        private class getDataTrackTaxiAsnycTask extends AsyncTask<String,Void,String>{
+
+            ProgressDialog pd =  new ProgressDialog(getActivity());
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+              //  pd.setMessage("Loading");
+                pd.setCancelable(true);
+             //  pd.show();
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                String s = HTTPPostRequestMethod.postMethodforESP(params[0],JsonParameterTaxiTrack());
+                return s;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                pd.dismiss();
+                String re  = s;
+                try {
+
+                    JSONObject jsonObject = new JSONObject(s);
+                    String status =jsonObject.getString("status");
+                    String id = jsonObject.getString("ID");
+
+
+                } catch (JSONException e) {
+
+
+                  //  Toast.makeText(getActivity(),"Internet is not working",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
+
+
+
+
+
+            }
         }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            pd.dismiss();
-            String re  = s;
+        private    JSONObject  JsonParameterTaxiTrack() {
+
+
+
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MMM-yyyy");
+
+
             try {
 
-                JSONObject jsonObject = new JSONObject(s);
-                String status =jsonObject.getString("status");
-                String id = jsonObject.getString("ID");
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
 
+                Date dtt = df.parse(current_date);
+                Date ds = new Date(dtt.getTime());
+               getDate_latlong = dateFormat2.format(ds);
+                System.out.println(getDate_latlong );
 
-            } catch (JSONException e) {
-
-
-              //  Toast.makeText(getActivity(),"Internet is not working",Toast.LENGTH_LONG).show();
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
 
 
 
+            JSONObject jsonObject = new JSONObject();
+            try {
+
+            JSONArray jsonArrayParameter = new JSONArray();
+
+                jsonArrayParameter.put(form_no);
+                jsonArrayParameter.put(empid);
+                jsonArrayParameter.put(lats);
+                jsonArrayParameter.put(longi);
+                jsonArrayParameter.put(getDate_latlong);
+                jsonArrayParameter.put(flag);
+                jsonArrayParameter.put("0");
 
 
-
-        }
-    }
-
-    private    JSONObject  JsonParameterTaxiTrack() {
-
-
-
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MMM-yyyy");
+                jsonObject.put("DatabaseName", "TNS_HR");
+                jsonObject.put("ServerName", "bkp-server");
+                jsonObject.put("UserId", "sanjay");
+                jsonObject.put("Password", "tnssoft");
+                jsonObject.put("spName", "USP_Taxi_Lat_Log");
 
 
-        try {
-
-            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
-
-            Date dtt = df.parse(current_date);
-            Date ds = new Date(dtt.getTime());
-           getDate_latlong = dateFormat2.format(ds);
-            System.out.println(getDate_latlong );
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-
-        JSONArray jsonArrayParameter = new JSONArray();
-
-            jsonArrayParameter.put(form_no);
-            jsonArrayParameter.put(empid);
-            jsonArrayParameter.put(lats);
-            jsonArrayParameter.put(longi);
-            jsonArrayParameter.put(getDate_latlong);
-            jsonArrayParameter.put(flag);
-            jsonArrayParameter.put("0");
-
-
-            jsonObject.put("DatabaseName", "TNS_HR");
-            jsonObject.put("ServerName", "bkp-server");
-            jsonObject.put("UserId", "sanjay");
-            jsonObject.put("Password", "tnssoft");
-            jsonObject.put("spName", "USP_Taxi_Lat_Log");
-
-
-      *//*      jsonObject.put("ftTaxiFormNo", form_no);
+          *//*      jsonObject.put("ftTaxiFormNo", form_no);
             jsonObject.put("Empid", empid);
             jsonObject.put("ftLat", lats);
             jsonObject.put("ftLog", longi);
@@ -1432,13 +1491,13 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
         return jsonObject;
     }*/
-public static TaxiFormFragment newInstance(int index) {
-    TaxiFormFragment f = new TaxiFormFragment();
-    Bundle args = new Bundle();
-    args.putInt("index", index);
-    f.setArguments(args);
-    return f;
-}
+    public static TaxiFormFragment newInstance(int index) {
+        TaxiFormFragment f = new TaxiFormFragment();
+        Bundle args = new Bundle();
+        args.putInt("index", index);
+        f.setArguments(args);
+        return f;
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -1459,15 +1518,11 @@ public static TaxiFormFragment newInstance(int index) {
 
     @Override
     public void onLocationChanged(Location location) {
-        lats  =  String.valueOf(location.getLatitude());
-        longi =  String.valueOf(location.getLongitude());
-
-
-
-    }
-
-
-
+        lats = String.valueOf(location.getLatitude());
+        longi = String.valueOf(location.getLongitude());
 
 
     }
+
+
+}

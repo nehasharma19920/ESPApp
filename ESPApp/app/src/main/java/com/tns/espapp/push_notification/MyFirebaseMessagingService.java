@@ -15,7 +15,9 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.tns.espapp.AppConstraint;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.activity.HomeActivity;
 import com.tns.espapp.activity.ReadNotificationActivity;
 import com.tns.espapp.database.DatabaseHandler;
@@ -33,19 +35,34 @@ import java.util.Date;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-DatabaseHandler db;
+    DatabaseHandler db;
 
-   private static final String TAG = "FirebaseMessageService";
+    private static final String TAG = "FirebaseMessageService";
     Bitmap bitmap;
     String currentDateTimeString;
+    private SharedPreferenceUtils sharedPreferences;
+
+    private int notificationCounter;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         Date dateobj = new Date();
 
-         currentDateTimeString = df.format(dateobj) ;
-         db =new DatabaseHandler(getApplicationContext());
+        currentDateTimeString = df.format(dateobj);
+        db = new DatabaseHandler(getApplicationContext());
+        sharedPreferences = SharedPreferenceUtils.getInstance();
+        sharedPreferences.setContext(getApplicationContext());
+        notificationCounter = sharedPreferences.getInteger(AppConstraint.NOTIFICATIONCOUNTER);
+        notificationCounter = notificationCounter + 1;
+        sharedPreferences.putInteger(AppConstraint.NOTIFICATIONCOUNTER, notificationCounter);
+       notificationCounter = sharedPreferences.getInteger(AppConstraint.NOTIFICATIONCOUNTER);
+        Intent i = new Intent("android.intent.action.MAIN");
+        i.putExtra(AppConstraint.NOTIFICATIONCOUNTER,notificationCounter);
+        this.sendBroadcast(i);
+        this.stopSelf();
+
+
         // There are two types of messages data messages and notification messages. Data messages are handled
         // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
         // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
@@ -82,7 +99,7 @@ DatabaseHandler db;
 
         //To get a Bitmap image from the URL received
         bitmap = getBitmapfromUrl(imageUri);
-        if(message != null) {
+        if (message != null) {
             db.add_DB_Notification(new NotificationData(tittle, message, currentDateTimeString, 0));
 
         }
@@ -97,7 +114,7 @@ DatabaseHandler db;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Firebase Push Notification")
@@ -119,7 +136,7 @@ DatabaseHandler db;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(),R.mipmap.taxi_icon2);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.taxi_icon2);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -134,7 +151,7 @@ DatabaseHandler db;
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 , notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
     }
 
 
@@ -155,9 +172,6 @@ DatabaseHandler db;
 
         }
     }
-
-
-
 
 
 }

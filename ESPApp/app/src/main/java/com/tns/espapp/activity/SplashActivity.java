@@ -1,6 +1,7 @@
 package com.tns.espapp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Set;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -99,6 +102,11 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 0000);
 
+
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
 
     }
 

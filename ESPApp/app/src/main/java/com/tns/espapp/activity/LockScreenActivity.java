@@ -1,6 +1,7 @@
 package com.tns.espapp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.tns.espapp.database.SettingData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class LockScreenActivity extends AppCompatActivity {
     private EditText employeePasswordEditText;
@@ -62,6 +65,11 @@ public class LockScreenActivity extends AppCompatActivity {
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
         verifyBtn = (ImageView) findViewById(R.id.verifyBtn);
         setFontFamily();
+
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
 
     }
 private void setFontFamily()

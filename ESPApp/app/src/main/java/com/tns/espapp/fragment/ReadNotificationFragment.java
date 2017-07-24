@@ -80,6 +80,18 @@ public class ReadNotificationFragment extends Fragment {
         return v;
     }
 
+    public static Fragment newInstance(int someInt) {
+
+            ReadNotificationFragment myFragment = new ReadNotificationFragment();
+
+            Bundle args = new Bundle();
+            args.putInt("someInt", someInt);
+            myFragment.setArguments(args);
+
+            return myFragment;
+        }
+
+
     private class MyCustomAdapter extends ArrayAdapter {
         Animation scaleUp;
         List <NotificationData> notificationDataArraylist;

@@ -1,52 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.tns.espapp.fragment.HomeFragment">
-    <!-- TODO: Update blank fragment layout -->
-
-
-    <TextView
-        android:id="@+id/txt_example3"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="100dp"
-        android:text="Welcome to "
-        android:textColor="@color/lite_dark_blue"
-        android:textSize="44sp"
-         />
-
-
-    <LinearLayout
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-
-
-        <ImageView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/tns_icon" />
-
-
-    </LinearLayout>
-
-
-    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/toolbar"
         android:visibility="gone"
-        android:id="@+id/bottom_navigation"
+        android:background="@color/btnBackground"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="2dp"
+            card_view:cardBackgroundColor=""
+            app:cardPreventCornerOverlap="false"
+            android:background="@color/black_overlay"
+            android:layout_height="wrap_content">
+
+
+            <include layout="@layout/toolbar"></include>
+        </android.support.v7.widget.CardView>
+
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimaryDark"
-        app:itemIconTint="@color/drawer_item"
-        app:itemTextColor="@color/drawer_item"
-        app:menu="@menu/bottom_navigation" />
+        android:layout_below="@+id/toolbar"
+        android:background="@color/btnBackground"
+        android:id="@+id/tablayoutRelativeLayout"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="2dp"
+            app:cardPreventCornerOverlap="false"
+            android:background="@color/btnBackground"
+            android:layout_height="wrap_content">
 
 
+
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            app:tabTextAppearance="@style/MyCustomTabTextAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/white"
+            android:background="@color/btnBackground"
+            app:tabIndicatorColor="@color/white"
+            app:tabGravity="fill"/>
+        </android.support.v7.widget.CardView>>
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_below="@+id/tablayoutRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
 </RelativeLayout>

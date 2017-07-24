@@ -1,8 +1,10 @@
 package com.tns.espapp.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -11,9 +13,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,16 +29,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.tns.espapp.AppConstraint;
+import com.tns.espapp.DataModel;
 import com.tns.espapp.ListviewHelper;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.fragment.AccountStatementFragment;
 import com.tns.espapp.fragment.AttendanceFragment;
 import com.tns.espapp.fragment.BillInfoFragment;
@@ -82,16 +91,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     final int CROP_PIC = 2;
     private Uri picUri;
+    private BroadcastReceiver mReceiver;
 
     public static final String MyPREFERENCES = "MyPre";
     public static final String key = "nameKey";
-    SharedPreferences sharedPreferences;
+    SharedPreferenceUtils sharedPreferencesUtlis;
     Bitmap btMap;
     private static int RESULT_LOAD_IMAGE = 1;
     private ImageView imageView;
     boolean checklist_flag = true;
+    private ArrayList<DataModel> list;
     private ListView lst_check_list;
+    private int notificationCounter;
+    private SharedPreferences sharedPreferences;
     private ListView personalListView;
+    private BroadcastReceiver mMyBroadcastReceiver;
     String[] subreports = new String[]{"Form 1", "Form 2", "Form 3", "Form 4", "Form 5"};
 
     String[] permissions = {
@@ -104,8 +118,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBarDrawerToggle mDrawerToggle;
 
     private Toolbar toolbar;
+    private RelativeLayout notificationLayout;
 
     private TextView tv_taxiform;
+    private Button notificationButton;
     private TextView welcomeJoineeTV;
     private TextView personalTv;
     private TextView tv_userhomeid;
@@ -151,6 +167,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView VechicleTrakerTextView;
     private TextView locationTextView;
     private TextView OPTextView;
+    public static TextView badgeNotification;
 
     private ImageView arrowImageView;
     private ImageView leaveImageView;
@@ -230,7 +247,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (checkPermissions()) {
             }
 
-            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout_home_frag, BlankFragment.newInstance(1)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout_home_frag, HomeFragment.newInstance(1)).commit();
 
         }
         SharedPreferences preferences = getSharedPreferences("ID", Context.MODE_PRIVATE);
@@ -255,6 +272,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void findIDS() {
+        notificationLayout = (RelativeLayout)findViewById(R.id.badge_layout1);
         tv_taxiform = (TextView) findViewById(R.id.tv_taxiform_homeactivity);
         tv_userhomeid = (TextView) findViewById(R.id.tv_userhome_id);
         linear_taxiform = (LinearLayout) findViewById(R.id.linear_taxiform_homeactivity);
@@ -264,6 +282,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         tv_feedback = (TextView) findViewById(R.id.tv_feedback);
         tv_feedback_history = (TextView) findViewById(R.id.tv_feedback_history);
         tv_locationmap = (TextView) findViewById(R.id.tv_currentlocation);
+        notificationButton = (Button) findViewById(R.id.notificationButton);
         tv_notification = (TextView) findViewById(R.id.tv_notification);
         tv_taxiform_home_fragment = (TextView) findViewById(R.id.tv_taxiform_home_fragment);
         tv_checklist = (TextView) findViewById(R.id.tv_checklist);
@@ -328,6 +347,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         locationImageView = (ImageView)findViewById(R.id.locationImageView);
         locationTextView = (TextView) findViewById(R.id.LocationTextView);
         OPTextView = (TextView) findViewById(R.id.OPTextView);
+        badgeNotification = (TextView) findViewById(R.id.badge_notification_1);
 
 
 
@@ -348,6 +368,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         tv_feedback_history.setOnClickListener(this);
         tv_locationmap.setOnClickListener(this);
         tv_notification.setOnClickListener(this);
+        notificationButton.setOnClickListener(this);
         tv_taxiform_home_fragment.setOnClickListener(this);
         tv_checklist.setOnClickListener(this);
         tv_setting.setOnClickListener(this);
@@ -396,6 +417,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         scheduleTv.setOnClickListener(this);
         VechicleTrakerTextView.setOnClickListener(this);
         OPTextView.setOnClickListener(this);
+        notificationLayout.setOnClickListener(this);
+       /* sharedPreferencesUtlis = SharedPreferenceUtils.getInstance();
+        sharedPreferencesUtlis.setContext(getApplicationContext());
+        badgeNotification.setText();*/
+
 
 
 
@@ -491,6 +517,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
           /*  tv_toolbar.setText("Notification");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new ReadNotificationFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
+
+        }
+
+        if (v == notificationButton) {
+            badgeNotification = (TextView) findViewById(R.id.badge_notification);
+            sharedPreferencesUtlis = SharedPreferenceUtils.getInstance();
+            sharedPreferencesUtlis.setContext(getApplicationContext());
+           sharedPreferencesUtlis.putInteger(AppConstraint.NOTIFICATIONCOUNTER,0);
+            badgeNotification.setVisibility(View.GONE);
+        Intent intent = new Intent(HomeActivity.this,ReadNotificationActivity.class);
+            startActivity(intent);
 
         }
         if(v==VechicleTrakerTextView)
@@ -830,9 +867,52 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
-        super.onResume();
 
+        super.onResume();
+        badgeNotification = (TextView)findViewById(R.id.badge_notification);
+        sharedPreferencesUtlis = SharedPreferenceUtils.getInstance();
+        sharedPreferencesUtlis.setContext(getApplicationContext());
+        notificationCounter = sharedPreferencesUtlis.getInteger(AppConstraint.NOTIFICATIONCOUNTER);
+
+        IntentFilter intentFilter = new IntentFilter(
+                "android.intent.action.MAIN");
+        if(notificationCounter ==0)
+        {
+            badgeNotification.setVisibility(View.GONE);
+        }
+        else
+        {
+            badgeNotification.setVisibility(View.VISIBLE);
+            badgeNotification.setText(String.valueOf(notificationCounter));
+
+        }
+        mReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //extract our message from intent
+                int  notificationCounter = intent.getIntExtra(AppConstraint.NOTIFICATIONCOUNTER,0);
+
+                if(notificationCounter ==0)
+                {
+                    badgeNotification.setVisibility(View.GONE);
+                }
+                else
+                {
+                    badgeNotification.setVisibility(View.VISIBLE);
+                   badgeNotification.setText(String.valueOf(notificationCounter));
+
+                }
+                //log our message value
+
+
+            }
+        };
+        //registering our receiver
+        this.registerReceiver(mReceiver, intentFilter);
     }
+
+
 
 
     private void sublistdata(int position, String frgname) {
@@ -891,6 +971,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return true;
 
     }
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMyBroadcastReceiver);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -907,6 +993,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
 
 
     private void setProfileImg() {

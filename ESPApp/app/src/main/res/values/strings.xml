@@ -74,6 +74,8 @@
     <string name="location">Location</string>
     <string name="tds_declaration">TDS Declaration</string>
     <string name="wait_for_approval">You are Registered Successfully Please Wait for Approval</string>
+    <string name="esp">ESP</string>
+    <string name="vehichletraker">Vehicle Traker</string>
 
 
 </resources>

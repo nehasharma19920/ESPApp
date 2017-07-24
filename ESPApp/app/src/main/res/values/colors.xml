@@ -9,7 +9,7 @@
     <color name="transparentBlack">#64000000</color>
     <color name="navigationBarColor">#000000</color>
     <color name="translucent_black">#80000000</color>
-    C90707
+
     <color name="translucent_red">#C0C90707</color>
     <color name="black">#000</color>
     <color name="orange">#FA0</color>
@@ -48,4 +48,6 @@
 
     <color name="textInputBackground">#ffffff</color>
     <color name="btnBackground">#0089CC</color>
+    <color name="colorFAB1">#2196F3</color>
+    <color name="colorFAB2">#E040FB</color>
 </resources>

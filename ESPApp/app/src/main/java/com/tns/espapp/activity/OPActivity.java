@@ -1,5 +1,6 @@
 package com.tns.espapp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,8 @@ import com.tns.espapp.fragment.FeedBackFragment;
 import com.tns.espapp.fragment.FeedbackFragmentHistory;
 import com.tns.espapp.fragment.LocationHistoryFragment;
 import com.tns.espapp.fragment.RouteMapFragment;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.tns.espapp.R.dimen.largeTextSize;
 
@@ -59,7 +62,11 @@ public class OPActivity extends AppCompatActivity {
 
         );
     }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
 
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {

@@ -1,6 +1,7 @@
 package com.tns.espapp.Utility;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -23,6 +24,7 @@ import java.util.Locale;
 public class Utility {
     private static int idCounter = 0;
     private static String objectType = "";
+ public static   boolean isFragmentVisible = false;
 
     public static String getTime() {
         Calendar c = Calendar.getInstance();
@@ -107,6 +109,7 @@ public class Utility {
         //snprintf(localId, OBJECTIDSIZE, "%s.%llu.%d", objectType, getCurrLongDateTime(), ++idCounter);
         return localId;
     }
+
 
 
 }

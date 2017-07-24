@@ -1,6 +1,7 @@
 package com.tns.espapp.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -17,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tns.espapp.AppConstraint;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.NotificationData;
 
@@ -29,12 +32,14 @@ public class ReadNotificationActivity extends AppCompatActivity {
     DatabaseHandler db;
     MyCustomAdapter adapter;
     private TextView notificationTextView;
+    SharedPreferenceUtils sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_notification);
         db = new DatabaseHandler(this);
+
 
 
         /*

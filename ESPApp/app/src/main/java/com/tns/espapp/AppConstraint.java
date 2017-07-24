@@ -28,11 +28,15 @@ public interface AppConstraint {
     String EMPID = "EMPID";
     String PASSWORD = "PASSWORD";
 
+    String NOTIFICATIONCOUNTER ="NotificationCounter";
+
+
 
     int REGISTERED = 1;
     int NOTREGISTERED = 0;
     int APPROVED = 1;
     int NOTAPPROVED = 0;
+
 
 
     static final String TAXIFORMURL = "http://tnssofts.com/apiesp/api/Taxi/Taxi";

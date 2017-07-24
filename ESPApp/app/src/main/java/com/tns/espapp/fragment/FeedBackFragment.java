@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -33,6 +34,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -60,6 +63,8 @@ import com.tns.espapp.NetworkConnectionchecker;
 import com.tns.espapp.R;
 import com.tns.espapp.UnitModel;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
+import com.tns.espapp.activity.FeedbackHistoryActivity;
+import com.tns.espapp.activity.OPEntryActivity;
 import com.tns.espapp.activity.RealPathUtil;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.FeedbackRecordData;
@@ -98,6 +103,7 @@ public class FeedBackFragment extends Fragment {
     private ProgressDialog progressDoalog_att;
     private ProgressDialog progressDoalog_cap;
 
+
     private DatabaseHandler db;
 
     private static int incri = 1;
@@ -107,6 +113,10 @@ public class FeedBackFragment extends Fragment {
     private String st_Spinner_unit;
     private String getStr_Refno;
     private String getStr_Brief;
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab,fab1,fab2;
+    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private LinearLayout overlayLL;
 
     private ImageView iv_addAttachment, iv_capture_Image;
     private LinearLayout linearLayout_add_attachment, linearLayout_add_captureImage;
@@ -183,12 +193,13 @@ public class FeedBackFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_feed_back, container, false);
+        View view = inflater.inflate(R.layout.feedback_frag, container, false);
         face  = Typeface.createFromAsset(getActivity().getAssets(),
                 "arial.ttf");
         setViewByIDS(view);
         getLocation();
         getUnitSpinnerData();
+        setOnClickListener();
        // getLoctionName();
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Uploading data please wait...");
@@ -257,6 +268,17 @@ public class FeedBackFragment extends Fragment {
         edt_getreferenceNo = (EditText) view.findViewById(R.id.edt_refenceno_feed);
         edtbrief = (EditText) view.findViewById(R.id.edt_brief_feed);
         btn_submit = (Button) view.findViewById(R.id.btn_submit_feed);
+        btn_submit = (Button) view.findViewById(R.id.btn_submit_feed);
+        btn_submit = (Button) view.findViewById(R.id.btn_submit_feed);
+        btn_submit = (Button) view.findViewById(R.id.btn_submit_feed);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) view.findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) view.findViewById(R.id.fab2);
+        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
+        overlayLL = (LinearLayout)view.findViewById(R.id.overlayLL);
 
 
         linearLayout_add_attachment = (LinearLayout) view.findViewById(R.id.linearLayout2);
@@ -1342,6 +1364,65 @@ public class FeedBackFragment extends Fragment {
         });
 
 
+    }
+    private void setOnClickListener()
+    {
+        View.OnClickListener clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                switch (id) {
+                    case R.id.fab:
+                        animateFAB();
+                        break;
+                    case R.id.fab1:
+                        animateFAB();
+                        Intent intent = new Intent(getActivity(), FeedbackHistoryActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.fab2:
+                        animateFAB();
+                        Intent intent1 = new Intent(getActivity(), OPEntryActivity.class);
+                        startActivity(intent1);
+                        break;
+                    case R.id.overlayLL:
+                        break;
+
+                }
+
+            }
+
+        };
+        fab.setOnClickListener(clickListener);
+        fab1.setOnClickListener(clickListener);
+        fab2.setOnClickListener(clickListener);
+        overlayLL.setOnClickListener(clickListener);
+    }
+    public void animateFAB(){
+
+        if(isFabOpen){
+
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            overlayLL.setVisibility(View.GONE);
+            isFabOpen = false;
+            Log.d("Raj", "close");
+
+        } else {
+
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            isFabOpen = true;
+            overlayLL.setVisibility(View.VISIBLE);
+            Log.d("Raj","open");
+
+        }
     }
 
  /*   private void sendAttachmentServer(ArrayList<AttachmentData> imagepath) {

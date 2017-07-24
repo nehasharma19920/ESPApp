@@ -77,8 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
         employeeIdEditText = (EditText) findViewById(R.id.employeeIdEditText);
         employeePasswordEditText = (EditText) findViewById(R.id.employeePasswordEditText);
         verifyBtn = (Button) findViewById(R.id.verifyBtn);
-        registerYourDeviceTextView = (TextView)findViewById(R.id.registerYourDeviceTextView);
-        waitForApprovalTextView = (TextView)findViewById(R.id.waitForApprovalTextView);
+        registerYourDeviceTextView = (TextView) findViewById(R.id.registerYourDeviceTextView);
+        waitForApprovalTextView = (TextView) findViewById(R.id.waitForApprovalTextView);
         setFontFamily();
     }
 
@@ -89,6 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
         return fireBaseToken;
 
     }
+
 
     private void registerOnClickListener() {
         View.OnClickListener clickListener = new View.OnClickListener() {
@@ -321,8 +322,8 @@ public class RegisterActivity extends AppCompatActivity {
         return jsonObject;
 
     }
-    private void setFontFamily()
-    {
+
+    private void setFontFamily() {
         Typeface face = Typeface.createFromAsset(getAssets(),
                 "arial.ttf");
 
@@ -347,12 +348,13 @@ public class RegisterActivity extends AppCompatActivity {
                 sharedPreferences.putBoolean(AppConstraint.APPROVEDFLAG, false);
                 startActivity(new Intent(getApplicationContext(), SplashActivity.class));
                 finish();
-              //  Utility.displayMessage(this, "You are Registered Successfully Please Wait for Approval");
+                //  Utility.displayMessage(this, "You are Registered Successfully Please Wait for Approval");
 
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 
 }

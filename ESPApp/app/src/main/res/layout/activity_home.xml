@@ -598,7 +598,7 @@
                     android:id="@+id/taxiInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView
@@ -653,7 +653,7 @@
                     android:id="@+id/feedBackInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView
@@ -706,7 +706,7 @@
                     android:id="@+id/locationInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView
