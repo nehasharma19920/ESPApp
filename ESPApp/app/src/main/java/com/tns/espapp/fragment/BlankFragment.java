@@ -14,6 +14,7 @@ import com.tns.espapp.R;
 import com.tns.espapp.activity.AccountStatementsActivity;
 import com.tns.espapp.activity.AttendanceActivity;
 import com.tns.espapp.activity.BillInfoActivity;
+import com.tns.espapp.activity.DynamicFromActivity;
 import com.tns.espapp.activity.EntitlementActivity;
 import com.tns.espapp.activity.FeedbackActivity;
 import com.tns.espapp.activity.FeedbackHistoryActivity;
@@ -130,6 +131,11 @@ public class BlankFragment extends Fragment {
         dataModel.setText("TDS Declaration");
         dataModel.setImage(R.drawable.tds);
         list.add(dataModel);
+
+        dataModel  = new DataModel();
+        dataModel.setText("Dynamic Form");
+        dataModel.setImage(R.drawable.salary);
+        list.add(dataModel);
   /*      dataModel  = new DataModel();
         dataModel.setText("Taxi Form");
         dataModel.setImage(R.drawable.taxi);
@@ -223,11 +229,11 @@ public class BlankFragment extends Fragment {
                         startActivity(intent);
                         break;
                     case 14:
-                        intent = new Intent(getActivity(), TaxiFormActivity.class);
+                        intent = new Intent(getActivity(), DynamicFromActivity.class);
                         startActivity(intent);
                         break;
                     case 15:
-                        intent = new Intent(getActivity(), TaxiHistoryActivity.class);
+                        intent = new Intent(getActivity(), DynamicFromActivity.class);
                         startActivity(intent);
                         break;
                     case 16:
@@ -246,6 +252,11 @@ public class BlankFragment extends Fragment {
                         intent = new Intent(getActivity(), FeedbackHistoryActivity.class);
                         startActivity(intent);
                         break;
+                    case 20:
+                        intent = new Intent(getActivity(), DynamicFromActivity.class);
+                        startActivity(intent);
+                        break;
+
 
 
                 }

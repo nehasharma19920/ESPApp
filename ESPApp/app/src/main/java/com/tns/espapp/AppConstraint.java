@@ -29,6 +29,7 @@ public interface AppConstraint {
     String PASSWORD = "PASSWORD";
 
     String NOTIFICATIONCOUNTER ="NotificationCounter";
+    String SELECTEDFORMNUMBER ="selectedFromNumber";
 
 
 
@@ -44,7 +45,9 @@ public interface AppConstraint {
     static final String FEEDBACK_UNIT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
     static final String COMMONURL = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
     String VERIFYLOGINURL = "http://www.tnssofts.com/apiesp/api/Taxi/LoginVarify";
-    ;
+    String FORMDATA ="http://www.tnssofts.com/apiesp/api/Form/FormVarify";
+    String FORMNAME ="http://www.tnssofts.com/apiesp/api/Form/FormName";
+
 
 
     // Google Project Number

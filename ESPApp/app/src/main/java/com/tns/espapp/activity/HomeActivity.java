@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import com.tns.espapp.DataModel;
 import com.tns.espapp.ListviewHelper;
 import com.tns.espapp.R;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
+import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.fragment.AccountStatementFragment;
 import com.tns.espapp.fragment.AttendanceFragment;
 import com.tns.espapp.fragment.BillInfoFragment;
@@ -236,6 +238,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         tv_toolbar = (TextView) toolbar.findViewById(R.id.tv_toolbar);
         tv_toolbar.setTypeface(face);
+        Context ctx = this; // for Activity, or Service. Otherwise simply get the context.
+        String dbname = "my.db";
+
 
         tv_toolbar.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimension(largeTextSize));

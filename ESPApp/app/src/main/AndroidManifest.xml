@@ -37,7 +37,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activity.LoginActivity"
@@ -152,20 +151,26 @@
         <activity android:name=".activity.OPEntryActivity" />
         <activity android:name=".activity.SalaryActivity" />
         <activity android:name=".activity.TDSActivity" />
-        <activity android:name=".activity.TaxiFormActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".activity.TaxiHistoryActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".activity.LocationHistoryActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".activity.TaxiFormActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.TaxiHistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.LocationHistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activity.FeedbackActivity" />
-        <activity android:name=".activity.FeedbackHistoryActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".activity.NewHomeActivity"
+        <activity
+            android:name=".activity.FeedbackHistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.NewHomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden">
-
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".activity.DynamicFromActivity" />
+        <activity android:name=".activity.CreateTemplateActivity" />
+        <activity android:name=".activity.RouteMapActivity"></activity>
     </application>
 
 </manifest>

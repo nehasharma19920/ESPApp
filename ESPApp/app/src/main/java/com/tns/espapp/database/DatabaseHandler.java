@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tns.espapp.AttachmentData;
 import com.tns.espapp.CaptureData;
+import com.tns.espapp.activity.DynamicForm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 12;
 
     // Database Name
-    private static final String DATABASE_NAME = "my";
+    public static final String DATABASE_NAME = "my";
     private static final String TABLE_TAXIFOM_DATA = "add_texiformaata";
     private static final String TABLE_LATLONG ="latlong";
     private static final String TABLE_FEEDBACK_RECORD ="feedback_record";
@@ -34,6 +36,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_FEEDBACK_CAPTURE ="feedback_capture";
     private static final String TABLE_NOTIFICATION ="notification";
     private static final String TABLE_SETTING ="setting";
+    private static final String TABLE_DYNAMICFORM ="dynamicForm";
 
     // Contacts Table Columns names
 
@@ -115,13 +118,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_SETT_GPS_SPEED="sett_gps_speed";
     private static final String KEY_SETT_STATUS="sett_gps_status";
 
+    // Table DynamicForm
+    private static final String KEY_FORMNAME ="formName";
+    private static final String KEY_FIELDNAME="fieldName";
+    private static final String KEY_FIELDVALUE="fieldValue";
+    private static final String KEY_DATATYPE="dataType";
+    private static final String KEY_SIZE="size";
+    private static final String KEY_DECIMAL="decimal";
+
 
 
 
 
 
     public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, "/mnt/sdcard/my.db", null, DATABASE_VERSION);
 
         Log.v(TAG, "Databaser object created");
     }
@@ -174,6 +185,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TABLE_SETTING + " (" + KEY_SETT_INCRIID + " integer primary key autoincrement,"+ KEY_SETT_GPS_ENABLED + " integer,"
                 + KEY_SETT_GPS_INTERVEL + " integer,"+ KEY_SETT_GPS_SPEED+ " integer," + KEY_SETT_STATUS+ " text"   +");";
 
+        String CREATE_TABLE_DYNAMICFORM = "create table "
+                + TABLE_DYNAMICFORM + " (" + KEY_FORMNAME + " text,"+ KEY_FIELDNAME + " text,"
+                + KEY_FIELDVALUE + " text,"+ KEY_DATATYPE+ " text," + KEY_SIZE+ " integer,"  + KEY_DECIMAL+ " real" +");";
+
 
 
 
@@ -184,6 +199,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_FEEDBACK_CAPTURE);
         db.execSQL(CREATE_TABLE_NOTIFICATION);
         db.execSQL(CREATE_TABLE_SETTING);
+        db.execSQL(CREATE_TABLE_DYNAMICFORM);
 
         Log.v(TAG, "Database table created");
 
@@ -201,6 +217,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FEEDBACK_CAPTURE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTING);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DYNAMICFORM);
 
         // Create tables again
         onCreate(db);
@@ -885,6 +902,135 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.v(TAG, "Databaser insert feedbackCapturetable");
         //2nd argument is String containing nullColumnHack
         db.close(); // Closing database connection
+    }
+
+    public void insertDynamicFormData(ArrayList<DynamicForm> arrayList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (int i =0; i<arrayList.size();i++) {
+            DynamicForm dynamicForm = arrayList.get(i);
+            if(dynamicForm==null)
+                return;
+
+            ContentValues values = new ContentValues();
+
+
+            values.put(KEY_FORMNAME, dynamicForm.getFormName());
+            values.put(KEY_FIELDNAME, dynamicForm.getFieldName());
+            values.put(KEY_FIELDVALUE, dynamicForm.getFieldValue());
+            values.put(KEY_DATATYPE, dynamicForm.getDatatype());
+            values.put(KEY_SIZE, dynamicForm.getSize());
+            values.put(KEY_DECIMAL, dynamicForm.getDecimal());
+
+
+            // Inserting Row
+            db.insert(TABLE_DYNAMICFORM, null, values);
+        }
+        Log.v(TAG, "Database insert Dynamic Form");
+        //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
+    }
+
+    public ArrayList<DynamicForm> getDynamicFormData(String formName) {
+
+
+        ArrayList<DynamicForm> list = new ArrayList<>();
+
+        // Select All Query
+
+        String query= "SELECT * FROM " +TABLE_DYNAMICFORM+ " WHERE "+KEY_FORMNAME+ " LIKE '%" + formName + "%'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+
+            Cursor cursor = db.rawQuery(query, null);
+            try {
+
+                // looping through all rows and adding to list
+                if (cursor.moveToFirst()) {
+                    do {
+                        DynamicForm data = new DynamicForm();
+                        //only one column
+                        data.setFormName(cursor.getString(0));
+                        data.setFieldName(cursor.getString(1));
+                        data.setFieldValue(cursor.getString(2));
+                        data.setDatatype(cursor.getString(3));
+                        data.setSize(cursor.getInt(4));
+                        data.setDecimal(cursor.getDouble(5));
+
+                        //you could add additional columns here..
+
+                        list.add(data);
+                    } while (cursor.moveToNext());
+                }
+
+            } finally {
+                try { cursor.close();
+
+                }
+                catch (Exception ignore) {}
+            }
+
+        } finally {
+            try {
+                db.close(); }
+            catch (Exception ignore) {
+
+            }
+        }
+
+        return list;
+    }
+
+
+    public ArrayList<LatLongData> getLatLong(String formNumber) {
+
+
+        ArrayList<LatLongData> list = new ArrayList<>();
+
+        // Select All Query
+
+        String query= "SELECT * FROM " +TABLE_LATLONG+ " WHERE "+KEY_LATLONG_SETFORMNO+ " LIKE '%" + formNumber + "%'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+
+            Cursor cursor = db.rawQuery(query, null);
+            try {
+
+                // looping through all rows and adding to list
+                if (cursor.moveToFirst()) {
+                    do {
+                        LatLongData data = new LatLongData();
+                        //only one column
+                        data.setFormno(cursor.getString(cursor.getColumnIndex(KEY_SETFORMNO)));
+                        data.setDate(cursor.getString(cursor.getColumnIndex(KEY_LATLONG_DATE)));
+                        data.setLat(cursor.getString(cursor.getColumnIndex(KEY_LATLONG_LAT)));
+                        data.setLongi(cursor.getString(cursor.getColumnIndex(KEY_LATLONG_LONG)));
+                        data.setLatlong_flag(cursor.getInt(cursor.getColumnIndex(KEY_LATLONG_FLAG)));
+                        data.setTotaldis(cursor.getString(cursor.getColumnIndex(KEY_LATLONG_TOTALDIST)));
+                        data.setCurrent_time_str(cursor.getString(cursor.getColumnIndex(KEY_LATLONG_TIME)));
+                        data.setSpeed(cursor.getString(cursor.getColumnIndex(KEY_LATLONG_SPEED)));
+
+                        //you could add additional columns here..
+
+                        list.add(data);
+                    } while (cursor.moveToNext());
+                }
+
+            } finally {
+                try { cursor.close();
+
+                }
+                catch (Exception ignore) {}
+            }
+
+        } finally {
+            try {
+                db.close(); }
+            catch (Exception ignore) {
+
+            }
+        }
+
+        return list;
     }
 
     public List<CaptureData> getAllFeedbackCaputre() {

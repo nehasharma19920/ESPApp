@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.tns.espapp.HTTPPostRequestMethod;
 import com.tns.espapp.R;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.activity.MapWebViewActivity;
+import com.tns.espapp.activity.RouteMapActivity;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.TaxiFormData;
 import com.tns.espapp.service.SendLatiLongiServerIntentService;
@@ -49,19 +51,20 @@ public class TaxiFormRecordFragment extends Fragment {
 
     private DatabaseHandler db;
     private TaxiFormRecordHistoryAdapter adapter;
-    private     ArrayList<TaxiFormData> taxiFormDataArrayList ;
-    private    ListView listview_taxirecord_history;
-    private String empid,getstatus;
+    private ArrayList<TaxiFormData> taxiFormDataArrayList;
+    private ListView listview_taxirecord_history;
+    private String empid, getstatus;
     private EditText editsearch;
     private int getkey_id;
-   private Typeface face;
+    private Typeface face;
+
     public TaxiFormRecordFragment() {
         // Required empty public constructor
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_taxi_form_record, container, false);
@@ -73,45 +76,42 @@ public class TaxiFormRecordFragment extends Fragment {
         empid = sharedPreferenceUtils.getString(AppConstraint.EMPID);
 
         taxiFormDataArrayList = new ArrayList<>();
-        listview_taxirecord_history=(ListView)v.findViewById(R.id.listview_taxiform_history);
+        listview_taxirecord_history = (ListView) v.findViewById(R.id.listview_taxiform_history);
         List<TaxiFormData> taxiformrecordDataList = db.getAllTaxiformData();
         int size = taxiformrecordDataList.size();
 
-        face  = Typeface.createFromAsset(getActivity().getAssets(),
+        face = Typeface.createFromAsset(getActivity().getAssets(),
                 "arial.ttf");
 
 
-
-
-        if(size >0){
-            for(TaxiFormData taxiFormData : taxiformrecordDataList){
+        if (size > 0) {
+            for (TaxiFormData taxiFormData : taxiformrecordDataList) {
                 taxiFormDataArrayList.add(taxiFormData);
             }
         }
 
 
-        adapter = new TaxiFormRecordHistoryAdapter(getActivity(),R.layout.taxiform_record_history_adapter,taxiFormDataArrayList);
+        adapter = new TaxiFormRecordHistoryAdapter(getActivity(), R.layout.taxiform_record_history_adapter, taxiFormDataArrayList);
         listview_taxirecord_history.setAdapter(adapter);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.header_listview_taxiform_record,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.header_listview_taxiform_record, null);
         listview_taxirecord_history.addHeaderView(view);
 
         listview_taxirecord_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-               // TaxiFormData taxiFormData = (TaxiFormData)adapter.getItem(position);
-             /* //  TaxiFormData s = (TaxiFormData) parent.getItemAtPosition(position);
-              // String ss=  s.getFormno();
-               TaxiFormData taxiFormDatas =  taxiFormDataArrayList.get(position-1);
-               String ss22=  taxiFormDatas.getFormno();
-               // db.deleteSingleRowTaxiformData(ss22);
-                taxiFormDataArrayList.remove(position-1);
-                adapter.notifyDataSetChanged();*/
+                try {
+                    TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
+                    String fromNumber = taxiFormData.getFormno();
+                    Intent intent = new Intent(getActivity(), RouteMapActivity.class);
+                    intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.e("Exception", e.getMessage());
+                }
 
 
             }
         });
-
 
 
         editsearch = (EditText) v.findViewById(R.id.search_taxirecord);
@@ -144,11 +144,11 @@ public class TaxiFormRecordFragment extends Fragment {
         return v;
     }
 
-    private   class  TaxiFormRecordHistoryAdapter extends ArrayAdapter {
-        TaxiFormData  taxiFormData;
+    private class TaxiFormRecordHistoryAdapter extends ArrayAdapter {
+        TaxiFormData taxiFormData;
         int deepColor = Color.parseColor("#FFFFFF");
         int deepColor2 = Color.parseColor("#DCDCDC");
-      //  int deepColor3 = Color.parseColor("#B58EBF");
+        //  int deepColor3 = Color.parseColor("#B58EBF");
         private int[] colors = new int[]{deepColor, deepColor2};
         private List<TaxiFormData> searchlist = null;
         List<TaxiFormData> taxiForm_DataArrayList;
@@ -160,15 +160,15 @@ public class TaxiFormRecordFragment extends Fragment {
             taxiForm_DataArrayList.addAll(searchlist);
         }
 
-        private class ViewHolder{
+        private class ViewHolder {
 
-            TextView formno ;
-            TextView date ;
-            TextView id ;
+            TextView formno;
+            TextView date;
+            TextView id;
             TextView projecttype;
             TextView vihecleno;
-            ImageView status ;
-            TextView startkm ;
+            ImageView status;
+            TextView startkm;
             TextView endkm;
 
 
@@ -185,16 +185,16 @@ public class TaxiFormRecordFragment extends Fragment {
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = layoutInflater.inflate(R.layout.taxiform_record_history_adapter, parent, false);
                 //int colorPos = position % colors.length;
-               // convertView.setBackgroundColor(colors[colorPos]);
+                // convertView.setBackgroundColor(colors[colorPos]);
 
-                viewHolder. formno = (TextView) convertView.findViewById(R.id.tv_formno_taxiadapter);
-                viewHolder.  date = (TextView) convertView.findViewById(R.id.tv_date_taxiadapter);
-                viewHolder.  id = (TextView) convertView.findViewById(R.id.tv_id_taxiadapter);
-                viewHolder.  projecttype = (TextView) convertView.findViewById(R.id.tv_project_taxiadapter);
-                viewHolder.  vihecleno = (TextView) convertView.findViewById(R.id.tv_vechicle_taxiadapter);
-                viewHolder.  status = (ImageView) convertView.findViewById(R.id.iv_status_taxiadapter);
-                viewHolder.  startkm = (TextView) convertView.findViewById(R.id.tv_startkm_taxiadapter);
-                viewHolder.  endkm = (TextView) convertView.findViewById(R.id.tv_endkm_taxiadapter);
+                viewHolder.formno = (TextView) convertView.findViewById(R.id.tv_formno_taxiadapter);
+                viewHolder.date = (TextView) convertView.findViewById(R.id.tv_date_taxiadapter);
+                viewHolder.id = (TextView) convertView.findViewById(R.id.tv_id_taxiadapter);
+                viewHolder.projecttype = (TextView) convertView.findViewById(R.id.tv_project_taxiadapter);
+                viewHolder.vihecleno = (TextView) convertView.findViewById(R.id.tv_vechicle_taxiadapter);
+                viewHolder.status = (ImageView) convertView.findViewById(R.id.iv_status_taxiadapter);
+                viewHolder.startkm = (TextView) convertView.findViewById(R.id.tv_startkm_taxiadapter);
+                viewHolder.endkm = (TextView) convertView.findViewById(R.id.tv_endkm_taxiadapter);
                 viewHolder.formno.setTypeface(face);
                 viewHolder.date.setTypeface(face);
                 viewHolder.id.setTypeface(face);
@@ -204,7 +204,7 @@ public class TaxiFormRecordFragment extends Fragment {
 
                 convertView.setTag(viewHolder);
 
-            }else{
+            } else {
 
 
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -212,72 +212,66 @@ public class TaxiFormRecordFragment extends Fragment {
             }
 
 
+            getstatus = taxiFormData.getFlag() + "";
+            String fr = "<u>" + taxiFormData.getFormno() + "</u>";
+            viewHolder.formno.setText(Html.fromHtml(fr));
+            viewHolder.date.setText(taxiFormData.getSelectdate());
+            viewHolder.id.setText(taxiFormData.getId() + "");
+            viewHolder.projecttype.setText(taxiFormData.getProjecttype());
+            viewHolder.vihecleno.setText(taxiFormData.getVechicleno());
+            viewHolder.startkm.setText(taxiFormData.getStartkm());
+            viewHolder.endkm.setText(taxiFormData.getEndkm());
 
-            getstatus = taxiFormData.getFlag()+"";
-                  String fr = "<u>"+taxiFormData.getFormno()+"</u>";
-            viewHolder.  formno.setText(Html.fromHtml(fr));
-            viewHolder.  date.setText(taxiFormData.getSelectdate());
-            viewHolder. id.setText(taxiFormData.getId()+"");
-            viewHolder. projecttype.setText(taxiFormData.getProjecttype());
-            viewHolder. vihecleno.setText(taxiFormData.getVechicleno());
-            viewHolder.  startkm.setText(taxiFormData.getStartkm());
-            viewHolder. endkm.setText(taxiFormData.getEndkm());
 
-
-            if(getstatus.equals("1")){
-                viewHolder. status.setBackgroundResource(R.drawable.success);
+            if (getstatus.equals("1")) {
+                viewHolder.status.setBackgroundResource(R.drawable.success);
                 //status.setText("Success");
-            }else
-            if(getstatus.equals("0")){
-                viewHolder. status.setBackgroundResource(R.drawable.pending);
+            } else if (getstatus.equals("0")) {
+                viewHolder.status.setBackgroundResource(R.drawable.pending);
                 //status.setText("Pending");
-            }else if(getstatus.equals("2")){
-                viewHolder. status.setBackgroundResource(R.drawable.upload);
+            } else if (getstatus.equals("2")) {
+                viewHolder.status.setBackgroundResource(R.drawable.upload);
 
                 //status.setText("Retry");
             }
 
 
-
-
-            viewHolder. status.setOnClickListener(new View.OnClickListener() {
+            viewHolder.status.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     taxiFormData = searchlist.get(position);
-                    getstatus = taxiFormData.getFlag()+"";
+                    getstatus = taxiFormData.getFlag() + "";
 
-                   boolean b = getstatus.equals("2");
+                    boolean b = getstatus.equals("2");
 
-                   if(b){
-                       new getDataAsnycTask(taxiFormData).execute(AppConstraint.TAXIFORMURL);
-                       getActivity().startService(new Intent(getActivity(), SendLatiLongiServerIntentService.class));
+                    if (b) {
+                        new getDataAsnycTask(taxiFormData).execute(AppConstraint.TAXIFORMURL);
+                        getActivity().startService(new Intent(getActivity(), SendLatiLongiServerIntentService.class));
                     }
 
 
                 }
             });
 
-            viewHolder.formno.setOnClickListener(new View.OnClickListener() {
+        /*    viewHolder.formno.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     taxiFormData = searchlist.get(position);
 
-                   // Intent intent = new Intent(getActivity(), MapWebViewActivity.class);
-                   // intent.putExtra("formno",taxiFormData.getFormno());
-                   // startActivity(intent);
+                    // Intent intent = new Intent(getActivity(), MapWebViewActivity.class);
+                    // intent.putExtra("formno",taxiFormData.getFormno());
+                    // startActivity(intent);
 
-                    MapWebViewFragment ldf = new MapWebViewFragment ();
+                    MapWebViewFragment ldf = new MapWebViewFragment();
                     Bundle args = new Bundle();
-                    args.putString("formno",taxiFormData.getFormno());
+                    args.putString("formno", taxiFormData.getFormno());
                     ldf.setArguments(args);
 
 //Inflate the fragment
                     getFragmentManager().beginTransaction().add(R.id.frameLayout_home_frag, ldf).commit();
 
                 }
-            });
-
-
+            });*/
 
 
             return convertView;
@@ -288,13 +282,9 @@ public class TaxiFormRecordFragment extends Fragment {
             searchlist.clear();
             if (charText.length() == 0) {
                 searchlist.addAll(taxiForm_DataArrayList);
-            }
-            else
-            {
-                for (TaxiFormData wp : taxiForm_DataArrayList)
-                {
-                    if (wp.getSelectdate().contains(charText))
-                    {
+            } else {
+                for (TaxiFormData wp : taxiForm_DataArrayList) {
+                    if (wp.getSelectdate().contains(charText)) {
 
                         searchlist.add(wp);
                     }
@@ -304,14 +294,12 @@ public class TaxiFormRecordFragment extends Fragment {
         }
 
 
-
-
     }
 
     public class getDataAsnycTask extends AsyncTask<String, Void, String> {
         TaxiFormData taxiFormData;
 
-        getDataAsnycTask(TaxiFormData taxiFormData){
+        getDataAsnycTask(TaxiFormData taxiFormData) {
             this.taxiFormData = taxiFormData;
 
         }
@@ -351,8 +339,8 @@ public class TaxiFormRecordFragment extends Fragment {
 
 
                 if (status.equals("true")) {
-                    int  flag = 1;
-                    db.updatedetails(taxiFormData.getId(), taxiFormData.getSelectdate(),taxiFormData.getFormno(), taxiFormData.getProjecttype(),taxiFormData.getVechicleno(), taxiFormData.getStartkm(), taxiFormData.getStartkm_image(), taxiFormData.getEndkm(), taxiFormData.getEndkmimage(), flag,taxiFormData.getSiteno(),taxiFormData.getRemark());
+                    int flag = 1;
+                    db.updatedetails(taxiFormData.getId(), taxiFormData.getSelectdate(), taxiFormData.getFormno(), taxiFormData.getProjecttype(), taxiFormData.getVechicleno(), taxiFormData.getStartkm(), taxiFormData.getStartkm_image(), taxiFormData.getEndkm(), taxiFormData.getEndkmimage(), flag, taxiFormData.getSiteno(), taxiFormData.getRemark());
                     //  db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag);
                     // db.deleteSingleRow_LatLong();
 
@@ -368,11 +356,6 @@ public class TaxiFormRecordFragment extends Fragment {
                     // db.updatedetails(keyid, edt_settaxiform_date.getText().toString(), edtproject_type.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag);
                     //  db.updatedetails(incri_id, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), edt_startkmImage.getText().toString(), edtendkmtext.getText().toString(), edt_endkm_Image.getText().toString(), flag);
                     // db.deleteSingleRow_LatLong();
-
-
-
-
-
 
 
                 }
