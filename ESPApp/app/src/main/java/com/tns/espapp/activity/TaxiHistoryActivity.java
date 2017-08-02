@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -226,6 +227,31 @@ public class TaxiHistoryActivity extends AppCompatActivity {
                 //status.setText("Retry");
             }
 
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (getstatus.equals("1")) {
+
+                        try {
+                            if (position <= taxiFormDataArrayList.size()) {
+                                TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
+                                String fromNumber = taxiFormData.getFormno();
+                                Intent intent = new Intent(TaxiHistoryActivity.this, RouteMapActivity.class);
+                                intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
+                                startActivity(intent);
+                            }
+                        } catch (Exception e) {
+                            Log.e("Exception", e.getMessage());
+                        }
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
 
 
 
