@@ -1,84 +1,85 @@
- {
-    "formules": [
+{
+  "sitedata": [
     {
-      "formule": "Linear Motion",
-      "url": "qp1"
+      "formno" : "1",
+      "siteid": "Linear Motion",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
+
     },
     {
-      "formule": "Constant Acceleration Motion",
-      "url": "qp2"
+      "formno" : "2",
+      "siteid": "Constant Acceleration Motion",
+      "sitetype": {
+        "value" :"status",
+        "type":"boolean"
+      }
     },
     {
-      "formule": "Projectile Motion",
-      "url": "qp3"
+      "formno" : "3",
+      "siteid": "Projectile Motion",
+      "sitetype": {
+        "value" :"mobile",
+        "type":"number"
+      }
     },
     {
-      "formule": "Force",
-      "url": "qp4"
+      "formno" : "4",
+      "siteid": "Force",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     },
     {
-      "formule": "Work, Power, Energy",
-      "url": "qp5"
+      "formno" : "5",
+      "siteid": "Work, Power, Energy",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     },
     {
-      "formule": "Rotary Motion",
-      "url": "qp6"
+      "formno" : "6",
+      "siteid": "Rotary Motion",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     },
     {
-      "formule": "Harmonic Motion",
-      "url": "qp7"
+      "formno" : "7",
+      "siteid": "Harmonic Motion",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     },
     {
-      "formule": "Gravity",
-      "url": "qp8"
+      "formno" : "8",
+      "siteid": "Gravity",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     },
     {
-      "formule": "Lateral and Longitudinal Waves",
-      "url": "qp9"
+      "formno" : "9",
+      "siteid": "Lateral and Longitudinal Waves",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     },
     {
-      "formule": "Sound Waves",
-      "url": "qp10"
-    },
-    {
-      "formule": "Electrostatics",
-      "url": "qp11"
-    },
-    {
-      "formule": "Direct Current",
-      "url": "qp12"
-    },
-    {
-      "formule": "Magnetic Field",
-      "url": "qp13"
-    },
-    {
-      "formule": "Alternating Current",
-      "url": "qp14"
-    },
-    {
-      "formule": "Thermodynamics",
-      "url": "qp15"
-    },
-    {
-      "formule": "Hydrogen Atom",
-      "url": "qp16"
-    },
-    {
-      "formule": "Optics",
-      "url": "qp17"
-    },
-    {
-      "formule": "Modern Physics",
-      "url": "qp18"
-    },
-    {
-      "formule": "Hydrostatics",
-      "url": "qp19"
-    },
-    {
-      "formule": "Astronomy",
-      "url": "qp20"
+      "formno" : "10",
+      "siteid": "Sound Waves",
+      "sitetype": {
+        "value" :"age",
+        "type":"date"
+      }
     }
   ]
 }

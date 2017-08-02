@@ -16,7 +16,7 @@ public class App extends Application {
         super.onCreate();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("Roboto-Light.ttf")
+                .setDefaultFontPath("arial.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );

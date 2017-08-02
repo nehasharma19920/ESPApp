@@ -1,6 +1,7 @@
 package com.tns.espapp.fragment;
 
 
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,6 +33,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tns.espapp.R;
 import com.tns.espapp.RouteMapsActivity;
 
@@ -65,6 +69,8 @@ public class RouteMapFragment extends Fragment  implements LocationListener, OnM
         double latitude = 0;
         double longitude = 0;
         private int PROXIMITY_RADIUS = 5000;
+
+        ArrayList<LatLng> pointlist = new ArrayList<>();
 
 
     @Override
@@ -136,8 +142,8 @@ public class RouteMapFragment extends Fragment  implements LocationListener, OnM
 
             protected void createLocationRequest() {
                 mLocationRequest = new LocationRequest();
-                mLocationRequest.setInterval(1000);
-                mLocationRequest.setFastestInterval(1000);
+                mLocationRequest.setInterval(10000);
+                mLocationRequest.setFastestInterval(10000);
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
             }
@@ -177,6 +183,21 @@ public class RouteMapFragment extends Fragment  implements LocationListener, OnM
                 mMap = googleMap;
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 mMap.setMyLocationEnabled(true);
+                // Enable / Disable zooming controls
+                mMap.getUiSettings().setZoomControlsEnabled(false);
+
+                // Enable / Disable my location button
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+                // Enable / Disable Compass icon
+                mMap.getUiSettings().setCompassEnabled(true);
+
+                // Enable / Disable Rotate gesture
+                mMap.getUiSettings().setRotateGesturesEnabled(true);
+
+                // Enable / Disable zooming functionality
+                googleMap.getUiSettings().setZoomGesturesEnabled(true);
+
 
 
 
@@ -220,11 +241,17 @@ public class RouteMapFragment extends Fragment  implements LocationListener, OnM
                 markerOptions.position(latLng);
                 markerOptions.title("Current Position");
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+
+                pointlist.clear();
+                pointlist.add(latLng);
+
                 mCurrLocationMarker = mMap.addMarker(markerOptions);
 
                 //move map camera
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+
+
 
 
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.ENGLISH);
@@ -313,17 +340,78 @@ public class RouteMapFragment extends Fragment  implements LocationListener, OnM
                 @Override
                 protected void onPostExecute(List<HashMap<String, String>> list) {
                     googleMap.clear();
+
+
                     if(list != null) {
                         for (int i = 0; i < list.size(); i++) {
-                            MarkerOptions markerOptions = new MarkerOptions();
+                            final MarkerOptions markerOptions = new MarkerOptions();
                             HashMap<String, String> googlePlace = list.get(i);
                             double lat = Double.parseDouble(googlePlace.get("lat"));
                             double lng = Double.parseDouble(googlePlace.get("lng"));
                             String placeName = googlePlace.get("place_name");
                             String vicinity = googlePlace.get("vicinity");
-                            LatLng latLng = new LatLng(lat, lng);
+                             LatLng latLng = new LatLng(lat, lng);
                             markerOptions.position(latLng);
                             markerOptions.title(placeName + " : " + vicinity);
+
+                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                            {
+
+                                @Override
+                                public boolean onMarkerClick(Marker arg0) {
+                                    PolylineOptions polylineOptions = new PolylineOptions();
+                                    pointlist.clear();
+
+                                    Double latitude = arg0.getPosition().latitude;
+                                    Double longitude = arg0.getPosition().longitude;
+
+
+
+                                    // Setting the color of the polyline
+                                    polylineOptions.color(Color.RED);
+                                    LatLng latLngs = new LatLng(latitude, longitude);
+                                    LatLng current =  new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+                                    // Setting the width of the polyline
+                                    polylineOptions.width(10);
+
+                                    // Adding the taped point to the ArrayList
+                                    pointlist.add(current);
+                                    pointlist.add(latLngs);
+
+                                    // Setting points of polyline
+                                    polylineOptions.addAll(pointlist);
+
+                                    // Adding the polyline to the map
+                                     googleMap.addPolyline(polylineOptions);
+
+                                    // if marker source is clicked
+                                    Toast.makeText(getActivity(), arg0.getTitle(), Toast.LENGTH_SHORT).show();// display toast
+                                    return true;
+                                }
+
+                            });
+
+
+
+/*
+                            PolylineOptions polylineOptions = new PolylineOptions();
+
+                            // Setting the color of the polyline
+                            polylineOptions.color(Color.RED);
+
+                            // Setting the width of the polyline
+                            polylineOptions.width(3);
+
+                            // Adding the taped point to the ArrayList
+                            pointlist.add(latLng);
+
+                            // Setting points of polyline
+                            polylineOptions.addAll(pointlist);
+
+                            // Adding the polyline to the map
+                            googleMap.addPolyline(polylineOptions);*/
+
                             googleMap.addMarker(markerOptions);
                         }
                     }

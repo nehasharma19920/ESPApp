@@ -161,6 +161,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private JSONObject getRegistrationJsonObject() {
+
         JSONObject jsonObject = new JSONObject();
         String IMEINumber = Utility.getIMEINumber(this);
         String modelNumber = Utility.getModelNumber();
@@ -182,8 +183,9 @@ public class RegisterActivity extends AppCompatActivity {
             jsonObject.put("spName", "USP_EspMobileRegistration");
             jsonObject.put("ParameterList", jsonArray);
 
-
-        } catch (JSONException e) {
+        }
+         catch (JSONException e)
+        {
             e.printStackTrace();
         }
         return jsonObject;
@@ -246,10 +248,15 @@ public class RegisterActivity extends AppCompatActivity {
                 sharedPreferences.putString(AppConstraint.EMPID, empId);
                 sharedPreferences.putString(AppConstraint.PASSWORD, empPassword);
                 createApprovalJsonObjectRequest();
-            } else {
+
+
+            } else
+                {
+
                 sharedPreferences.putBoolean(AppConstraint.REGISTERFLAG, false);
                 Utility.displayMessage(this, "Your Registration was not Successful");
                 pDialog.hide();
+
 
             }
         } catch (JSONException e) {

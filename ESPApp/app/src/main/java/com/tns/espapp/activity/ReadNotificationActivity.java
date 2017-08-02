@@ -1,6 +1,9 @@
 package com.tns.espapp.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import com.tns.espapp.R;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.database.NotificationData;
+import com.tns.espapp.push_notification.UpdateNotificationData;
 
 import java.util.Comparator;
 import java.util.List;
@@ -27,11 +31,14 @@ public class ReadNotificationActivity extends AppCompatActivity {
 
     DatabaseHandler  db;
     MyCustomAdapter adapter;
+    TextView tv_set_notifu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_notification);
         db = new DatabaseHandler(this);
+        tv_set_notifu =(TextView)findViewById(R.id.tv_set_notifu) ;
+
 
 
         /*
@@ -84,6 +91,8 @@ public class ReadNotificationActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
     private class MyCustomAdapter extends ArrayAdapter {
@@ -149,4 +158,27 @@ public class ReadNotificationActivity extends AppCompatActivity {
 
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // Extract data included in the Intent
+            String message = intent.getStringExtra("message");
+            tv_set_notifu.setText(message);
+
+            //do other stuff here
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mMessageReceiver, new IntentFilter("get"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mMessageReceiver);
+    }
 }

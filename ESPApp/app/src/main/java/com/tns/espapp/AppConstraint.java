@@ -40,7 +40,10 @@ public interface AppConstraint {
     static final String FEEDBACK_UNIT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
     static final String COMMONURL = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
     String VERIFYLOGINURL = "http://www.tnssofts.com/apiesp/api/Taxi/LoginVarify";
-    ;
+    static final String FORMVERIFY ="http://www.tnssofts.com/apiesp/api/Form/FormVarify";
+    static final String FORMNAME ="http://www.tnssofts.com/apiesp/api/Form/FormName";
+
+
 
 
     // Google Project Number

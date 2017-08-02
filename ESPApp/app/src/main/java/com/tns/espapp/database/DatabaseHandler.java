@@ -1,6 +1,5 @@
 package com.tns.espapp.database;
 
-import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,11 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.firebase.messaging.RemoteMessage;
 import com.tns.espapp.AttachmentData;
 import com.tns.espapp.CaptureData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -34,6 +34,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_FEEDBACK_CAPTURE ="feedback_capture";
     private static final String TABLE_NOTIFICATION ="notification";
     private static final String TABLE_SETTING ="setting";
+
+    private static final String TABLE_CHECKLIST ="checklist";
+    private static final String TABLE_CHECKLIST2_SAVE ="checklist2";
 
     // Contacts Table Columns names
 
@@ -115,13 +118,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_SETT_GPS_SPEED="sett_gps_speed";
     private static final String KEY_SETT_STATUS="sett_gps_status";
 
+    // Table Checklist Columns name
+    private static final String KEY_CHECKLIST_INCRI ="chk_incri_id";
+    private static final String KEY_CHECKLIST_FORMNO="chk_formno";
+    private static final String KEY_CHECKLIST_NAME="chk_name";
+    private static final String KEY_CHECKLIST_NAMEVALUE ="chk_namevalue";
+    private static final String KEY_CHECKLIST_DATATYPE ="chk_datatype";
+    private static final String KEY_CHECKLIST_SIZE ="chk_size";
+    private static final String KEY_CHECKLIST_DECIMAL ="chk_decimal";
+    private static final String KEY_CHECKLIST_FLAG="chk_flag";
 
-
+    // Table Checklist2 Columns name
+    private static final String KEY_CHECKLIST_2_INCRI ="chk2_incri_id";
+    private static final String KEY_CHECKLIST_2_VFORMNAME="chk2_formname";
+    private static final String KEY_CHECKLIST_2_VNAMEKEY="chk2_namekey";
+    private static final String KEY_CHECKLIST_2_VNAMEVALUE="chk2_namevalue";
+    private static final String KEY_CHECKLIST_2_FLAG="chk2_flag";
 
 
 
     public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, "/mnt/sdcard/my.db", null, DATABASE_VERSION);
 
         Log.v(TAG, "Databaser object created");
     }
@@ -175,6 +192,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_SETT_GPS_INTERVEL + " integer,"+ KEY_SETT_GPS_SPEED+ " integer," + KEY_SETT_STATUS+ " text"   +");";
 
 
+        String CREATE_TABLE_CHECKLIST = "create table "
+                + TABLE_CHECKLIST + " (" + KEY_CHECKLIST_INCRI+ " integer primary key autoincrement,"+ KEY_CHECKLIST_FORMNO + " text,"
+                + KEY_CHECKLIST_NAME + " text,"+ KEY_CHECKLIST_NAMEVALUE + " text," + KEY_CHECKLIST_DATATYPE + " text,"+ KEY_CHECKLIST_SIZE + " text," + KEY_CHECKLIST_DECIMAL + " real,"+ KEY_CHECKLIST_FLAG +" integer"  +");";
+
+        String CREATE_TABLE_CHECKLIST2_SAVE = "create table "
+                + TABLE_CHECKLIST2_SAVE + " (" + KEY_CHECKLIST_2_INCRI+ " integer primary key autoincrement,"+ KEY_CHECKLIST_2_VFORMNAME + " text,"+ KEY_CHECKLIST_2_VNAMEKEY + " text,"
+                + KEY_CHECKLIST_2_VNAMEVALUE + " text,"+ KEY_CHECKLIST_2_FLAG +" integer"  +");";
+
+
 
 
         db.execSQL(CREATE_TABLE_TAXIFORM_DATA);
@@ -184,6 +210,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_FEEDBACK_CAPTURE);
         db.execSQL(CREATE_TABLE_NOTIFICATION);
         db.execSQL(CREATE_TABLE_SETTING);
+        db.execSQL(CREATE_TABLE_CHECKLIST);
+        db.execSQL(CREATE_TABLE_CHECKLIST2_SAVE);
 
         Log.v(TAG, "Database table created");
 
@@ -201,6 +229,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FEEDBACK_CAPTURE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTING);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHECKLIST);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHECKLIST2_SAVE);
 
         // Create tables again
         onCreate(db);
@@ -1131,6 +1161,190 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_SETTING + " ;");
         db.close();
+    }
+
+    public void insertCheckListData(ChecklistData checklistData) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_CHECKLIST_FORMNO, checklistData.getFormno());
+        values.put(KEY_CHECKLIST_NAME,checklistData.getName());
+        values.put(KEY_CHECKLIST_NAMEVALUE, checklistData.getName_value());
+        values.put(KEY_CHECKLIST_DATATYPE, checklistData.getDataType());
+        values.put(KEY_CHECKLIST_DECIMAL, checklistData.getDecimal());
+        values.put(KEY_CHECKLIST_FLAG, checklistData.getFlag());
+
+
+        // Inserting Row
+        db.insert(TABLE_CHECKLIST, null, values);
+        Log.v(TAG, "Databaser insert checklist table");
+        //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
+    }
+
+    public List<ChecklistData> getAllChecklist() {
+
+        ArrayList<ChecklistData> list = new ArrayList<ChecklistData>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+
+                ChecklistData data = new ChecklistData();
+                //only one column
+                data.setId(cursor.getInt(0));
+                data.setFormno(cursor.getString(1));
+                data.setName(cursor.getString(2));
+                data.setName_value(cursor.getString(3));
+                data.setDataType(cursor.getString(4));
+                data.setDecimal(cursor.getString(5));
+                data.setFlag(cursor.getInt(6));
+
+                //you could add additional columns here..
+
+                list.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return list;
+    }
+
+
+
+    public void deletecheckListData()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_CHECKLIST + " ;");
+        db.close();
+    }
+
+    public List<ChecklistData> getAllChecklistwithFormno(String formno) {
+
+        ArrayList<ChecklistData> list = new ArrayList<ChecklistData>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST + " WHERE " +KEY_CHECKLIST_FORMNO +" = ?" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{formno});
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                ChecklistData data = new ChecklistData();
+                //only one column
+                data.setId(cursor.getInt(0));
+                // data.setFnID(cursor.getInt(1));
+                data.setFormno(cursor.getString(1));
+                data.setName(cursor.getString(2));
+                data.setName_value(cursor.getString(3));
+                data.setDataType(cursor.getString(4));
+                data.setDecimal(cursor.getString(5));
+                data.setSize(cursor.getString(6));
+                data.setFlag(cursor.getInt(7));
+
+
+
+                //you could add additional columns here..
+
+                list.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return list;
+    }
+
+    public boolean update_CheckList_input( String va , String  flag )
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(KEY_CHECKLIST_NAMEVALUE,flag);
+        int i =  db.update(TABLE_CHECKLIST, args, KEY_CHECKLIST_NAMEVALUE + "=" + va, null);
+        return i > 0;
+    }
+
+    public void insertCheckListData2_Save(ChecklistData2Save checklistData) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_CHECKLIST_2_VFORMNAME, checklistData.getV_form_name());
+        values.put(KEY_CHECKLIST_2_VNAMEKEY,checklistData.getV_control_name());
+        values.put(KEY_CHECKLIST_2_VNAMEVALUE, checklistData.getV_control_value());
+        values.put(KEY_CHECKLIST_2_FLAG, checklistData.getFlag());
+
+
+        // Inserting Row
+        db.insert(TABLE_CHECKLIST2_SAVE, null, values);
+        Log.v(TAG, "Databaser insert checklist table");
+        //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
+    }
+
+    public List<ChecklistData2Save> getAllChecklist2_Save() {
+
+        ArrayList<ChecklistData2Save> list = new ArrayList<ChecklistData2Save>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST2_SAVE;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                ChecklistData2Save data = new ChecklistData2Save();
+                //only one column
+                data.setId(cursor.getInt(0));
+                data.setV_form_name(cursor.getString(1));
+                data.setV_control_name(cursor.getString(2));
+                data.setV_control_value(cursor.getString(3));
+                data.setFlag(cursor.getInt(4));
+                //you could add additional columns here..
+
+                list.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return list;
+    }
+
+    public void deleteFormcheckListData( String formname)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + formname + " ;");
+        db.close();
+    }
+
+
+    public   ArrayList<HashMap<String, String>> getForm(String formname)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery ="select * from " + formname;
+       // Cursor cursor = db.rawQuery("select * from " + formname, null);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        ArrayList<HashMap<String, String>> maplist = new ArrayList<HashMap<String, String>>();
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> map = new LinkedHashMap<>();
+                for(int i=0; i<cursor.getColumnCount();i++)
+                {
+                    map.put(cursor.getColumnName(i), cursor.getString(i));
+                }
+
+                maplist.add(map);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        // return contact list
+        return maplist;
+
     }
 
 

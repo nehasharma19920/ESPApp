@@ -87,7 +87,18 @@ DatabaseHandler db;
 
         }
         sendNotification(message, bitmap, tittle);
+      //  updateMyActivity(this,message);
 
+
+    }
+
+    static void updateMyActivity(Context context, String message) {
+
+        Intent intent = new Intent("get");
+        //put whatever data you want to send, if any
+        intent.putExtra("message", message);
+        //send broadcast
+        context.sendBroadcast(intent);
     }
 
 

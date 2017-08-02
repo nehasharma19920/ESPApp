@@ -70,4 +70,7 @@ public class SharedPreferenceUtils {
     public void clearALl() {
         getSharedPreferences().edit().clear().commit();
     }
+
+
+
 }

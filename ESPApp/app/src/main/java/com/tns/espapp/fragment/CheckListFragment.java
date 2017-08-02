@@ -2,6 +2,7 @@ package com.tns.espapp.fragment;
 
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -11,22 +12,24 @@ import android.os.Bundle;
 
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.android.volley.AuthFailureError;
@@ -38,9 +41,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.tns.espapp.AppConstraint;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.AppSingleton;
 import com.tns.espapp.adapter.CheckListAdapterListview;
 import com.tns.espapp.adapter.ChecklistAdapter;
 import com.tns.espapp.database.ChecklistData;
+import com.tns.espapp.database.DatabaseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,37 +61,37 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 /**
  * A simple {@link Fragment} subclass.
  */
 
 public class CheckListFragment extends Fragment {
     ChecklistAdapter checklistAdapter;
+    CheckListAdapterListview lstadapter;
+     View V_view;
+
+
     private SimpleDateFormat dateFormatter;
     private Calendar cal;
     private int day;
     private int month;
     private int year;
-    private List<ChecklistData> check_list = new ArrayList<>();
+    private List<ChecklistData> check_list ;
     private RecyclerView recyclerView;
     private ListView listView;
+    private Button btn_createForm;
+
 
     String name[] = {"one", "two", "three", "four", "five", "six", "seven", "eight"};
     String[] form = {"Form1", "Form2", "Form3", "Form4", "Form5", "Form6", "Form7", "Form8", "Form9", "Form10"};
+  ArrayList <String> formlist ;
 
-
+    ArrayAdapter aa;
     static String frg_name;
     static int getFrg_postion;
+    DatabaseHandler db;
+    Spinner spin;
+    String selectFormSpinner;
 
     public static CheckListFragment newInstance_CheckListFragment(int index, String value) {
         CheckListFragment f = new CheckListFragment();
@@ -103,11 +108,14 @@ public class CheckListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_check_list, container, false);
+        V_view = v;
+
         TextView frg_from = (TextView) v.findViewById(R.id.frg_from);
-
-
-        frg_from.setText(frg_name + " " + getFrg_postion);
-
+        db = new DatabaseHandler(getActivity());
+        spin = (Spinner) v.findViewById(R.id.spinner1);
+        btn_createForm =(Button)v.findViewById(R.id.btn_crete_form);
+        //spin.setOnItemSelectedListener(this);
+        listView = (ListView)v.findViewById(R.id.listview_chk);
 
         cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
@@ -115,20 +123,54 @@ public class CheckListFragment extends Fragment {
         year = cal.get(Calendar.YEAR);
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         cal.set(year, month, day);
+        frg_from.setText(frg_name + " " + getFrg_postion);
 
 
-        initLinearBind(v);
-        loadJSONFromAsset();
-        Spinner spin = (Spinner) v.findViewById(R.id.spinner1);
-        //spin.setOnItemSelectedListener(this);
+         // db.deletecheckListData();
+
+       getVOLLY_FORMNAME();
 
 
-        ArrayAdapter aa = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, form);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(aa);
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectFormSpinner =   parent.getItemAtPosition(position).toString();
+                List<ChecklistData> getFormlist = db.getAllChecklistwithFormno(selectFormSpinner);
+                lstadapter = new CheckListAdapterListview(getActivity(), R.layout.checklist_data_adapter, getFormlist);
 
-        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        checklistAdapter = new ChecklistAdapter(check_list, new ChecklistAdapter.OnItemClickListener() {
+                listView.setAdapter(lstadapter);
+                lstadapter.notifyDataSetChanged();
+                if(getFormlist.size() >0) {
+
+                    btn_createForm.setVisibility(View.GONE);
+                }else {
+                   getVOLLY_FORMVARYFY(selectFormSpinner);
+                    btn_createForm.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+
+
+
+       // initLinearBind(v);
+       // loadJSONFromAsset();
+
+
+
+
+
+
+/*
+    recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        checklistAdapter = new ChecklistAdapter(getActivity(),check_list, new ChecklistAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ChecklistData item, int pos) {
                 Toast.makeText(getActivity(), item.getName() + "," + pos, Toast.LENGTH_LONG).show();
@@ -139,34 +181,28 @@ public class CheckListFragment extends Fragment {
         // recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(checklistAdapter);
         checklistAdapter.notifyDataSetChanged();
-
-     /*   listView =(ListView)v.findViewById(R.id.listview);
-
-      CheckListAdapterListview lstadapter = new CheckListAdapterListview(getActivity(), R.layout.checklist_data_adapter, check_list, new CheckListAdapterListview.CustomOnItemClickListener() {
-          @Override
-          public void onItemClick(ChecklistData item, int pos) {
-              Toast.makeText(getActivity(),item.getName(),Toast.LENGTH_LONG).show();
-          }
-      });
-        listView.setAdapter(lstadapter);*/
+*/
 
         //  prepareMovieData();
 
-        getOKHTTP();
+
 
         return v;
+
     }
 
 
-    public void initLinearBind(View view) {
+    public void initLinearBind(View view, List<ChecklistData> checklistDataList) {
 
+
+        int size = checklistDataList.size();
         LinearLayout li1 = (LinearLayout) view.findViewById(R.id.table_main);
 
         for (int i = 0; i < name.length; i++) {
 
             LinearLayout LL2 = new LinearLayout(getActivity());
             // LL2.setBackgroundColor(Color.CYAN);
-            LL2.setOrientation(LinearLayout.HORIZONTAL);
+            LL2.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
             //  LL2.setWeightSum(1f);
@@ -241,9 +277,7 @@ public class CheckListFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void init(View v) {
 
-
         // TableLayout stk = (TableLayout)v. findViewById(R.id.table_main);
-
         LinearLayout li1 = (LinearLayout) v.findViewById(R.id.table_main);
 
         TableRow tbrow0 = new TableRow(getActivity());
@@ -271,6 +305,7 @@ public class CheckListFragment extends Fragment {
 
 
         for (int i = 0; i < name.length; i++) {
+
             TableRow tbrow = new TableRow(getActivity());
             TextView t1v = new TextView(getActivity());
 
@@ -278,7 +313,6 @@ public class CheckListFragment extends Fragment {
             shape.getPaint().setColor(Color.RED);
             shape.getPaint().setStyle(Paint.Style.STROKE);
             shape.getPaint().setStrokeWidth(3);
-
             tbrow.setPadding(10, 15, 15, 15);
             // Assign the created border to EditText widget
             // tbrow.setBackground(shape);
@@ -298,9 +332,9 @@ public class CheckListFragment extends Fragment {
             edT_v.setLayoutParams(lparams);
             edT_v.setBackground(shape);
 
+
             edT_v.setTextColor(Color.BLACK);
             edT_v.setGravity(Gravity.CENTER);
-
 
             tbrow.addView(edT_v);
             li1.addView(tbrow);
@@ -329,39 +363,312 @@ public class CheckListFragment extends Fragment {
     }
 
 
-  /*  private void prepareMovieData() {
 
-        ChecklistData movie = new ChecklistData("Mad Max: Fury Road", "Action & Adventure", "2015", 0);
-        check_list.add(movie);
+    private void getVOLLY_FORMVARYFY(String getfname) {
+        final ProgressDialog pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Loading...");
+        pDialog.show();
 
-        movie = new ChecklistData("Inside Out", "Animation, Kids & Family", "2015", 1);
-        check_list.add(movie);
+       // String mStringUrl = "http://www.yoururl.com";
 
-          movie = new ChecklistData("Star Wars: Episode VII - The Force Awakens", "Action", "2015",2);
-        check_list.add(movie);
+       JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArrayParameter = new JSONArray();
+            jsonArrayParameter.put(getfname);
+            jsonObject.put("DatabaseName", "TNS_HR");
+            jsonObject.put("ServerName", "bkp-server");
+            jsonObject.put("UserId", "sanjay");
+            jsonObject.put("Password", "tnssoft");
+            jsonObject.put("spName", "USP_FormMaster");
+            jsonObject.put("ParameterList",jsonArrayParameter);
 
-        movie = new ChecklistData("Shaun the Sheep", "Animation", "2015",3);
-        check_list.add(movie);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, AppConstraint.FORMVERIFY, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        parseFormVeryfyJSON(response.toString());
+                        pDialog.dismiss();
 
-        movie = new ChecklistData("The Martian", "Science Fiction & Fantasy", "2015",4);
-        check_list.add(movie);
+                        Log.e("!_@@_SUCESS", response + "");
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pDialog.dismiss();
+                        Log.e("!_@@_Errors--", error + "");
+                    }
+                }) {
+        /*    @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+               // params.put("Authorization", "key=" + Legacy_SERVER_KEY);
+                params.put("Content-Type", "application/json");
+                return params;
+            }*/
+        };
+        AppSingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest, null);
 
-        movie = new ChecklistData("Mission: Impossible Rogue Nation", "Action", "2015",5);
-        check_list.add(movie);
 
-        movie = new ChecklistData("Up", "Animation", "2009",6);
-        check_list.add(movie);
+    }
 
-        movie = new ChecklistData("Star Trek", "Science Fiction", "2009",7);
-        check_list.add(movie);
+    public void parseFormVeryfyJSON(String jsonObject) {
 
-        movie = new ChecklistData("The LEGO Movie", "Animation", "2014",8);
-        check_list.add(movie);
+        check_list = new ArrayList<>();
+
+        try {
+            JSONObject obj1 = new JSONObject(jsonObject);
+            JSONArray jsonArray = obj1.getJSONArray("FormName");
+
+            for(int i = 0; i<jsonArray.length(); i++) {
+
+                JSONObject jObj2 = jsonArray.getJSONObject(i);
+
+                Log.d("FormverifyDetails-->", jObj2.toString());
+
+                String vFormName = jObj2.getString("formName");
+                String vNameInput = jObj2.getString("fieldName");
+                String vNameValue = jObj2.getString("fieldValue");
+                String Datatype = jObj2.getString("dataType");
+                String Size = jObj2.getString("size");
+                String Decimal = jObj2.getString("decimal");
+
+              ChecklistData checklistData = new ChecklistData(vFormName, vNameInput, vNameValue, Datatype,Size,Decimal, 0);
+              check_list.add(checklistData);
+
+                  //db.insertCheckListData(checklistData);
+
+            btn_createForm.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+
+                         for( ChecklistData c : check_list){
+                              ChecklistData checklistDatas = new ChecklistData(c.getFormno(), c.getName(), c.getName_value(), c.getDataType(),c.getSize(),c.getDecimal(), 1);
+                             db.insertCheckListData(checklistDatas);
+                         }
+
+                         btn_createForm.setVisibility(View.GONE);
+
+                     }
+                 });
 
 
 
-        checklistAdapter.notifyDataSetChanged();
-    }*/
+            }
+
+
+
+            if(check_list.size() == 0){
+                btn_createForm.setEnabled(false);
+            }
+
+            lstadapter = new CheckListAdapterListview(getActivity(), R.layout.checklist_data_adapter, check_list) ;
+
+            listView.setAdapter(lstadapter);
+            lstadapter.notifyDataSetChanged();
+
+
+
+    } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void getVOLLY_FORMNAME() {
+
+        // String mStringUrl = "http://www.yoururl.com";
+        final ProgressDialog pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("DatabaseName", "TNS_HR");
+            jsonObject.put("ServerName", "bkp-server");
+            jsonObject.put("UserId", "sanjay");
+            jsonObject.put("Password", "tnssoft");
+            jsonObject.put("spName", "USP_GetForm ");
+            jsonObject.put("ParameterList","0");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, AppConstraint.FORMNAME, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        parseFormNAMEJSON(response.toString());
+                        pDialog.dismiss();
+
+                        Log.e("!_@@_SUCESS", response + "");
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("!_@@_Errors--", error + "");
+                        pDialog.dismiss();
+                    }
+                }) {
+        /*    @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+               // params.put("Authorization", "key=" + Legacy_SERVER_KEY);
+                params.put("Content-Type", "application/json");
+                return params;
+            }*/
+        };
+        AppSingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest, null);
+
+
+    }
+
+    public void parseFormNAMEJSON(String jsonObject) {
+
+        formlist = new ArrayList<>();
+
+        try {
+            JSONObject obj = new JSONObject(jsonObject);
+
+
+            JSONArray jsonArray = obj.getJSONArray("FormName");
+
+            for(int i = 0; i<jsonArray.length(); i++) {
+
+                JSONObject jObj2 = jsonArray.getJSONObject(i);
+
+                String formNameno = jObj2.getString("vFormName");
+
+                formlist.add(formNameno);
+
+                //getVOLLY_FORMVARYFY(formNameno);
+
+                aa = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, formlist);
+                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spin.setAdapter(aa);
+                spin.setSelection(aa.getCount() - 1);
+
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public String loadJSONFromAsset() {
@@ -386,29 +693,27 @@ public class CheckListFragment extends Fragment {
 
     public void parseJSON(String jsonObject) {
 
+
+
         try {
             JSONObject obj = new JSONObject(jsonObject);
-            JSONArray m_jArry = obj.getJSONArray("formules");
+            JSONArray m_jArry = obj.getJSONArray("sitedata");
             ArrayList<HashMap<String, String>> formList = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> m_li;
 
             for (int i = 0; i < m_jArry.length(); i++) {
                 JSONObject jo_inside = m_jArry.getJSONObject(i);
-                Log.d("Details-->", jo_inside.getString("formule"));
-                String formula_value = jo_inside.getString("formule");
-                String url_value = jo_inside.getString("url");
+                Log.d("Details-->", jo_inside.getString("siteid"));
 
-                //Add your values in your `ArrayList` as below:
-                m_li = new HashMap<String, String>();
-                m_li.put("formule", formula_value);
-                m_li.put("url", url_value);
+                String formno = jo_inside.getString("formno");
+                String siteid = jo_inside.getString("siteid");
+                JSONObject jsonobjsiteType = m_jArry.getJSONObject(i);
+                JSONObject jsonobjsite2 = jsonobjsiteType.getJSONObject("sitetype");
+                String sitetype = jsonobjsite2.getString("value");
 
-                ChecklistData checklistData = new ChecklistData(formula_value, url_value, "2015", 0);
-                check_list.add(checklistData);
-                //  checklistAdapter.notifyDataSetChanged();
 
-                formList.add(m_li);
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -446,6 +751,7 @@ public class CheckListFragment extends Fragment {
 
             obj.put("notification", objData);
             obj.put("data", dataobjData);
+
             Log.e("!_@rj@_@@_PASS:>", obj.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -479,62 +785,6 @@ public class CheckListFragment extends Fragment {
         requestQueue.add(jsObjRequest);
     }
 
-    private void getOKHTTP() {
-
-       // String mStringUrl = "http://www.yoururl.com";
-
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, "{\"DatabaseName\": \"TNS_HR\",\"ServerName\": \"bkp-server\",\"UserId\": \"bkp-sanjay\",\"Password\": \"tnssoft\",\"spName\" :\"USP_GetDeviceSetting\",\"loginID\": \"16865\",\"loginPassword\": \"deepak16865\",\"Deviceid\": \"111223543232233\"}");
-
-
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(AppConstraint.VERIFYLOGINURL).newBuilder();
-        urlBuilder.addQueryParameter("DatabaseName", "TNS_HR");
-        urlBuilder.addQueryParameter("ServerName", "bkp-server");
-        urlBuilder.addQueryParameter("UserId", "bkp-sanjay");
-        urlBuilder.addQueryParameter("Password", "tnssoft");
-        urlBuilder.addQueryParameter("spName", "USP_GetDeviceSetting");
-        urlBuilder.addQueryParameter("loginID", "16865");
-        urlBuilder.addQueryParameter("loginPassword", "deepak16865");
-        urlBuilder.addQueryParameter("Deviceid", "111223543232233");
-
-        String url = urlBuilder.build().toString();
-
-        RequestBody formBody = new FormBody.Builder()
-
-       .add("DatabaseName", "TNS_HR")
-        .add("ServerName", "bkp-server")
-        .add("UserId", "bkp-sanjay")
-       .add("Password", "tnssoft")
-        .add("spName", "USP_GetDeviceSetting")
-        .add("loginID", "16865")
-      .add("loginPassword", "deepak16865")
-         .add("Deviceid", "111223543232233")
-
-                .build();
-
-
-        OkHttpClient client = new OkHttpClient();
-
-        final Request request = new Request.Builder().url(AppConstraint.VERIFYLOGINURL).post(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //do failure stuff
-                Toast.makeText(getActivity(),e.getMessage(),Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                String s = response.toString();
-                //  ............................................................
-                Toast.makeText(getActivity(),s,Toast.LENGTH_LONG).show();
-                //  ............................................................
-            }
-
-
-        });
-    }
 
 }
 

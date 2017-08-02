@@ -1,5 +1,6 @@
 package com.tns.espapp.activity;
 
+import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -8,24 +9,37 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,13 +47,17 @@ import android.widget.Toast;
 
 import com.tns.espapp.ListviewHelper;
 import com.tns.espapp.R;
+import com.tns.espapp.database.ChecklistData;
+import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.fragment.AccountStatementFragment;
 import com.tns.espapp.fragment.AttendanceFragment;
 import com.tns.espapp.fragment.BillInfoFragment;
 import com.tns.espapp.fragment.CheckListFragment;
+import com.tns.espapp.fragment.CheckListSavedFragment;
 import com.tns.espapp.fragment.EntitlementFragment;
 import com.tns.espapp.fragment.FeedBackFragment;
 import com.tns.espapp.fragment.FeedbackFragmentHistory;
+import com.tns.espapp.fragment.GetCheckListSavedFragment;
 import com.tns.espapp.fragment.HomeFragment;
 import com.tns.espapp.fragment.InfoBullteinFragment;
 import com.tns.espapp.fragment.LeaveApplyFragment;
@@ -66,8 +84,14 @@ import com.tns.espapp.fragment.WelcomeNewJoineeFragment;
 import com.tns.espapp.service.SendLatiLongiServerIntentService;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -75,6 +99,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     final int CROP_PIC = 2;
     private Uri picUri;
+
+    DatabaseHandler db;
 
     public static final String MyPREFERENCES = "MyPre";
     public static final String key = "nameKey";
@@ -85,7 +111,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     boolean checklist_flag = true;
     private ListView lst_check_list;
     private ListView personalListView;
-    String[] subreports = new String[]{"Form 1", "Form 2", "Form 3", "Form 4", "Form 5"};
+
+    String[] subreports = new String[]{"Form 1"};
 
     String[] permissions = {
             "android.permission.ACCESS_FINE_LOCATION",
@@ -154,7 +181,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout linear_taxiform;
     private LinearLayout personalLinearLayout;
     private LinearLayout personalTextViewLinearLayout;
-    private LinearLayout linear_checklist;
+    private LinearLayout linear_checklist, linear_checklist_header;
+
     private LinearLayout mDrawerPane;
     private LinearLayout leaveLinearLayout;
     private LinearLayout approvalInfoLinearLayout;
@@ -205,6 +233,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         tv_toolbar = (TextView) toolbar.findViewById(R.id.tv_toolbar);
 
+        db = new DatabaseHandler(this);
         navigationdrawer();
         findIDS();
         startService(new Intent(getApplication(), SendLatiLongiServerIntentService.class));
@@ -263,6 +292,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         taxiImageView = (ImageView)findViewById(R.id.taxiImageView);
         feedBackImageView = (ImageView)findViewById(R.id.feedBackImageView);
         linear_checklist = (LinearLayout) findViewById(R.id.linear_checklist);
+        linear_checklist_header = (LinearLayout) findViewById(R.id.linear_checklist_header);
+
         welcomeJoineeTV = (TextView) findViewById(R.id.welcomeJoineeTV);
         personalTv = (TextView) findViewById(R.id.personalTv);
         personalLinearLayout= (LinearLayout)findViewById(R.id.personalLinearLayout);
@@ -329,6 +360,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         tv_checklist.setOnClickListener(this);
         tv_setting.setOnClickListener(this);
         linear_checklist.setOnClickListener(this);
+        linear_checklist_header.setOnClickListener(this);
+
         personalLinearLayout.setOnClickListener(this);
         welcomeJoineeTV.setOnClickListener(this);
         personalTv.setOnClickListener(this);
@@ -381,6 +414,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
+
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
@@ -388,6 +422,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         );
+
+
+
+/*
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.notification_icon, this.getTheme());
+        mDrawerToggle.setHomeAsUpIndicator(drawable);
+
+        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });*/
     }
 
 
@@ -470,7 +522,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             mDrawerLayout.closeDrawer(mDrawerPane);
 
         }
-        if (v == tv_checklist) {
+        if (v == tv_checklist || v== linear_checklist_header) {
             tv_toolbar.setText("CheckList");
 
             if (checklist_flag) {
@@ -498,21 +550,44 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 checklist_flag = true;
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                    HomeActivity.this, R.layout.home_check_list_row_adapter, subreports);
+         List<ChecklistData> checklistDatas = db.getAllChecklist();
+            ArrayList<String> stringArrayList = new ArrayList<>();
+            stringArrayList.add("New Templete");
+
+            if(checklistDatas.size() >0){
+
+                for(ChecklistData c : checklistDatas){
+                    stringArrayList.add(c.getFormno());
+
+                }
+            }
+            Set<String> primesWithoutDuplicates = new LinkedHashSet<String>(stringArrayList); // now let's clear the ArrayList so that we can copy all elements from LinkedHashSet primes.clear(); // copying elements but without any duplicates primes.addAll(primesWithoutDuplicates);
+
+            stringArrayList.clear(); // copying elements but without any duplicates primes.addAll(primesWithoutDuplicates);
+            stringArrayList.addAll(primesWithoutDuplicates);
+
+            CheckListFormAdapterListview adapter = new CheckListFormAdapterListview(
+                    HomeActivity.this, R.layout.home_check_list_row_adapter,stringArrayList );
+
             lst_check_list.setAdapter(adapter);
             ListviewHelper.getListViewSize(lst_check_list);
+            adapter.notifyDataSetChanged();
+
+      /*
             lst_check_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String name = (String) parent.getItemAtPosition(position);
 
                     sublistdata(position, name);
+
+                    linear_checklist.setVisibility(View.GONE);
+                    checklist_flag = true;
                 }
 
             });
 
-            tv_toolbar.setText("CheckList");
+     */
         }
 
         if (v == tv_setting) {
@@ -777,9 +852,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void sublistdata(int position, String frgname) {
         int id = position;
-        mDrawerLayout.closeDrawer(mDrawerPane);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, CheckListFragment.newInstance_CheckListFragment(position, frgname)).commit();
 
+        if(frgname.equals("New Templete")) {
+            mDrawerLayout.closeDrawer(mDrawerPane);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, CheckListFragment.newInstance_CheckListFragment(position, frgname)).commit();
+        }else {
+
+            Bundle bundle = new Bundle();
+
+            bundle.putString("PARAM1", frgname );
+            CheckListSavedFragment fragInfo = new CheckListSavedFragment();
+            fragInfo.setArguments(bundle);
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, fragInfo).commit();
+            mDrawerLayout.closeDrawer(mDrawerPane);
+        }
 
     }
 
@@ -942,6 +1029,121 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             toast.show();
         }
     }
+
+
+    public class CheckListFormAdapterListview extends ArrayAdapter {
+
+        String s;
+        Context context;
+
+        int deepColor = Color.parseColor("#FFFFFF");
+        int deepColor2 = Color.parseColor("#DCDCDC");
+        //  int deepColor3 = Color.parseColor("#B58EBF");
+        private int[] colors = new int[]{deepColor, deepColor2};
+        private List<String> searchlist = null;
+        DatabaseHandler db;
+
+        //   private CustomOnItemClickListener customOnItemClickListener;
+
+
+        public CheckListFormAdapterListview(Context context, int resource, List<String> lst) {
+            super(context, resource, lst);
+            this.context = context;
+            this.searchlist = lst;
+            db = new DatabaseHandler(context);
+
+        }
+
+
+        @NonNull
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            TextView tv_entry, tv_history;
+
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = layoutInflater.inflate(R.layout.home_check_list_row_adapter, parent, false);
+
+            tv_entry =(TextView)convertView.findViewById(R.id.tv_chk_entry) ;
+            tv_history =(TextView)convertView.findViewById(R.id.tv_chk_history) ;
+
+            //int colorPos = position % colors.length;
+            // convertView.setBackgroundColor(colors[colorPos]);
+
+
+
+             s = searchlist.get(position);
+
+            if(s.equalsIgnoreCase("New Templete")) {
+                tv_entry.setText(s );
+                tv_history.setVisibility(View.GONE);
+
+                tv_entry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                       String s2 = searchlist.get(position);
+
+                        mDrawerLayout.closeDrawer(mDrawerPane);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, CheckListFragment.newInstance_CheckListFragment(position, s2)).commit();
+                        linear_checklist.setVisibility(View.GONE);
+                        checklist_flag = true;
+                    }
+                });
+
+
+            }else{
+
+                tv_entry.setText(s + " Entry");
+                tv_entry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String s2 = searchlist.get(position);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("PARAM1", s2 );
+                        CheckListSavedFragment fragInfo = new CheckListSavedFragment();
+                        fragInfo.setArguments(bundle);
+
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, fragInfo).commit();
+                        mDrawerLayout.closeDrawer(mDrawerPane);
+                        linear_checklist.setVisibility(View.GONE);
+                        checklist_flag = true;
+                    }
+                });
+
+                tv_history.setText(s +" History");
+
+
+                tv_history.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String s2 = searchlist.get(position);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("PARAM1", s2 );
+                        GetCheckListSavedFragment fragInfo = new GetCheckListSavedFragment();
+                        fragInfo.setArguments(bundle);
+                      getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, fragInfo).commit();
+                        mDrawerLayout.closeDrawer(mDrawerPane);
+                        linear_checklist.setVisibility(View.GONE);
+                        checklist_flag = true;
+                    }
+                });
+            }
+
+
+
+
+            return convertView;
+        }
+
+
+
+
+
+
+    }
+
 
 
 }

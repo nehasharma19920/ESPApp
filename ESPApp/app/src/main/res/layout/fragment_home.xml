@@ -34,7 +34,8 @@
 
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:adjustViewBounds="true"
+            android:scaleType="center"
             android:src="@drawable/tns_icon" />
 
 
