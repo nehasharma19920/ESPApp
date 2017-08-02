@@ -99,17 +99,7 @@ public class TaxiFormRecordFragment extends Fragment {
         listview_taxirecord_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    if(position<taxiFormDataArrayList.size()) {
-                        TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
-                        String fromNumber = taxiFormData.getFormno();
-                        Intent intent = new Intent(getActivity(), RouteMapActivity.class);
-                        intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
-                        startActivity(intent);
-                    }
-                } catch (Exception e) {
-                    Log.e("Exception", e.getMessage());
-                }
+
 
 
             }
@@ -255,25 +245,31 @@ public class TaxiFormRecordFragment extends Fragment {
                 }
             });
 
-        /*    viewHolder.formno.setOnClickListener(new View.OnClickListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    taxiFormData = searchlist.get(position);
 
-                    // Intent intent = new Intent(getActivity(), MapWebViewActivity.class);
-                    // intent.putExtra("formno",taxiFormData.getFormno());
-                    // startActivity(intent);
+                    if (getstatus.equals("1")) {
 
-                    MapWebViewFragment ldf = new MapWebViewFragment();
-                    Bundle args = new Bundle();
-                    args.putString("formno", taxiFormData.getFormno());
-                    ldf.setArguments(args);
-
-//Inflate the fragment
-                    getFragmentManager().beginTransaction().add(R.id.frameLayout_home_frag, ldf).commit();
+                        try {
+                            if (position <= taxiFormDataArrayList.size()) {
+                                TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
+                                String fromNumber = taxiFormData.getFormno();
+                                Intent intent = new Intent(getActivity(), RouteMapActivity.class);
+                                intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
+                                startActivity(intent);
+                            }
+                        } catch (Exception e) {
+                            Log.e("Exception", e.getMessage());
+                        }
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_LONG).show();
+                    }
 
                 }
-            });*/
+            });
 
 
             return convertView;

@@ -55,9 +55,11 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         fm.getMapAsync(this);
         Intent intent = getIntent();
-        String fromNumber =  intent.getStringExtra(AppConstraint.SELECTEDFORMNUMBER);
+        String fromNumber = intent.getStringExtra(AppConstraint.SELECTEDFORMNUMBER);
         databaseHandler = new DatabaseHandler(this);
         points = databaseHandler.getLatLong(fromNumber);
+     
+
 
     }
 
@@ -179,6 +181,94 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
             e.printStackTrace();
         }
         return strAdd;
+    }
+    private void createData()
+    {
+        LatLongData latLong ;
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637855");
+        latLong.setLongi("77.400925");
+        latLong.setCurrent_time_str("08:40:13");
+        latLong.setSpeed("6.5888");
+        points.add(latLong);
+
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637871");
+        latLong.setLongi("77.400773");
+        latLong.setCurrent_time_str("08:42:13");
+        latLong.setSpeed("6.588");
+        points.add(latLong);
+
+
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637874");
+        latLong.setLongi("77.400654");
+        latLong.setCurrent_time_str("08:42:21");
+        latLong.setSpeed("10.080");
+        points.add(latLong);
+
+
+
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637832");
+        latLong.setLongi("77.401014");
+        latLong.setCurrent_time_str("08:40:05");
+        latLong.setSpeed("6.264");
+        points.add(latLong);
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637836");
+        latLong.setLongi("77.400513");
+        latLong.setCurrent_time_str("08:42:29");
+        latLong.setSpeed("5.040");
+        points.add(latLong);
+
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637832");
+        latLong.setLongi("77.401014");
+        latLong.setCurrent_time_str("08:40:05");
+        latLong.setSpeed("6.264");
+        points.add(latLong);
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.637785");
+        latLong.setLongi("77.400397");
+        latLong.setCurrent_time_str("08:42:42");
+        latLong.setSpeed("4.608");
+        points.add(latLong);
+
+
+
+
+        latLong = new LatLongData();
+        latLong .setFormno("17333/020817/002");
+        latLong.setDate("02-08-17");
+        latLong.setLat("28.629053");
+        latLong.setLongi("77.379481");
+        latLong.setCurrent_time_str("09:04:32");
+        latLong.setSpeed("6.264");
+        points.add(latLong);
+
+
+
     }
 
 }
