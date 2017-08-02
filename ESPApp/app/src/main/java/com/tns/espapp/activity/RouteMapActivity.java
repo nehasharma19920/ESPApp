@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -106,7 +106,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
           // Setting titile of the infowindow of the marker
             markerOptions.title("Location");
             // Setting the content of the infowindow of the marker
-            markerOptions.snippet("Date :"+latLongData.getDate()+"\n"+"Time: " +latLongData.getCurrent_time_str()+"\n"+"Speed: "+latLongData.getSpeed());
+            markerOptions.snippet("Latitude :"+Double.parseDouble(latLongData.getLat())+" Longitude :"+Double.parseDouble(latLongData.getLongi())+"\n"+" Date :"+latLongData.getDate()+" Time: " +latLongData.getCurrent_time_str()+" Speed: "+latLongData.getSpeed());
             // Instantiating the class PolylineOptions to plot polyline in the map
             PolylineOptions polylineOptions = new PolylineOptions();
 

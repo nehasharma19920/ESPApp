@@ -43,6 +43,7 @@ public class LeaveSummaryActivity extends AppCompatActivity {
         pd = new ProgressDialog(this);
         pd.setMessage("Please wait Loading...");
         pd.show();
+        pd.setCancelable(false);
         webView.setWebViewClient(new MyBrowser());
 
 

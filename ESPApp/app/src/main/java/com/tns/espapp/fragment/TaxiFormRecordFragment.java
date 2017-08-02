@@ -100,11 +100,13 @@ public class TaxiFormRecordFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
-                    String fromNumber = taxiFormData.getFormno();
-                    Intent intent = new Intent(getActivity(), RouteMapActivity.class);
-                    intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
-                    startActivity(intent);
+                    if(position<taxiFormDataArrayList.size()) {
+                        TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
+                        String fromNumber = taxiFormData.getFormno();
+                        Intent intent = new Intent(getActivity(), RouteMapActivity.class);
+                        intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
+                        startActivity(intent);
+                    }
                 } catch (Exception e) {
                     Log.e("Exception", e.getMessage());
                 }

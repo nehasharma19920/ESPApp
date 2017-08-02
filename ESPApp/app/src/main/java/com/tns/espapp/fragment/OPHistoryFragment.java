@@ -44,6 +44,7 @@ public class OPHistoryFragment extends Fragment {
         pd = new ProgressDialog(getContext());
         pd.setMessage("Please wait Loading...");
         pd.show();
+        pd.setCancelable(false);
         webView.setWebViewClient(new MyBrowser());
 
 
