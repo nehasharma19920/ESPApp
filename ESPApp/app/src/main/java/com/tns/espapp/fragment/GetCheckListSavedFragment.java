@@ -321,22 +321,90 @@ public class GetCheckListSavedFragment extends Fragment {
             rowView = inflater.inflate(R.layout.gridview_text_getchecklist_adapter, null);
             holder.os_text =(TextView) rowView.findViewById(R.id.grid_text);
 
-
             holder.os_text.setText(result.get(position));
 
-        /*    rowView.setOnClickListener(new View.OnClickListener() {
+        /*
+
+            rowView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     Toast.makeText(context, "You Clicked "+result.get(position), Toast.LENGTH_SHORT).show();
                 }
-            });*/
+            });
+
+            */
 
             return rowView;
         }
 
     }
 
+    public class CustomAdapter_Header extends BaseAdapter {
 
+        List<String> result;
+        Context context;
+
+        private  LayoutInflater inflater=null;
+        public CustomAdapter_Header(Context c, List osNameList) {
+            // TODO Auto-generated constructor stub
+            result=osNameList;
+            context=c;
+            inflater = ( LayoutInflater )context.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        }
+
+        @Override
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return result.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            // TODO Auto-generated method stub
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            // TODO Auto-generated method stub
+            return position;
+        }
+
+        public class Holder
+        {
+            TextView os_text;
+
+        }
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            Holder holder=new Holder();
+            View rowView;
+
+            rowView = inflater.inflate(R.layout.gridview_text_getchecklist_header_adapter, null);
+            holder.os_text =(TextView) rowView.findViewById(R.id.grid_text);
+
+            holder.os_text.setText(result.get(position));
+
+        /*
+
+            rowView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    Toast.makeText(context, "You Clicked "+result.get(position), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            */
+
+            return rowView;
+        }
+
+    }
 }

@@ -28,6 +28,10 @@ public interface AppConstraint {
     String EMPID = "EMPID";
     String PASSWORD = "PASSWORD";
 
+    String NOTIFICATIONCOUNTER ="NotificationCounter";
+    String SELECTEDFORMNUMBER ="selectedFromNumber";
+
+
 
     int REGISTERED = 1;
     int NOTREGISTERED = 0;
@@ -35,14 +39,14 @@ public interface AppConstraint {
     int NOTAPPROVED = 0;
 
 
+
     static final String TAXIFORMURL = "http://tnssofts.com/apiesp/api/Taxi/Taxi";
     static final String TAXITRACKROOT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
     static final String FEEDBACK_UNIT = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJson";
     static final String COMMONURL = "http://tnssofts.com/apiesp/api/Taxi/ExecuteJsonsp";
     String VERIFYLOGINURL = "http://www.tnssofts.com/apiesp/api/Taxi/LoginVarify";
-    static final String FORMVERIFY ="http://www.tnssofts.com/apiesp/api/Form/FormVarify";
-    static final String FORMNAME ="http://www.tnssofts.com/apiesp/api/Form/FormName";
-
+    String FORMVERIFY  ="http://www.tnssofts.com/apiesp/api/Form/FormVarify";
+    String FORMNAME ="http://www.tnssofts.com/apiesp/api/Form/FormName";
 
 
 

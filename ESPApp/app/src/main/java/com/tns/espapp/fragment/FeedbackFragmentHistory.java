@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -58,6 +59,13 @@ public class FeedbackFragmentHistory extends Fragment  {
     private ListView lst_feedback_rec;
 
     private List<FeedbackRecordData> feedbackRecordDatas = new ArrayList<>();
+    private Typeface face;
+    private TextView unitTextView;
+    private TextView RefTextView;
+    private TextView dateTextView;
+    private TextView statusTextView;
+    private TextView countTextView;
+
 
     public FeedbackFragmentHistory() {
         // Required empty public constructor
@@ -69,6 +77,8 @@ public class FeedbackFragmentHistory extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_feedback_history, container, false);
+        face  = Typeface.createFromAsset(getActivity().getAssets(),
+                "arial.ttf");
         db = new DatabaseHandler(getContext());
        /* SharedPreferences sharedPreferences_setid = getActivity().getSharedPreferences("ID", Context.MODE_PRIVATE);
         empid = sharedPreferences_setid.getString("empid", "");*/
@@ -137,6 +147,16 @@ ArrayList<String> callLogList = new ArrayList<>();
 
 
         lst_feedback_rec = (ListView) v.findViewById(R.id.lst_feedback_record);
+        unitTextView =(TextView)v.findViewById(R.id.unitTextView);
+        RefTextView =(TextView)v.findViewById(R.id.RefTextView);
+        dateTextView =(TextView)v.findViewById(R.id.dateTextView);
+        statusTextView =(TextView)v.findViewById(R.id.statusTextView);
+        countTextView =(TextView)v.findViewById(R.id.countTextView);
+        countTextView.setTypeface(face);
+        statusTextView.setTypeface(face);
+        dateTextView.setTypeface(face);
+        unitTextView.setTypeface(face);
+        countTextView.setTypeface(face);countTextView.setTypeface(face);
         feedbackRecordDatas = db.getAllFeedbackRecord();
         // feedbackRecordDatas.add(new FeedbackRecordData("one","two","one","two",0));
 

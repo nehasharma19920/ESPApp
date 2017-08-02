@@ -26,7 +26,7 @@
         <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DrawerTheme"></activity>
+            android:theme="@style/DrawerTheme" />
         <activity
             android:name=".activity.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -75,7 +75,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".RouteMapsActivity"
+            android:name=".activity.RouteMapsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_route_maps" />
         <activity
@@ -94,12 +94,8 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".activity.ReadNotificationActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.RegisterActivity"
-           >
+        <activity android:name=".activity.ReadNotificationActivity" />
+        <activity android:name=".activity.RegisterActivity">
 
             <!--
             <intent-filter>
@@ -120,7 +116,61 @@
         <activity
             android:name=".activity.LockScreenActivity"
             android:label="@string/title_activity_lock_screen"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.VehicleTrakerHomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DrawerTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.LocationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DrawerTheme" />
+        <activity
+            android:name=".activity.OPActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DrawerTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.DesignActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DrawerTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".activity.NotificationActivity" />
+        <activity android:name=".activity.PersonalInfoActivity" />
+        <activity android:name=".activity.InfoBullteinActivity" />
+        <activity android:name=".activity.LeaveApplyActivity" />
+        <activity android:name=".activity.LeaveSummaryActivity" />
+        <activity android:name=".activity.LeaveTransactionActivity" />
+        <activity android:name=".activity.LeaveLedgerActivity" />
+        <activity android:name=".activity.StoreInfoActivity" />
+        <activity android:name=".activity.AccountStatementsActivity" />
+        <activity android:name=".activity.BillInfoActivity" />
+        <activity android:name=".activity.EntitlementActivity" />
+        <activity android:name=".activity.AttendanceActivity" />
+        <activity android:name=".activity.OPEntryActivity" />
+        <activity android:name=".activity.SalaryActivity" />
+        <activity android:name=".activity.TDSActivity" />
+        <activity
+            android:name=".activity.TaxiFormActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.TaxiHistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.LocationHistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".activity.FeedbackActivity" />
+        <activity
+            android:name=".activity.FeedbackHistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activity.NewHomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".activity.DynamicFromActivity" />
+        <activity android:name=".activity.CreateTemplateActivity" />
+        <activity android:name=".activity.RouteMapActivity"></activity>
     </application>
 
 </manifest>

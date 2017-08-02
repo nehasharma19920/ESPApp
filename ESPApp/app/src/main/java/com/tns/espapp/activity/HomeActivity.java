@@ -1,57 +1,60 @@
 package com.tns.espapp.activity;
 
-import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.graphics.Path;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.tns.espapp.AppConstraint;
+import com.tns.espapp.DataModel;
 import com.tns.espapp.ListviewHelper;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.database.ChecklistData;
 import com.tns.espapp.database.DatabaseHandler;
 import com.tns.espapp.fragment.AccountStatementFragment;
 import com.tns.espapp.fragment.AttendanceFragment;
 import com.tns.espapp.fragment.BillInfoFragment;
+import com.tns.espapp.fragment.BlankFragment;
 import com.tns.espapp.fragment.CheckListFragment;
 import com.tns.espapp.fragment.CheckListSavedFragment;
 import com.tns.espapp.fragment.EntitlementFragment;
@@ -74,6 +77,7 @@ import com.tns.espapp.fragment.PersonalInfoFragment;
 import com.tns.espapp.fragment.ReadNotificationFragment;
 import com.tns.espapp.fragment.RouteMapFragment;
 import com.tns.espapp.fragment.SalaryInfoFragment;
+import com.tns.espapp.fragment.ScheduleFragment;
 import com.tns.espapp.fragment.SettingFragment;
 import com.tns.espapp.fragment.StoreInfoFragment;
 import com.tns.espapp.fragment.TDSDeductionFragment;
@@ -84,35 +88,36 @@ import com.tns.espapp.fragment.WelcomeNewJoineeFragment;
 import com.tns.espapp.service.SendLatiLongiServerIntentService;
 
 import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+import static com.tns.espapp.R.dimen.largeTextSize;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     final int CROP_PIC = 2;
     private Uri picUri;
-
-    DatabaseHandler db;
+    private BroadcastReceiver mReceiver;
 
     public static final String MyPREFERENCES = "MyPre";
     public static final String key = "nameKey";
-    SharedPreferences sharedPreferences;
+    SharedPreferenceUtils sharedPreferencesUtlis;
     Bitmap btMap;
     private static int RESULT_LOAD_IMAGE = 1;
     private ImageView imageView;
     boolean checklist_flag = true;
+    private ArrayList<DataModel> list;
     private ListView lst_check_list;
+    private int notificationCounter;
+    private SharedPreferences sharedPreferences;
     private ListView personalListView;
-
-    String[] subreports = new String[]{"Form 1"};
+    private BroadcastReceiver mMyBroadcastReceiver;
+    String[] subreports = new String[]{"Form 1", "Form 2", "Form 3", "Form 4", "Form 5"};
 
     String[] permissions = {
             "android.permission.ACCESS_FINE_LOCATION",
@@ -124,8 +129,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBarDrawerToggle mDrawerToggle;
 
     private Toolbar toolbar;
+    private RelativeLayout notificationLayout;
 
     private TextView tv_taxiform;
+    private Button notificationButton;
     private TextView welcomeJoineeTV;
     private TextView personalTv;
     private TextView tv_userhomeid;
@@ -167,6 +174,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView feedBackInfoTv;
     private TextView taxiInfoTv;
     private TextView locationInfoTv;
+    private TextView scheduleTv;
+    private TextView VechicleTrakerTextView;
+    private TextView locationTextView;
+    private TextView OPTextView;
+    public static TextView badgeNotification;
 
     private ImageView arrowImageView;
     private ImageView leaveImageView;
@@ -181,8 +193,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout linear_taxiform;
     private LinearLayout personalLinearLayout;
     private LinearLayout personalTextViewLinearLayout;
-    private LinearLayout linear_checklist, linear_checklist_header;
-
+    private LinearLayout linear_checklist;
     private LinearLayout mDrawerPane;
     private LinearLayout leaveLinearLayout;
     private LinearLayout approvalInfoLinearLayout;
@@ -199,7 +210,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout taxiInfoLinearLayout ;
     private LinearLayout taxiLinearLayout ;
     private LinearLayout locationLinearLayout ;
-
+    private LinearLayout linear_checklist_header;
 
 
     private Toast toast;
@@ -215,7 +226,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean taxiFlag = true;
     private Boolean locationFlag = true;
     private ScrollView scrollView;
-
+    private Typeface face;
+    private  DatabaseHandler db;
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -227,13 +239,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        face  = Typeface.createFromAsset(getAssets(),
+                "arial.ttf");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         scrollView = (ScrollView)findViewById(R.id.home_scroll);
 
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         tv_toolbar = (TextView) toolbar.findViewById(R.id.tv_toolbar);
-
+        tv_toolbar.setTypeface(face);
+        Context ctx = this; // for Activity, or Service. Otherwise simply get the context.
+        String dbname = "my.db";
         db = new DatabaseHandler(this);
+
+        tv_toolbar.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(largeTextSize));
+
         navigationdrawer();
         findIDS();
         startService(new Intent(getApplication(), SendLatiLongiServerIntentService.class));
@@ -266,6 +286,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void findIDS() {
+        notificationLayout = (RelativeLayout)findViewById(R.id.badge_layout1);
         tv_taxiform = (TextView) findViewById(R.id.tv_taxiform_homeactivity);
         tv_userhomeid = (TextView) findViewById(R.id.tv_userhome_id);
         linear_taxiform = (LinearLayout) findViewById(R.id.linear_taxiform_homeactivity);
@@ -275,9 +296,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         tv_feedback = (TextView) findViewById(R.id.tv_feedback);
         tv_feedback_history = (TextView) findViewById(R.id.tv_feedback_history);
         tv_locationmap = (TextView) findViewById(R.id.tv_currentlocation);
+        notificationButton = (Button) findViewById(R.id.notificationButton);
         tv_notification = (TextView) findViewById(R.id.tv_notification);
         tv_taxiform_home_fragment = (TextView) findViewById(R.id.tv_taxiform_home_fragment);
         tv_checklist = (TextView) findViewById(R.id.tv_checklist);
+        linear_checklist_header = (LinearLayout) findViewById(R.id.linear_checklist_header);
+
         tv_setting = (TextView) findViewById(R.id.tv_setting);
         leaveApprove = (TextView) findViewById(R.id.leaveApproveTV);
         opApprove = (TextView) findViewById(R.id.opApproveTV);
@@ -292,8 +316,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         taxiImageView = (ImageView)findViewById(R.id.taxiImageView);
         feedBackImageView = (ImageView)findViewById(R.id.feedBackImageView);
         linear_checklist = (LinearLayout) findViewById(R.id.linear_checklist);
-        linear_checklist_header = (LinearLayout) findViewById(R.id.linear_checklist_header);
-
         welcomeJoineeTV = (TextView) findViewById(R.id.welcomeJoineeTV);
         personalTv = (TextView) findViewById(R.id.personalTv);
         personalLinearLayout= (LinearLayout)findViewById(R.id.personalLinearLayout);
@@ -314,6 +336,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         infoBullteinTV= (TextView) findViewById(R.id.infoBullteinTV);
         personalInfoTV= (TextView) findViewById(R.id.personalInfoTV);
         attendanceTv= (TextView) findViewById(R.id.attendanceTv);
+        VechicleTrakerTextView= (TextView) findViewById(R.id.VechicleTrakerTextView);
         OPTV= (TextView) findViewById(R.id.OPTV);
         salaryInfoTv= (TextView) findViewById(R.id.salaryInfoTv);
         salaryTv= (TextView) findViewById(R.id.salaryTv);
@@ -336,12 +359,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         taxiLinearLayout = (LinearLayout)findViewById(R.id.taxiLinearLayout);
         locationLinearLayout = (LinearLayout)findViewById(R.id.locationLinearLayout);
         locationInfoTv = (TextView)findViewById(R.id.locationInfoTv);
+        scheduleTv = (TextView)findViewById(R.id.tv_schedule);
         locationImageView = (ImageView)findViewById(R.id.locationImageView);
+        locationTextView = (TextView) findViewById(R.id.LocationTextView);
+        OPTextView = (TextView) findViewById(R.id.OPTextView);
+        badgeNotification = (TextView) findViewById(R.id.badge_notification_1);
 
 
 
 
         feedBackInfoTv.setOnClickListener(this);
+        locationTextView.setOnClickListener(this);
         locationInfoTv.setOnClickListener(this);
         locationImageView.setOnClickListener(this);
         taxiInfoTv.setOnClickListener(this);
@@ -356,12 +384,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         tv_feedback_history.setOnClickListener(this);
         tv_locationmap.setOnClickListener(this);
         tv_notification.setOnClickListener(this);
+        notificationButton.setOnClickListener(this);
         tv_taxiform_home_fragment.setOnClickListener(this);
         tv_checklist.setOnClickListener(this);
-        tv_setting.setOnClickListener(this);
-        linear_checklist.setOnClickListener(this);
         linear_checklist_header.setOnClickListener(this);
 
+        tv_setting.setOnClickListener(this);
+        linear_checklist.setOnClickListener(this);
         personalLinearLayout.setOnClickListener(this);
         welcomeJoineeTV.setOnClickListener(this);
         personalTv.setOnClickListener(this);
@@ -403,6 +432,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         salaryLinearLayout.setOnClickListener(this);
         salaryTv.setOnClickListener(this);
         TDSDeductionTv.setOnClickListener(this);
+        scheduleTv.setOnClickListener(this);
+        VechicleTrakerTextView.setOnClickListener(this);
+        OPTextView.setOnClickListener(this);
+        notificationLayout.setOnClickListener(this);
+       /* sharedPreferencesUtlis = SharedPreferenceUtils.getInstance();
+        sharedPreferencesUtlis.setContext(getApplicationContext());
+        badgeNotification.setText();*/
+
+
+
 
 
 
@@ -414,7 +453,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
@@ -422,24 +460,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         );
-
-
-
-/*
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.notification_icon, this.getTheme());
-        mDrawerToggle.setHomeAsUpIndicator(drawable);
-
-        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
-            }
-        });*/
     }
 
 
@@ -468,56 +488,92 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if (v == tv_taxiform) {
-            tv_toolbar.setText("Taxi" + "Form");
+            // tv_toolbar.setText("Taxi" + "Form");
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new TaxiFormFragment()).addToBackStack(null).commit();
             taxiLinearLayout.setVisibility(View.GONE);
             mDrawerLayout.closeDrawer(mDrawerPane);
 
 
         } else if (v == tv_location_history) {
-            tv_toolbar.setText("Location History");
+            //tv_toolbar.setText("Location History");
             locationLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new LocationHistoryFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         } else if (v == tvpersomalinfo) {
-            tv_toolbar.setText("Personal Info");
+            /*tv_toolbar.setText("Personal Info");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new PersonalInfoFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         } else if (v == getTv_taxiform_record) {
-            tv_toolbar.setText("TaxiForm History");
+           /* tv_toolbar.setText("TaxiForm History");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new TaxiFormRecordFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
             taxiLinearLayout.setVisibility(View.GONE);
 
 
         } else if (v == tv_feedback) {
-            tv_toolbar.setText("FeedBack");
+           /* tv_toolbar.setText("FeedBack");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new FeedBackFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
             feedBackLinearLayout.setVisibility(View.GONE);
 
         } else if (v == tv_feedback_history) {
-            tv_toolbar.setText("FeedBack History");
+          /*  tv_toolbar.setText("FeedBack History");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new FeedbackFragmentHistory()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
             feedBackLinearLayout.setVisibility(View.GONE);
 
         } else if (v == tv_locationmap) {
 
-            tv_toolbar.setText("Current Location  ");
+            /*tv_toolbar.setText("Current Location  ");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new RouteMapFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
             locationLinearLayout.setVisibility(View.GONE);
+
         }
         if (v == tv_notification) {
 
-            tv_toolbar.setText("Notification");
+          /*  tv_toolbar.setText("Notification");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new ReadNotificationFragment()).addToBackStack(null).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
 
         }
+
+        if (v == notificationButton) {
+            badgeNotification = (TextView) findViewById(R.id.badge_notification);
+            sharedPreferencesUtlis = SharedPreferenceUtils.getInstance();
+            sharedPreferencesUtlis.setContext(getApplicationContext());
+            sharedPreferencesUtlis.putInteger(AppConstraint.NOTIFICATIONCOUNTER,0);
+            badgeNotification.setVisibility(View.GONE);
+            Intent intent = new Intent(HomeActivity.this,ReadNotificationActivity.class);
+            startActivity(intent);
+
+        }
+        if(v==VechicleTrakerTextView)
+        {
+            Intent intent = new Intent(HomeActivity.this,VehicleTrakerHomeActivity.class);
+            startActivity(intent);
+            //  finish();
+
+
+        }
+        if(v==OPTextView)
+        {
+            Intent intent = new Intent(HomeActivity.this,OPActivity.class);
+            startActivity(intent);
+            //  finish();
+
+
+        }
+        if(v==locationTextView)
+        {
+            Intent intent = new Intent(HomeActivity.this,LocationActivity.class);
+            startActivity(intent);
+            // finish();
+
+
+        }
         if (v == tv_taxiform_home_fragment) {
-            tv_toolbar.setText("ESP");
+           /* tv_toolbar.setText("ESP");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new HomeFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
 
@@ -550,7 +606,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 checklist_flag = true;
             }
 
-         List<ChecklistData> checklistDatas = db.getAllChecklist();
+            List<ChecklistData> checklistDatas = db.getAllChecklist();
             ArrayList<String> stringArrayList = new ArrayList<>();
             stringArrayList.add("New Templete");
 
@@ -598,7 +654,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v==welcomeJoineeTV)
         {
-            tv_toolbar.setText("Welcome");
+            /*tv_toolbar.setText("Welcome");*/
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new WelcomeNewJoineeFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
@@ -616,56 +672,56 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v==personalDocsTV)
         {
-            tv_toolbar.setText("Personal Docs");
+            /*tv_toolbar.setText("Personal Docs");*/
             personalLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new PersonalDocsFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v==personalInfoTV)
         {
-            tv_toolbar.setText("Personal Info");
+           /* tv_toolbar.setText("Personal Info");*/
             personalLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new PersonalInfoFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == infoBullteinTV)
         {
-            tv_toolbar.setText("Info Bulltein ");
+            /*tv_toolbar.setText("Info Bulltein ");*/
             personalLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new InfoBullteinFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == ticketTv)
         {
-            tv_toolbar.setText("Ticket/Grievance");
+          /*  tv_toolbar.setText("Ticket/Grievance");*/
             personalLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new TicketFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == leaveApplyTV)
         {
-            tv_toolbar.setText("Leave Apply");
+            /*tv_toolbar.setText("Leave Apply");*/
             leaveLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new LeaveApplyFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == leaveLedgerTv)
         {
-            tv_toolbar.setText("Leave Ledger");
+            /*tv_toolbar.setText("Leave Ledger");*/
             leaveLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new LeaveLedgerFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == leaveSummaryTv)
         {
-            tv_toolbar.setText("Leave Summary");
+           /* tv_toolbar.setText("Leave Summary");*/
             leaveLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new LeaveSummaryFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == leaveTransactionTv)
         {
-            tv_toolbar.setText("Leave Transaction");
+           /* tv_toolbar.setText("Leave Transaction");*/
             leaveLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new LeaveTransactionFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
@@ -694,14 +750,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v == leaveApprove)
         {
-            tv_toolbar.setText("Leave Approve");
+           /* tv_toolbar.setText("Leave Approve");*/
             leaveLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new LeaveApprovalFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == opApprove)
         {
-            tv_toolbar.setText("OP Approve");
+            /*tv_toolbar.setText("OP Approve");*/
             leaveLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new OPApprovalFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
@@ -721,35 +777,35 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v == storeInfoTv)
         {
-            tv_toolbar.setText("Store Info");
+            /*tv_toolbar.setText("Store Info");*/
             storeAndAccountLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new StoreInfoFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == accountStatementsTv)
         {
-            tv_toolbar.setText("Account Statement");
+           /* tv_toolbar.setText("Account Statement");*/
             storeAndAccountLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new AccountStatementFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == billsInfoTv)
         {
-            tv_toolbar.setText("Bills Info");
+            /*tv_toolbar.setText("Bills Info");*/
             storeAndAccountLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new BillInfoFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == entitlementInfoTv)
         {
-            tv_toolbar.setText("Entitlement Info");
+           /* tv_toolbar.setText("Entitlement Info");*/
             storeAndAccountLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new EntitlementFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v == attendanceTv)
         {
-            tv_toolbar.setText("Attendance Info");
+            /*tv_toolbar.setText("Attendance Info");*/
             storeAndAccountLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new AttendanceFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
@@ -768,14 +824,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v ==OPEntryTv)
         {
-            tv_toolbar.setText("OP Entry");
+           /* tv_toolbar.setText("OP Entry");*/
             OPLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new OPEntryFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v ==OPHistoryTV)
         {
-            tv_toolbar.setText("OP History");
+           /* tv_toolbar.setText("OP History");*/
             OPLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new OPHistoryFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
@@ -794,14 +850,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v==salaryTv)
         {
-            tv_toolbar.setText("Salary Info");
+            /*tv_toolbar.setText("Salary Info");*/
             OPLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new SalaryInfoFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }
         if(v==TDSDeductionTv)
         {
-            tv_toolbar.setText("TDS Declaration form");
+            /*tv_toolbar.setText("TDS Declaration form");*/
             OPLinearLayout.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new TDSDeductionFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
@@ -840,14 +896,65 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 locationFlag = true;
             }
         }
+        if(v==scheduleTv)
+        {
+           /* tv_toolbar.setText("Scheduler");
+           ;*/
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new ScheduleFragment()).commit();
+            mDrawerLayout.closeDrawer(mDrawerPane);
+        }
     }
 
 
     @Override
     protected void onResume() {
-        super.onResume();
 
+        super.onResume();
+        badgeNotification = (TextView)findViewById(R.id.badge_notification);
+        sharedPreferencesUtlis = SharedPreferenceUtils.getInstance();
+        sharedPreferencesUtlis.setContext(getApplicationContext());
+        notificationCounter = sharedPreferencesUtlis.getInteger(AppConstraint.NOTIFICATIONCOUNTER);
+
+        IntentFilter intentFilter = new IntentFilter(
+                "android.intent.action.MAIN");
+        if(notificationCounter ==0)
+        {
+            badgeNotification.setVisibility(View.GONE);
+        }
+        else
+        {
+            badgeNotification.setVisibility(View.VISIBLE);
+            badgeNotification.setText(String.valueOf(notificationCounter));
+
+        }
+        mReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //extract our message from intent
+                int  notificationCounter = intent.getIntExtra(AppConstraint.NOTIFICATIONCOUNTER,0);
+
+                if(notificationCounter ==0)
+                {
+                    badgeNotification.setVisibility(View.GONE);
+                }
+                else
+                {
+                    badgeNotification.setVisibility(View.VISIBLE);
+                    badgeNotification.setText(String.valueOf(notificationCounter));
+
+                }
+                //log our message value
+
+
+            }
+        };
+        //registering our receiver
+        this.registerReceiver(mReceiver, intentFilter);
     }
+
+
+
 
 
     private void sublistdata(int position, String frgname) {
@@ -918,6 +1025,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return true;
 
     }
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMyBroadcastReceiver);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -934,6 +1047,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
 
 
     private void setProfileImg() {
@@ -1029,8 +1143,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             toast.show();
         }
     }
-
-
     public class CheckListFormAdapterListview extends ArrayAdapter {
 
         String s;
@@ -1071,7 +1183,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-             s = searchlist.get(position);
+            s = searchlist.get(position);
 
             if(s.equalsIgnoreCase("New Templete")) {
                 tv_entry.setText(s );
@@ -1081,7 +1193,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(View v) {
 
-                       String s2 = searchlist.get(position);
+                        String s2 = searchlist.get(position);
 
                         mDrawerLayout.closeDrawer(mDrawerPane);
                         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, CheckListFragment.newInstance_CheckListFragment(position, s2)).commit();
@@ -1123,7 +1235,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         bundle.putString("PARAM1", s2 );
                         GetCheckListSavedFragment fragInfo = new GetCheckListSavedFragment();
                         fragInfo.setArguments(bundle);
-                      getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, fragInfo).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, fragInfo).commit();
                         mDrawerLayout.closeDrawer(mDrawerPane);
                         linear_checklist.setVisibility(View.GONE);
                         checklist_flag = true;
@@ -1143,7 +1255,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
-
 
 
 }

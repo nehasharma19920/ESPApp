@@ -1,26 +1,54 @@
 package com.tns.espapp.fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tns.espapp.AppConstraint;
+import com.tns.espapp.DataModel;
 import com.tns.espapp.R;
+import com.tns.espapp.Utility.SharedPreferenceUtils;
+import com.tns.espapp.Utility.Utility;
+import com.tns.espapp.adapter.ViewPagerAdapter;
 import com.tns.espapp.service.GPSTracker;
+
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
+    private TextView welcomeTextView;
+    private View view;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private boolean fragmentVisible;
+    private TextView textView;
+    private BroadcastReceiver mReceiver;
+    private SharedPreferenceUtils sharedPreferences;
+
+    private int notificationCounter;
 
 
     public HomeFragment() {
@@ -40,72 +68,48 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) v.findViewById(R.id.bottom_navigation);
-        if (bottomNavigationView != null) {
-            // Set action to perform when any menu-item is selected.
-            bottomNavigationView.setOnNavigationItemSelectedListener(
-                    new BottomNavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            // Write code to perform some actions.
-
-                            selectFragment(item);
-
-                            return false;
-                        }
-                    });
-        }
-
-
-        //  TextView setpos =(TextView)v.findViewById(R.id.setpos);
-        // String getvalue = getArguments().getString("index");
-        //  setpos.setText(getvalue+"");
-
-
-        return v;
+        return view;
     }
 
-    private void selectFragment(MenuItem item) {
-        item.setChecked(true);
-        FragmentManager fragmentManager = getFragmentManager();
-        switch (item.getItemId()) {
-            case R.id.action_taxi:
 
-                if (fragmentManager != null) {
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
-                    if (ft != null) {
-                        ft.replace(R.id.frameLayout_home_frag, new TaxiFormFragment());
-                        ft.commit();
-                    }
-                }
-                break;
-            case R.id.action_currentlocation:
-                 fragmentManager = getFragmentManager();
-                if (fragmentManager != null) {
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
-                    if (ft != null) {
-                        ft.replace(R.id.frameLayout_home_frag, new RouteMapFragment());
-                        ft.commit();
-                    }
-                }
-                break;
-            case R.id.action_servey:
-                 fragmentManager = getFragmentManager();
-                if (fragmentManager != null) {
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
-                    if (ft != null) {
-                        ft.replace(R.id.frameLayout_home_frag, new FeedBackFragment());
-                        ft.commit();
-                    }
-                }
-                break;
-        }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter.addFrag(new ReadNotificationFragment(), "Notification");
+        adapter.addFrag(new BlankFragment(), "Esp");
+        adapter.addFrag(new TaxiFormFragment(), "Travelling");
+        adapter.addFrag(new FeedBackFragment(), "Feed Back");
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(1);
+    }
+
+
+
+    @Override
+    public void onResume() {
+        Log.e("DEBUG", "onResume of LoginFragment");
+        super.onResume();
+
 
 
     }
+
+    @Override
+    public void onPause() {
+        Log.e("DEBUG", "OnPause of loginFragment");
+        super.onPause();
+        fragmentVisible = false;
+    }
+
+
 
 
 }

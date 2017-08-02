@@ -499,13 +499,19 @@ public class RouteMapFragment extends Fragment  implements LocationListener, OnM
                         httpData = stringBuffer.toString();
                         bufferedReader.close();
                     } catch (Exception e) {
-                        Log.d("Exception - reading Http url", e.toString());
                     } finally {
                         inputStream.close();
                         httpURLConnection.disconnect();
                     }
                     return httpData;
                 }
+            }
+            public static RouteMapFragment newInstance(int index) {
+                RouteMapFragment f = new RouteMapFragment();
+                Bundle args = new Bundle();
+                args.putInt("index", index);
+                f.setArguments(args);
+                return f;
             }
 
 }

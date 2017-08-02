@@ -96,7 +96,7 @@
                         android:text="User"
                         android:textColor="#fff"
                         android:textSize="20dp"
-                        android:textStyle="bold" />
+                      />
 
                     <TextView
                         android:id="@+id/tv_userhome_id"
@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#fff"
                         android:textSize="16dp"
-                        android:textStyle="bold" />
+              />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -133,6 +133,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <TextView
@@ -145,7 +146,7 @@
                         android:clickable="true"
                         android:padding="10dp"
                         android:text="Home"
-                        android:textStyle="bold" />
+                 />
 
                     <TextView
                         android:textColor="@color/black"
@@ -157,9 +158,17 @@
                         android:clickable="true"
                         android:padding="10dp"
                         android:text="@string/welcome_new_joinee"
-                        android:textStyle="bold" />
+                        />
                 </LinearLayout>
-
+                <TextView
+                    android:id="@+id/personalInfoTV"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clickpress"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/personal_info"
+                    />
 
                 <LinearLayout
                     android:id="@+id/personalTextViewLinearLayout"
@@ -167,6 +176,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/clickpress"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -178,7 +188,6 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="@string/personal"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -209,16 +218,9 @@
                         android:clickable="true"
                         android:padding="10dp"
                         android:text="@string/personal_docs"
-                        android:textStyle="normal" />
+                  />
 
-                    <TextView
-                        android:id="@+id/personalInfoTV"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/clickpress"
-                        android:padding="10dp"
-                        android:text="@string/personal_info"
-                        android:textStyle="normal" />
+
                 </LinearLayout>
 
                 <TextView
@@ -230,7 +232,7 @@
                     android:clickable="true"
                     android:padding="10dp"
                     android:text="Info Bulletin"
-                    android:textStyle="bold" />
+                />
 
                 <TextView
                     android:textColor="@color/black"
@@ -242,7 +244,7 @@
                     android:padding="10dp"
                     android:visibility="gone"
                     android:text="Ticket/Grievance"
-                    android:textStyle="bold" />
+                 />
 
 
                 <LinearLayout
@@ -260,8 +262,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="10dp"
+
                         android:text="@string/leave"
-                        android:textStyle="bold"
+
                         android:visibility="visible" />
 
                     <ImageView
@@ -288,33 +291,40 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:padding="10dp"
+                        android:padding="10dp"                    android:textColor="@color/black"
+
                         android:text="@string/leave_apply"
-                        android:textStyle="normal" />
+                         />
 
                     <TextView
                         android:id="@+id/leaveSummaryTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_summary"
-                        android:textStyle="normal" />
+                         />
 
                     <TextView
                         android:id="@+id/leaveTransactionTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_transaction"
-                        android:textStyle="normal" />
+                         />
 
                     <TextView
                         android:id="@+id/leaveLedgerTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_ledger"
-                        android:textStyle="normal" />
+                       />
                 </LinearLayout>
 
 
@@ -332,8 +342,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="10dp"
+
                         android:text="@string/approval"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -362,8 +372,10 @@
                         android:background="@drawable/clickpress"
                         android:clickable="true"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/leave_approval"
-                        android:textStyle="normal" />
+                        />
 
                     <TextView
                         android:id="@+id/opApproveTV"
@@ -371,8 +383,9 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/clickpress"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/op_approval"
-                        android:textStyle="normal"
                         android:visibility="gone" />
 
 
@@ -392,8 +405,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="10dp"
+
                         android:text="@string/store_account"
-                        android:textStyle="bold"
+
                         android:visibility="visible" />
 
                     <ImageView
@@ -421,32 +435,39 @@
                         android:layout_gravity="center"
                         android:clickable="true"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/store_Info"
-                        android:textStyle="normal" />
+                       />
 
                     <TextView
                         android:id="@+id/accountStatementsTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/account_statements"
-                        android:textStyle="normal" />
+                        />
 
                     <TextView
                         android:id="@+id/billsInfoTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
                         android:text="@string/bills_Info"
-                        android:textStyle="normal" />
+                       />
 
                     <TextView
                         android:id="@+id/entitlementInfoTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
+
                         android:text="@string/entitlement_Info"
-                        android:textStyle="normal" />
+                       />
                 </LinearLayout>
 
                 <TextView
@@ -458,13 +479,23 @@
                     android:clickable="true"
                     android:padding="10dp"
                     android:text="@string/attendance"
-                    android:textStyle="bold" />
-
+                    />
+                <TextView
+                    android:id="@+id/OPEntryTv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/opEntry"
+                    />
 
                 <LinearLayout
                     android:id="@+id/OPInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -475,7 +506,6 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="@string/op"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -496,15 +526,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/OPEntryTv"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:padding="10dp"
-                        android:text="@string/opEntry"
-                        android:textStyle="normal" />
+
 
                     <TextView
                         android:id="@+id/OPHistoryTV"
@@ -512,7 +534,6 @@
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:text="@string/opHistory"
-                        android:textStyle="normal"
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -531,7 +552,6 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="@string/salary_info"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -559,16 +579,18 @@
                         android:layout_gravity="center"
                         android:clickable="true"
                         android:padding="10dp"
+                        android:textColor="@color/black"
                         android:text="@string/salary"
-                        android:textStyle="normal" />
+                        />
 
                     <TextView
                         android:id="@+id/TDSDeductionTv"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/black"
                         android:text="@string/tds_declaration"
-                        android:textStyle="normal" />
+                        />
                 </LinearLayout>
 
 
@@ -576,6 +598,7 @@
                     android:id="@+id/taxiInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView
@@ -586,7 +609,6 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="@string/taxi_info"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -631,6 +653,7 @@
                     android:id="@+id/feedBackInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView
@@ -641,7 +664,6 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="@string/feedback"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -684,6 +706,7 @@
                     android:id="@+id/locationInfoLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView
@@ -694,7 +717,6 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="@string/location"
-                        android:textStyle="bold"
                         android:visibility="visible" />
 
                     <ImageView
@@ -743,7 +765,6 @@
                     android:background="@drawable/clickpress"
                     android:padding="10dp"
                     android:text="Personal Info"
-                    android:textStyle="bold"
                     android:visibility="gone" />
 
                 <TextView
@@ -754,8 +775,8 @@
                     android:background="@drawable/clickpress"
                     android:padding="10dp"
                     android:text="Notification"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
+
+                    android:visibility="gone" />
 
                 <TextView
                     android:textColor="@color/black"
@@ -765,8 +786,7 @@
                     android:background="@drawable/clickpress"
                     android:padding="10dp"
                     android:text="Setting"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/linear_checklist_header"
@@ -784,9 +804,22 @@
                     android:background="@drawable/clickpress"
                     android:padding="10dp"
                     android:text="CheckList"
+
                     android:textStyle="bold"
                     android:visibility="visible" />
 
+
+                <TextView
+
+                    android:textColor="@color/black"
+                    android:id="@+id/tv_schedule"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clickpress"
+                    android:padding="10dp"
+                    android:text="Scheduler"
+
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/checklist_ImageView"
@@ -803,7 +836,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    >
 
                     <ListView
                         android:id="@+id/listviewreports"
@@ -824,6 +857,6 @@
             android:paddingRight="10dp"
             android:text=" @version: 1.0"
             android:textColor="@android:color/holo_purple"
-            android:textStyle="italic" />
+            />
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

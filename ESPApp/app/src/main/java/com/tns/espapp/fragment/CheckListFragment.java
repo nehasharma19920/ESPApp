@@ -667,10 +667,6 @@ public class CheckListFragment extends Fragment {
 
 
 
-
-
-
-
     public String loadJSONFromAsset() {
         String json = null;
         try {

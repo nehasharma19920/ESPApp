@@ -1,6 +1,7 @@
 package com.tns.espapp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.tns.espapp.R;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MapWebViewActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener{
     private  WebView webView;
@@ -46,7 +49,11 @@ public class MapWebViewActivity extends AppCompatActivity  implements SwipeRefre
         startWebView(url);
 
     }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
 
+    }
 
     private void startWebView(String url) {
 
