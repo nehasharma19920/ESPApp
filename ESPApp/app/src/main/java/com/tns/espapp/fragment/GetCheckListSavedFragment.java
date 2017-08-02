@@ -111,7 +111,7 @@ public class GetCheckListSavedFragment extends Fragment {
 
              //   initLinearBindsave(v, getFormlist, saveFormlist);
 
-                initLineaHorizontal_header_Bindsave(v,keyFormlist);
+                initLineaHorizontal_header_Bindsave(v,keyFormlist, keysize);
                   initLineaHorizontal_Bindsave(v, valueFormlist,keysize);
 
             } else {
@@ -222,20 +222,17 @@ public class GetCheckListSavedFragment extends Fragment {
     }
 
 
-    public void initLineaHorizontal_header_Bindsave(final View view, List<String> checklistDataList){
-        int size = checklistDataList.size();
+    public void initLineaHorizontal_header_Bindsave(final View view, List<String> checklistDataList, int size){
+
         LinearLayout li1 = (LinearLayout) view.findViewById(R.id.table_main_header);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, checklistDataList);
+        CustomAdapter_Header adapter = new CustomAdapter_Header(getActivity(), checklistDataList);
 
 
         // create a gridview
         GridView gridView= new GridView(getActivity());
 
         gridView.setLayoutParams(new GridView.LayoutParams(GridLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
-        gridView.setNumColumns(3);
-        gridView.setHorizontalSpacing(3);
-        gridView.setVerticalSpacing(3);
+        gridView.setNumColumns(size);
         gridView.setAdapter(adapter);
 
         // Adding the gridview to the RelativeLayout as a child
