@@ -29,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tns.espapp.AppConstraint;
 import com.tns.espapp.R;
@@ -58,7 +59,6 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         String fromNumber = intent.getStringExtra(AppConstraint.SELECTEDFORMNUMBER);
         databaseHandler = new DatabaseHandler(this);
         points = databaseHandler.getLatLong(fromNumber);
-     
 
 
     }
@@ -95,36 +95,55 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
     }
 
 
-
     private void showMarker() {
         for (int i = 0; i < points.size(); i++) {
+
             LatLongData latLongData = points.get(i);
-            LatLng point = new LatLng(Double.parseDouble(latLongData.getLat()),Double.parseDouble(latLongData.getLongi()));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+            LatLng point = new LatLng(Double.parseDouble(latLongData.getLat()), Double.parseDouble(latLongData.getLongi()));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 22));
             MarkerOptions markerOptions = new MarkerOptions();
 
             // Setting latitude and longitude of the marker position
             markerOptions.position(point);
-          // Setting titile of the infowindow of the marker
+            // Setting titile of the infowindow of the marker
             markerOptions.title("Location");
             // Setting the content of the infowindow of the marker
-            markerOptions.snippet("Latitude :"+Double.parseDouble(latLongData.getLat())+" Longitude :"+Double.parseDouble(latLongData.getLongi())+"\n"+" Date :"+latLongData.getDate()+" Time: " +latLongData.getCurrent_time_str()+" Speed: "+latLongData.getSpeed());
+            markerOptions.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
             // Instantiating the class PolylineOptions to plot polyline in the map
             PolylineOptions polylineOptions = new PolylineOptions();
+            polylineOptions.add(point);
+
+
 
             // Setting the color of the polyline
-            polylineOptions.color(Color.RED);
+
 
             // Setting the width of the polyline
-            polylineOptions.width(3);
-            latLngArrayList.add(point);
+            polylineOptions.width(10);
+        /*    latLngArrayList.add(point);
 
             // Adding the taped point to the ArrayList
-           // Setting points of polyline
-            polylineOptions.addAll(latLngArrayList);
+            // Setting points of polyline
+            polylineOptions.addAll(latLngArrayList);*/
+
 
             // Adding the polyline to the map
-            googleMap.addPolyline(polylineOptions);
+           Polyline polyline= googleMap.addPolyline(polylineOptions);
+            if(Double.parseDouble(latLongData.getSpeed())<4.5 && Double.parseDouble(latLongData.getSpeed())>4)
+            {
+                polyline.setColor(Color.GREEN);
+            }
+            else if(Double.parseDouble(latLongData.getSpeed())>2 && Double.parseDouble(latLongData.getSpeed())<3.9)
+            {
+                polyline.setColor(Color.YELLOW);
+            }
+            else
+            {
+                polyline.setColor(Color.RED);
+            }
+
+
+
 
             // Adding the marker to the map
             googleMap.addMarker(markerOptions);
@@ -162,6 +181,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         }
 
     }
+
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -182,11 +202,11 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         }
         return strAdd;
     }
-    private void createData()
-    {
-        LatLongData latLong ;
+
+    private void createData() {
+        LatLongData latLong;
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637855");
         latLong.setLongi("77.400925");
@@ -196,7 +216,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
 
 
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637871");
         latLong.setLongi("77.400773");
@@ -205,9 +225,8 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         points.add(latLong);
 
 
-
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637874");
         latLong.setLongi("77.400654");
@@ -216,10 +235,8 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         points.add(latLong);
 
 
-
-
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637832");
         latLong.setLongi("77.401014");
@@ -228,7 +245,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         points.add(latLong);
 
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637836");
         latLong.setLongi("77.400513");
@@ -238,7 +255,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
 
 
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637832");
         latLong.setLongi("77.401014");
@@ -247,7 +264,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         points.add(latLong);
 
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.637785");
         latLong.setLongi("77.400397");
@@ -256,17 +273,14 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
         points.add(latLong);
 
 
-
-
         latLong = new LatLongData();
-        latLong .setFormno("17333/020817/002");
+        latLong.setFormno("17333/020817/002");
         latLong.setDate("02-08-17");
         latLong.setLat("28.629053");
         latLong.setLongi("77.379481");
         latLong.setCurrent_time_str("09:04:32");
         latLong.setSpeed("6.264");
         points.add(latLong);
-
 
 
     }

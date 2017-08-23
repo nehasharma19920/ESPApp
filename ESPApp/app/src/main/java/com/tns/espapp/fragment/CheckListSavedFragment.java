@@ -110,6 +110,8 @@ public class CheckListSavedFragment extends Fragment implements View.OnClickList
 
         db = new DatabaseHandler(getActivity());
         setFormname = getArguments().getString("PARAM1");
+        setFormname = setFormname.replaceAll("\\s","");
+
         getFormlist = db.getAllChecklistwithFormno(setFormname);
         textview.setText(setFormname);
 
@@ -273,7 +275,7 @@ public class CheckListSavedFragment extends Fragment implements View.OnClickList
 
 
         }
-
+         listkey.add("Status");
         createDynamicDatabase(getActivity(),setFormname,listkey);
 
 
@@ -410,10 +412,11 @@ public class CheckListSavedFragment extends Fragment implements View.OnClickList
             }else {
                 b = true;
             }
-           Toast.makeText(getActivity(),strings[i]+","+ s,Toast.LENGTH_LONG).show();
+        //   Toast.makeText(getActivity(),strings[i]+","+ s,Toast.LENGTH_LONG).show();
 
            // listkey.add( s);
             listvalue.add(strings[i]);
+
 
         }
 
@@ -439,7 +442,7 @@ public class CheckListSavedFragment extends Fragment implements View.OnClickList
         }
 */
        if(b) {
-
+           listvalue.add("No");
            insert(getActivity(), listvalue, listkey, setFormname);
            for(int i=0; i < allEds.size(); i++)
            {

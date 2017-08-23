@@ -579,7 +579,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         if (v == tv_checklist || v== linear_checklist_header) {
-            tv_toolbar.setText("CheckList");
+           // tv_toolbar.setText("CheckList");
 
             if (checklist_flag) {
 
@@ -647,7 +647,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (v == tv_setting) {
-            tv_toolbar.setText("Setting");
+           // tv_toolbar.setText("Setting");
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, new SettingFragment()).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
 
@@ -970,7 +970,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             bundle.putString("PARAM1", frgname );
             CheckListSavedFragment fragInfo = new CheckListSavedFragment();
             fragInfo.setArguments(bundle);
-
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_home_frag, fragInfo).commit();
             mDrawerLayout.closeDrawer(mDrawerPane);
         }

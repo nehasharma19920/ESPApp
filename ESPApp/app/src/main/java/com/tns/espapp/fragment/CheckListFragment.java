@@ -446,7 +446,8 @@ public class CheckListFragment extends Fragment {
                      public void onClick(View v) {
 
                          for( ChecklistData c : check_list){
-                              ChecklistData checklistDatas = new ChecklistData(c.getFormno(), c.getName(), c.getName_value(), c.getDataType(),c.getSize(),c.getDecimal(), 1);
+                             String formname = c.getFormno().replaceAll("\\s+","");
+                              ChecklistData checklistDatas = new ChecklistData(formname, c.getName(), c.getName_value(), c.getDataType(),c.getSize(),c.getDecimal(), 1);
                              db.insertCheckListData(checklistDatas);
                          }
 

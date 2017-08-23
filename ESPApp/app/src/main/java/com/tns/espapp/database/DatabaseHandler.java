@@ -1061,6 +1061,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
         }
 
+
         return list;
     }
 
@@ -1332,35 +1333,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<ChecklistData> getAllChecklist() {
 
         ArrayList<ChecklistData> list = new ArrayList<ChecklistData>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST;
-        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            // Select All Query
+            String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST;
+            SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(selectQuery, null);
+            Cursor cursor = db.rawQuery(selectQuery, null);
 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
 
 
-                ChecklistData data = new ChecklistData();
-                //only one column
-                data.setId(cursor.getInt(0));
-                data.setFormno(cursor.getString(1));
-                data.setName(cursor.getString(2));
-                data.setName_value(cursor.getString(3));
-                data.setDataType(cursor.getString(4));
-                data.setDecimal(cursor.getString(5));
-                data.setFlag(cursor.getInt(6));
+                    ChecklistData data = new ChecklistData();
+                    //only one column
+                    data.setId(cursor.getInt(0));
+                    data.setFormno(cursor.getString(1));
+                    data.setName(cursor.getString(2));
+                    data.setName_value(cursor.getString(3));
+                    data.setDataType(cursor.getString(4));
+                    data.setDecimal(cursor.getString(5));
+                    data.setFlag(cursor.getInt(6));
 
-                //you could add additional columns here..
+                    //you could add additional columns here..
 
-                list.add(data);
-            } while (cursor.moveToNext());
+                    list.add(data);
+                } while (cursor.moveToNext());
+            }
+
+
+        }catch (Exception e)
+        {
+            Log.d("SQLiteException",e.getMessage());
+        }
+        finally {
+            return list;
+        }
         }
 
-        return list;
-    }
+
 
 
 
@@ -1374,36 +1385,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<ChecklistData> getAllChecklistwithFormno(String formno) {
 
         ArrayList<ChecklistData> list = new ArrayList<ChecklistData>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST + " WHERE " +KEY_CHECKLIST_FORMNO +" = ?" ;
-        SQLiteDatabase db = this.getReadableDatabase();
+        try
 
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{formno});
+        {
+            // Select All Query
+            String selectQuery = "SELECT  * FROM " + TABLE_CHECKLIST + " WHERE " + KEY_CHECKLIST_FORMNO + " = ?";
+            SQLiteDatabase db = this.getReadableDatabase();
 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                ChecklistData data = new ChecklistData();
-                //only one column
-                data.setId(cursor.getInt(0));
-                // data.setFnID(cursor.getInt(1));
-                data.setFormno(cursor.getString(1));
-                data.setName(cursor.getString(2));
-                data.setName_value(cursor.getString(3));
-                data.setDataType(cursor.getString(4));
-                data.setDecimal(cursor.getString(5));
-                data.setSize(cursor.getString(6));
-                data.setFlag(cursor.getInt(7));
+            Cursor cursor = db.rawQuery(selectQuery, new String[]{formno});
+
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
+                    ChecklistData data = new ChecklistData();
+                    //only one column
+                    data.setId(cursor.getInt(0));
+                    // data.setFnID(cursor.getInt(1));
+                    data.setFormno(cursor.getString(1));
+                    data.setName(cursor.getString(2));
+                    data.setName_value(cursor.getString(3));
+                    data.setDataType(cursor.getString(4));
+                    data.setDecimal(cursor.getString(5));
+                    data.setSize(cursor.getString(6));
+                    data.setFlag(cursor.getInt(7));
 
 
+                    //you could add additional columns here..
 
-                //you could add additional columns here..
-
-                list.add(data);
-            } while (cursor.moveToNext());
+                    list.add(data);
+                } while (cursor.moveToNext());
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.e("SQLiteException", ex.getMessage());
         }
 
-        return list;
+            return list;
+
+
+
     }
 
     public boolean update_CheckList_input( String va , String  flag )
@@ -1470,25 +1491,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public   ArrayList<HashMap<String, String>> getForm(String formname)
     {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery ="select * from " + formname;
-       // Cursor cursor = db.rawQuery("select * from " + formname, null);
-        Cursor cursor = db.rawQuery(selectQuery, null);
         ArrayList<HashMap<String, String>> maplist = new ArrayList<HashMap<String, String>>();
-        // looping through all rows and adding to list
 
-        if (cursor.moveToFirst()) {
-            do {
-                HashMap<String, String> map = new LinkedHashMap<>();
-                for(int i=0; i<cursor.getColumnCount();i++)
-                {
-                    map.put(cursor.getColumnName(i), cursor.getString(i));
-                }
+        try {
+            formname = formname.replaceAll("\\s+", "");
+            SQLiteDatabase db = this.getReadableDatabase();
 
-                maplist.add(map);
-            } while (cursor.moveToNext());
+            String selectQuery = "select * from " + formname;
+            // Cursor cursor = db.rawQuery("select * from " + formname, null);
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // looping through all rows and adding to list
+
+            if (cursor.moveToFirst()) {
+                do {
+                    HashMap<String, String> map = new LinkedHashMap<>();
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        map.put(cursor.getColumnName(i), cursor.getString(i));
+                    }
+
+                    maplist.add(map);
+                } while (cursor.moveToNext());
+            }
+            db.close();
         }
-        db.close();
+
+        catch (Exception e)
+        {
+            Log.d("Exception in getForm",e.getMessage());
+        }
         // return contact list
         return maplist;
 
