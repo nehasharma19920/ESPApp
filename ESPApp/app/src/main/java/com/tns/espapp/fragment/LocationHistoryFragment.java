@@ -118,9 +118,9 @@ public class LocationHistoryFragment extends Fragment implements SwipeRefreshLay
 
         List<LatLongData> latLongDataList = db.getAllLatLongORDerBy();
         int size = latLongDataList.size();
-            if(size > 10000) {
+      /*      if(size > 10000) {
                db.deleteSomeRow_LatLong();
-            }
+            }*/
         if(size >0){
             for(LatLongData latLongData : latLongDataList){
                 latLongDataArrayList.add(latLongData);

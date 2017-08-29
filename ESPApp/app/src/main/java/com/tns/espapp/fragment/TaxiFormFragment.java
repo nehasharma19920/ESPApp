@@ -289,11 +289,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         int a = data.size();
 
 
-        if (a > 200) {
-            db.deleteSomeRow_Taxiform();
-        }
-
-
         if (a > 0) {
             for (TaxiFormData datas : data) {
                 flag = datas.getFlag();
@@ -349,7 +344,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
                     form_no =empid + "/" + formated_Date + "/" + paddedkeyid;*/
 
-                    current_date = getDate2;
                     tv_form_no.setText(form_no);
                     edt_settaxiform_date.setText(getDate2);
                     edtproject_type.setText(ptype);

@@ -301,13 +301,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LATLONG_FLAG, latLongData.getLatlong_flag());
         values.put(KEY_LATLONG_TIME, latLongData.getCurrent_time_str());
         values.put(KEY_LATLONG_SPEED, latLongData.getSpeed());
-       // values.put(KEY_LATLONG_TOTALDIST, latLongData.getTotaldis());
-
-
-
-
-
-
 
         // Inserting Row
         db.insert(TABLE_LATLONG, null, values);

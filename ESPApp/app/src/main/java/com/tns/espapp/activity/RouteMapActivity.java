@@ -100,7 +100,7 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
 
             LatLongData latLongData = points.get(i);
             LatLng point = new LatLng(Double.parseDouble(latLongData.getLat()), Double.parseDouble(latLongData.getLongi()));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 22));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16));
             MarkerOptions markerOptions = new MarkerOptions();
 
             // Setting latitude and longitude of the marker position
@@ -111,7 +111,6 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
             markerOptions.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
             // Instantiating the class PolylineOptions to plot polyline in the map
             PolylineOptions polylineOptions = new PolylineOptions();
-            polylineOptions.add(point);
 
 
 
@@ -120,11 +119,11 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
 
             // Setting the width of the polyline
             polylineOptions.width(10);
-        /*    latLngArrayList.add(point);
+            latLngArrayList.add(point);
 
             // Adding the taped point to the ArrayList
             // Setting points of polyline
-            polylineOptions.addAll(latLngArrayList);*/
+            polylineOptions.addAll(latLngArrayList);
 
 
             // Adding the polyline to the map
