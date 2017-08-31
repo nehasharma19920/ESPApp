@@ -26,6 +26,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -101,51 +103,58 @@ public class RouteMapActivity extends FragmentActivity implements LocationListen
             LatLongData latLongData = points.get(i);
             LatLng point = new LatLng(Double.parseDouble(latLongData.getLat()), Double.parseDouble(latLongData.getLongi()));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16));
-            MarkerOptions markerOptions = new MarkerOptions();
 
-            // Setting latitude and longitude of the marker position
-            markerOptions.position(point);
-            // Setting titile of the infowindow of the marker
-            markerOptions.title("Location");
-            // Setting the content of the infowindow of the marker
-            markerOptions.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
-            // Instantiating the class PolylineOptions to plot polyline in the map
-            PolylineOptions polylineOptions = new PolylineOptions();
-
-
-
-            // Setting the color of the polyline
-
-
-            // Setting the width of the polyline
-            polylineOptions.width(10);
-            latLngArrayList.add(point);
-
-            // Adding the taped point to the ArrayList
-            // Setting points of polyline
-            polylineOptions.addAll(latLngArrayList);
-
-
-            // Adding the polyline to the map
-           Polyline polyline= googleMap.addPolyline(polylineOptions);
-            if(Double.parseDouble(latLongData.getSpeed())<4.5 && Double.parseDouble(latLongData.getSpeed())>4)
+            if(Double.parseDouble(latLongData.getSpeed())>=5 && Double.parseDouble(latLongData.getSpeed())<=20)
             {
-                polyline.setColor(Color.GREEN);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.greenballicon);
+
+                MarkerOptions markerOptions1 = new MarkerOptions();
+                markerOptions1.position(point);
+                markerOptions1.title("Location");
+                markerOptions1.icon(icon);
+                markerOptions1.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
+                 googleMap.addMarker(markerOptions1);
+
             }
-            else if(Double.parseDouble(latLongData.getSpeed())>2 && Double.parseDouble(latLongData.getSpeed())<3.9)
+            else if(Double.parseDouble(latLongData.getSpeed())>=21 && Double.parseDouble(latLongData.getSpeed())<=40)
             {
-                polyline.setColor(Color.YELLOW);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.yellowboll);
+
+                MarkerOptions markerOptions2 = new MarkerOptions();
+                markerOptions2.position(point);
+                markerOptions2.title("Location");
+                markerOptions2.icon(icon);
+                markerOptions2.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
+                googleMap.addMarker(markerOptions2);
+            }
+            else if(Double.parseDouble(latLongData.getSpeed())>=41 && Double.parseDouble(latLongData.getSpeed())<=60)
+            {
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.redboll);
+
+                MarkerOptions markerOptions3 = new MarkerOptions();
+                markerOptions3.position(point);
+                markerOptions3.title("Location");
+                markerOptions3.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
+                markerOptions3.icon(icon);
+                googleMap.addMarker(markerOptions3);
             }
             else
             {
-                polyline.setColor(Color.RED);
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.blueball);
+
+                MarkerOptions markerOptions4 = new MarkerOptions();
+                markerOptions4.position(point);
+                markerOptions4.title("Location");
+                markerOptions4.snippet("Latitude :" + Double.parseDouble(latLongData.getLat()) + " Longitude :" + Double.parseDouble(latLongData.getLongi()) + "\n" + " Date :" + latLongData.getDate() + " Time: " + latLongData.getCurrent_time_str() + " Speed: " + latLongData.getSpeed());
+                markerOptions4.icon(icon);
+                googleMap.addMarker(markerOptions4);
             }
 
 
 
 
             // Adding the marker to the map
-            googleMap.addMarker(markerOptions);
+          /*  googleMap.addMarker(markerOptions);*/
             googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                 @Override

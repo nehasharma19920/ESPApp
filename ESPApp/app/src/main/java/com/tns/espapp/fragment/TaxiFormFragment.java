@@ -33,7 +33,7 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -41,18 +41,14 @@ import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +64,6 @@ import com.tns.espapp.HTTPPostRequestMethod;
 import com.tns.espapp.R;
 import com.tns.espapp.Utility.SharedPreferenceUtils;
 import com.tns.espapp.activity.LocationHistoryActivity;
-import com.tns.espapp.activity.RouteMapActivity;
 import com.tns.espapp.activity.RouteMapsActivity;
 import com.tns.espapp.activity.TaxiHistoryActivity;
 import com.tns.espapp.database.DatabaseHandler;
@@ -100,8 +95,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
     private EditText edt_settaxiform_date, edt_startkmImage, edt_endkm_Image, edtstartkmtext, edtendkmtext, edtproject_type, edt_vehicle_no, edt_siteno, edt_remark;
     private int flag = 0;
-    private View v;
-    private int latlongtableflag;
+    private boolean save_state = true;
     private Button btn_close;
     int REQUEST_CAMERA = 0;
     private static final int SELECT_PICTURE = 1;
@@ -140,7 +134,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     LocationListener locationListener;
     LocationManager locationManager;
     boolean statusOfGPS;
-    private boolean isTouch = false;
 
 
     private SharedPreferences sharedPreferences;
@@ -161,18 +154,12 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     private TextView endKmTextView;
     private TextView numberOfSitesTextView;
     private TextView remarksTextView;
-    private ScrollView mainScrollView;
-    private CardView cardView;
-    private LinearLayout currentLocationLinearLayout;
-    private LinearLayout taxiHistoryLinearLayout;
-    private LinearLayout locationHistoryLinearLayout;
+
 
     private Boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2, locationFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private LinearLayout overlayLL;
-    private LinearLayout mainLinearLayout;
-    private RelativeLayout footer;
 
     //ImageView iv_status;
 
@@ -208,17 +195,13 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-         v = inflater.inflate(R.layout.taxi_frag, container, false);
-
-        // iv_status =(ImageView) toolbar. findViewById(R.id.status_taxiform);
 
 
-     /*   if (shouldAskPermissions()) {
-            askPermissions();
-        }*/
 
-        // boolean b = GPSTracker.isRunning;
+
+
+        View v = inflater.inflate(R.layout.taxi_frag, container, false);
+
         fab = (FloatingActionButton) v.findViewById(R.id.fab);
         overlayLL = (LinearLayout) v.findViewById(R.id.overlayLL);
         fab1 = (FloatingActionButton) v.findViewById(R.id.fab1);
@@ -228,11 +211,12 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+
         fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
         locationFab.setOnClickListener(this);
-        //  overlayLL.setOnClickListener(this);
+        overlayLL.setOnClickListener(this);
         findIDS(v);
         sharedPreferences = getActivity().getSharedPreferences("SERVICE", Context.MODE_PRIVATE);
         intent = new Intent(getActivity(), GPSTracker.class);
@@ -338,7 +322,7 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
                 } else {
 
-                 /*   formated_Date = new String(getDate2);
+                /*    formated_Date = new String(getDate2);
                     formated_Date = formated_Date.replaceAll("-", "");
                     paddedkeyid = String.format("%3s", keyid).replace(' ', '0');
 
@@ -366,30 +350,13 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
 
         allEdittexform();
-    /*    setOnTouchListener(mainLinearLayout);
-        setOnTouchListener(edt_vehicle_no);
-        setOnTouchListener(edtproject_type);
-        setOnTouchListener(edtendkmtext);
-        setOnTouchListener(edt_siteno);
-        setOnTouchListener(edt_remark);
-        setOnTouchListener(edt_settaxiform_date);
-        setOnTouchListener(edt_endkm_Image);
-        setOnTouchListener(edt_startkmImage);*/
-        setFooterVisibility();
 
 
         return v;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-    }
-
     private void findIDS(View v) {
-        cardView = (CardView) v.findViewById(R.id.cardView);
+
         tv_form_no = (TextView) v.findViewById(R.id.tv_form_no);
         edt_settaxiform_date = (EditText) v.findViewById(R.id.edt_settaxiform_date);
         edt_startkmImage = (EditText) v.findViewById(R.id.edt_startkm_image);
@@ -410,13 +377,9 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         startKmTextView = (TextView) v.findViewById(R.id.startKmTextView);
         endKmTextView = (TextView) v.findViewById(R.id.endKmTextView);
         numberOfSitesTextView = (TextView) v.findViewById(R.id.numberOfSitesTextView);
-        footer = (RelativeLayout) v.findViewById(R.id.footer);
         remarksTextView = (TextView) v.findViewById(R.id.remarksTextView);
-        mainScrollView = (ScrollView) v.findViewById(R.id.mainScrollView);
-        mainLinearLayout = (LinearLayout) v.findViewById(R.id.mainLinearLayout);
-        currentLocationLinearLayout = (LinearLayout) v.findViewById(R.id.currentLocationLinearLayout);
-        taxiHistoryLinearLayout = (LinearLayout) v.findViewById(R.id.taxiHistoryLinearLayout);
-        locationHistoryLinearLayout = (LinearLayout) v.findViewById(R.id.locationHistoryLinearLayout);
+
+
         edt_startkmImage.setOnClickListener(this);
         edt_endkm_Image.setOnClickListener(this);
         edtstartkmtext.setOnClickListener(this);
@@ -424,19 +387,13 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
         edtproject_type.setOnClickListener(this);
         edt_vehicle_no.setOnClickListener(this);
         btn_close.setOnClickListener(this);
-        currentLocationLinearLayout.setOnClickListener(this);
-        taxiHistoryLinearLayout.setOnClickListener(this);
-        locationHistoryLinearLayout.setOnClickListener(this);
-
-
 
 
     }
 
     private void setFontFamily() {
 
-        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),
-                "arial.ttf");
+        Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "arial.ttf");
 
         fullScreenContentTextView.setTypeface(face);
         fromNumberTextView.setTypeface(face);
@@ -753,26 +710,25 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
         int id = v.getId();
         switch (id) {
-            case R.id.currentLocationLinearLayout:
-            case R.id.locationFab:
-                Intent intent = new Intent(getActivity(), RouteMapsActivity.class);
-                startActivity(intent);
+            case R.id.fab:
 
-                //animateFAB();
+                animateFAB();
                 break;
-            case R.id.locationHistoryLinearLayout:
-                case  R.id.fab1:
-                // animateFAB();
-             Intent intent2 = new Intent(getActivity(), LocationHistoryActivity.class);
-               startActivity(intent2);
+            case R.id.fab1:
+                animateFAB();
+                Intent intent = new Intent(getActivity(), LocationHistoryActivity.class);
+                startActivity(intent);
                 break;
-            case R.id.taxiHistoryLinearLayout:
             case R.id.fab2:
-                // animateFAB();
-                 Intent intent1 = new Intent(getActivity(), TaxiHistoryActivity.class);
+                animateFAB();
+                Intent intent1 = new Intent(getActivity(), TaxiHistoryActivity.class);
                 startActivity(intent1);
                 break;
-
+            case R.id.locationFab:
+                animateFAB();
+                Intent intent2 = new Intent(getActivity(), RouteMapsActivity.class);
+                startActivity(intent2);
+                break;
         }
 
         if (v == btn_close) {
@@ -921,66 +877,6 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-    }
-
-
-    private void setOnTouchListener(View v) {
-        v.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int X = (int) event.getX();
-                int Y = (int) event.getY();
-                int eventaction = event.getAction();
-
-                switch (eventaction) {
-                    case MotionEvent.ACTION_DOWN:
-                        isTouch = true;
-                      footer.setVisibility(View.GONE);
-                       // Toast.makeText(getContext(), "ACTION_DOWN AT COORDS " + "X: " + X + " Y: " + Y, Toast.LENGTH_SHORT).show();
-
-
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-                        isTouch = true;
-                      //  footer.setVisibility(View.GONE);
-                       // Toast.makeText(getContext(), "ACTION_MOVE AT COORDS " + "X: " + X + " Y: " + Y, Toast.LENGTH_SHORT).show();
-
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        isTouch = false;
-                        footer.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getContext(), "ACTION_UP AT COORDS " + "X: " + X + " Y: " + Y, Toast.LENGTH_SHORT).show();
-
-                        break;
-                    case MotionEvent.ACTION_OUTSIDE:
-                        isTouch = false;
-                        footer.setVisibility(View.VISIBLE);
-                       // Toast.makeText(getContext(), "ACTION_OUTSIDE AT COORDS " + "X: " + X + " Y: " + Y, Toast.LENGTH_SHORT).show();
-
-                        break;
-                    case MotionEvent.ACTION_SCROLL:
-
-                       footer.setVisibility(View.GONE);
-                       // Toast.makeText(getContext(), "ACTION_SCROLL AT COORDS " + "X: " + X + " Y: " + Y, Toast.LENGTH_SHORT).show();
-
-                        break;
-                }
-                return true;
-
-            }
-
-        });
-
-    }
-
-    private void setFooterVisibility() {
-        if (isTouch) {
-            footer.setVisibility(View.GONE);
-        } else {
-            footer.setVisibility(View.VISIBLE);
-        }
     }
 
 
@@ -1145,7 +1041,11 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
 
                     if (s.length() == 0) {
 
+
                         db.deleteSingleRowTaxiformData(form_no);
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.detach(TaxiFormFragment.this).attach(TaxiFormFragment.this).commit();
+
                     }
 
                     if (s.length() == 1) {
@@ -1171,8 +1071,9 @@ public class TaxiFormFragment extends Fragment implements View.OnClickListener,
                         }
 
 
-                        db.addTaxiformData(new TaxiFormData(keyid, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString()));
-                        incri_id = incri_id + 1;
+                            db.addTaxiformData(new TaxiFormData(keyid, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString()));
+                            incri_id = db.getLastInsertId();
+
 
            /*  FragmentTransaction ft = getFragmentManager().beginTransaction();
                   ft.detach(TaxiFormFragment.this).attach(TaxiFormFragment.this).commit();*/

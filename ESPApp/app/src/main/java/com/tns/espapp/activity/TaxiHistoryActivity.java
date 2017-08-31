@@ -230,24 +230,26 @@ public class TaxiHistoryActivity extends AppCompatActivity {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    try {
+
+                        if (position <= taxiFormDataArrayList.size()) {
+                            TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
+                            String fromNumber = taxiFormData.getFormno();
+                            Intent intent = new Intent(TaxiHistoryActivity.this, RouteMapActivity.class);
+                            intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
+                            startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        Log.e("Exception", e.getMessage());
+                    }
 
                     if (getstatus.equals("1")) {
 
-                        try {
-                            if (position <= taxiFormDataArrayList.size()) {
-                                TaxiFormData taxiFormData = (TaxiFormData) adapter.getItem(position);
-                                String fromNumber = taxiFormData.getFormno();
-                                Intent intent = new Intent(TaxiHistoryActivity.this, RouteMapActivity.class);
-                                intent.putExtra(AppConstraint.SELECTEDFORMNUMBER, fromNumber);
-                                startActivity(intent);
-                            }
-                        } catch (Exception e) {
-                            Log.e("Exception", e.getMessage());
-                        }
+
                     }
                     else
                     {
-                        Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_LONG).show();
                     }
 
                 }

@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.tns.espapp.AppConstraint;
+import com.tns.espapp.ListviewHelper;
 import com.tns.espapp.R;
 import com.tns.espapp.Utility.AppSingleton;
 import com.tns.espapp.adapter.CheckListAdapterListview;
@@ -92,6 +94,7 @@ public class CheckListFragment extends Fragment {
     DatabaseHandler db;
     Spinner spin;
     String selectFormSpinner;
+    RelativeLayout relative_attachment;
 
     public static CheckListFragment newInstance_CheckListFragment(int index, String value) {
         CheckListFragment f = new CheckListFragment();
@@ -117,6 +120,8 @@ public class CheckListFragment extends Fragment {
         //spin.setOnItemSelectedListener(this);
         listView = (ListView)v.findViewById(R.id.listview_chk);
 
+        relative_attachment =(RelativeLayout) v.findViewById(R.id.relative_attachment);
+
         cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
         month = cal.get(Calendar.MONTH);
@@ -124,7 +129,6 @@ public class CheckListFragment extends Fragment {
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         cal.set(year, month, day);
         frg_from.setText(frg_name + " " + getFrg_postion);
-
 
          // db.deletecheckListData();
 
@@ -139,6 +143,8 @@ public class CheckListFragment extends Fragment {
                 lstadapter = new CheckListAdapterListview(getActivity(), R.layout.checklist_data_adapter, getFormlist);
 
                 listView.setAdapter(lstadapter);
+
+
                 lstadapter.notifyDataSetChanged();
                 if(getFormlist.size() >0) {
 
@@ -157,15 +163,8 @@ public class CheckListFragment extends Fragment {
 
 
 
-
-
-
        // initLinearBind(v);
        // loadJSONFromAsset();
-
-
-
-
 
 
 /*
@@ -274,73 +273,6 @@ public class CheckListFragment extends Fragment {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void init(View v) {
-
-        // TableLayout stk = (TableLayout)v. findViewById(R.id.table_main);
-        LinearLayout li1 = (LinearLayout) v.findViewById(R.id.table_main);
-
-        TableRow tbrow0 = new TableRow(getActivity());
-        tbrow0.setPadding(10, 15, 15, 15);
-
-        TextView tv0 = new TextView(getActivity());
-        tv0.setText(" Sl.No ");
-        tv0.setTextSize(20);
-        tv0.setTextColor(Color.BLACK);
-        tbrow0.addView(tv0);
-
-        TextView tv1 = new TextView(getActivity());
-        tv1.setText(" Name ");
-        tv1.setTextSize(20);
-        tv1.setTextColor(Color.BLACK);
-        tbrow0.addView(tv1);
-
-        TextView tv2 = new TextView(getActivity());
-        tv2.setText(" Field ");
-        tv2.setTextSize(20);
-        tv2.setTextColor(Color.BLACK);
-        tbrow0.addView(tv2);
-
-        li1.addView(tbrow0);
-
-
-        for (int i = 0; i < name.length; i++) {
-
-            TableRow tbrow = new TableRow(getActivity());
-            TextView t1v = new TextView(getActivity());
-
-            ShapeDrawable shape = new ShapeDrawable(new RectShape());
-            shape.getPaint().setColor(Color.RED);
-            shape.getPaint().setStyle(Paint.Style.STROKE);
-            shape.getPaint().setStrokeWidth(3);
-            tbrow.setPadding(10, 15, 15, 15);
-            // Assign the created border to EditText widget
-            // tbrow.setBackground(shape);
-            t1v.setText("" + i);
-            t1v.setTextColor(Color.BLACK);
-            t1v.setGravity(Gravity.CENTER);
-
-            tbrow.addView(t1v);
-            TextView t2v = new TextView(getActivity());
-            t2v.setText(name[i] + i);
-            t2v.setTextColor(Color.BLACK);
-            t2v.setGravity(Gravity.CENTER);
-            tbrow.addView(t2v);
-
-            TableRow.LayoutParams lparams = new TableRow.LayoutParams(400, ViewGroup.LayoutParams.WRAP_CONTENT);
-            EditText edT_v = new EditText(getActivity());
-            edT_v.setLayoutParams(lparams);
-            edT_v.setBackground(shape);
-
-
-            edT_v.setTextColor(Color.BLACK);
-            edT_v.setGravity(Gravity.CENTER);
-
-            tbrow.addView(edT_v);
-            li1.addView(tbrow);
-        }
-
-    }
 
     private void setdate(final EditText edt) {
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
@@ -446,8 +378,10 @@ public class CheckListFragment extends Fragment {
                      public void onClick(View v) {
 
                          for( ChecklistData c : check_list){
-                             String formname = c.getFormno().replaceAll("\\s+","");
-                              ChecklistData checklistDatas = new ChecklistData(formname, c.getName(), c.getName_value(), c.getDataType(),c.getSize(),c.getDecimal(), 1);
+
+                             String formno=   c.getFormno().replaceAll("\\s","");
+                              ChecklistData checklistDatas = new ChecklistData(formno, c.getName(), c.getName_value(), c.getDataType(),c.getSize(),c.getDecimal(), 1);
+
                              db.insertCheckListData(checklistDatas);
                          }
 
@@ -469,6 +403,7 @@ public class CheckListFragment extends Fragment {
             lstadapter = new CheckListAdapterListview(getActivity(), R.layout.checklist_data_adapter, check_list) ;
 
             listView.setAdapter(lstadapter);
+            ListviewHelper.getListViewSize(listView);
             lstadapter.notifyDataSetChanged();
 
 

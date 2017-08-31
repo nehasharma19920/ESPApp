@@ -952,7 +952,7 @@ public class TaxiFormActivity extends AppCompatActivity implements View.OnClickL
 
 
                         db.addTaxiformData(new TaxiFormData(keyid, edt_settaxiform_date.getText().toString(), form_no, edtproject_type.getText().toString(), edt_vehicle_no.getText().toString(), edtstartkmtext.getText().toString(), startkmImageEncodeString, edtendkmtext.getText().toString(), endkmImageEncodeString, flag, edt_siteno.getText().toString(), edt_remark.getText().toString()));
-                        incri_id = incri_id + 1;
+                        incri_id = db.getLastInsertId();
 
            /*  FragmentTransaction ft = getFragmentManager().beginTransaction();
                   ft.detach(TaxiFormFragment.this).attach(TaxiFormFragment.this).commit();*/
